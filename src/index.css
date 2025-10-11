@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
+
+/* Medium devices (≥ 768px) */
+@media (min-width: 768px) {
+  /* md breakpoint */
+}
+
+/* Large devices (≥ 1024px) */
+@media (min-width: 1024px) {
+  /* lg breakpoint */
+}
+
+/* Extra Large devices (≥ 1280px) */
+@media (min-width: 1280px) {
+  /* xl breakpoint */
+}
+
+/* 2K Screens (≥ 1920px) */
+@media (min-width: 1920px) {
+  /* custom 2xl breakpoint */
+}
+
+/* 4K Screens (≥ 2560px) */
+@media (min-width: 2560px) {
+  /* custom 3xl / 4k breakpoint */
+}
