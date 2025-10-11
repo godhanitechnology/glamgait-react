@@ -89,5 +89,4 @@ const StyledWrapper = styled.div`
     transition: 0.3s;
   }
 `;
-
 export default BackToTopButton;
