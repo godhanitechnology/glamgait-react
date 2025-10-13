@@ -158,17 +158,17 @@ const Footer = () => {
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:-left-10 lg:top-10 lg:w-20 xl:left-10 xl:top-0 xl:w-25 2xl:left-60 z-10 pointer-events-none"
+        className="absolute -right-1 lg:-left-10 lg:top-10 lg:w-20 xl:left-10 xl:top-0 xl:w-25 2xl:left-60 z-11 pointer-events-none"
       />
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:left-53 lg:w-10 xl:left-93 xl:w-9 2xl:left-150 z-10 pointer-events-none"
+        className="hidden lg:block absolute lg:left-105 lg:w-10 xl:left-150 xl:w-9 2xl:left-210 z-10 pointer-events-none"
       />
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:left-63 lg:w-8 xl:left-101 xl:w-7 2xl:left-158 z-10 pointer-events-none"
+        className="hidden lg:block absolute lg:left-115 lg:w-8 xl:left-160 xl:w-7 2xl:left-220 z-10 pointer-events-none"
       />
       <img
         src={leftlonglight}
@@ -204,21 +204,21 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img src={fb} alt="Facebook" />
+              <img src={fb} alt="Facebook" className="h-7 w-7"/>
             </a>
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img src={ig} alt="Instagram" />
+              <img src={ig} alt="Instagram" className="h-7 w-7"/>
             </a>
             <a
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img src={yt} alt="YouTube" />
+              <img src={yt} alt="YouTube" className="h-7 w-7"/>
             </a>
           </div>
         </div>

@@ -35,3 +35,10 @@
 @media (min-width: 2560px) {
   /* custom 3xl / 4k breakpoint */
 }
+
+h1, h2, h3 {
+  font-family: 'Judson', Judson;
+}
+p {
+  font-family: 'poppins', poppins;
+}

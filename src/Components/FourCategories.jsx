@@ -166,6 +166,27 @@ const FourCategories = () => {
         {/* Desktop Grid */}
         <div className="hidden md:grid grid-cols-11 grid-rows-8 gap-5">
           {categories.map((cat) => (
+            // <NavLink
+            //   key={cat.id}
+            //   to={cat.to}
+            //   className={`relative overflow-hidden rounded-2xl group ${cat.grid}`}
+            // >
+            //   <img
+            //     src={cat.image}
+            //     alt={cat.label}
+            //     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            //   />
+            //   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+            //     <div className="text-white">
+            //       <p className="text-xs font-medium uppercase tracking-wider bg-white text-black px-2 py-1 inline-block rounded-sm mb-2">
+            //         {cat.subLabel}
+            //       </p>
+            //       <p className="text-xl md:text-2xl font-semibold">
+            //         {cat.label}
+            //       </p>
+            //     </div>
+            //   </div>
+            // </NavLink>
             <NavLink
               key={cat.id}
               to={cat.to}
@@ -176,12 +197,12 @@ const FourCategories = () => {
                 alt={cat.label}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
                 <div className="text-white">
-                  <p className="text-xs font-medium uppercase tracking-wider bg-white text-black px-2 py-1 inline-block rounded-sm mb-2">
+                  <p className="text-xs md:text-[10px] lg:text-[16px] font-medium uppercase tracking-wider bg-white text-black px-2 py-1 inline-block rounded-sm mb-2">
                     {cat.subLabel}
                   </p>
-                  <p className="text-xl md:text-2xl font-semibold">
+                  <p className="text-[14px] md:text-[16px] lg:text-[22px] md:text-2xl font-semibold">
                     {cat.label}
                   </p>
                 </div>

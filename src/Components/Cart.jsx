@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { X, Check, Plus, Minus, ShoppingBag } from "lucide-react";
+import { X, Check, Plus, Minus } from "lucide-react";
 import c1 from "../assets/c1.jpg";
 import c2 from "../assets/c2.jpg";
 import Return from "../assets/Return.png";
 import { useNavigate } from "react-router-dom";
+import cartempty from "../assets/cartempty.png";
+import { Link } from "react-router-dom";
+
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -80,21 +83,40 @@ const Cart = () => {
   // ✅ Empty Cart View
   if (cartItems.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#f3f0ed] px-4 pb-32">
-        <div className="bg-white rounded-full p-6 shadow-sm mb-4">
-          <ShoppingBag className="w-10 h-10 text-[#0d3b2e]" />
+      // <div className="flex flex-col items-center justify-center min-h-screen bg-[#f3f0ed] px-4 pb-32">
+      //   <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
+      //     {/* <ShoppingBag className="w-10 h-10 text-[#0d3b2e]" /> */}
+      //     <img src={cartempty} alt="" />
+      //   </div>
+      //     <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-15">
+      //     Your cart is empty.
+      //   </h1>
+      //   <p className="text-sm text-gray-500 text-center max-w-md mb-6">
+      //     You don’t have any products in your cart yet. Start exploring our
+      //     collections and add your favorite items!
+      //   </p>
+      //   <button className="bg-[#0d3b2e] text-white px-5 py-2 rounded-md hover:bg-[#0b3126] transition">
+      //     Continue Shopping
+      //   </button>
+      // </div>
+      <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
+      <div className="justify-items-center">
+        <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
+          <img src={cartempty} alt="" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-          Your cart is empty.
-        </h3>
-        <p className="text-sm text-gray-500 text-center max-w-md mb-6">
-          You don’t have any products in your cart yet. Start exploring our
-          collections and add your favorite items!
-        </p>
-        <button className="bg-[#0d3b2e] text-white px-5 py-2 rounded-md hover:bg-[#0b3126] transition">
-          Continue Shopping
-        </button>
+        <div className="justify-items-center">
+          <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-15">
+            Your Cart Is Empty.
+          </h1>
+          <p className="text-[#807D7E] text-[14px] text-center">
+            You don’t have any products in the wishlist yet. You will find a lot of interesting products on our Shop page.
+          </p>
+        </div>
+        <div className="text-center bg-[#02382A] text-white px-4 py-1.5 rounded-[8px] w-fit mt-5">
+          <Link to="/shop">Continue Shopping</Link>
+        </div>
       </div>
+    </div>
     );
   }
 
@@ -141,7 +163,7 @@ const Cart = () => {
               {/* Remove Button (Desktop only) */}
               <button
                 onClick={() => handleRemove(item.id)}
-                className="absolute top-3 right-3 text-gray-600 hover:text-black hidden md:block"
+                className="absolute top-3 right-3 text-gray-600 hover:text-black"
               >
                 <X size={18} />
               </button>
@@ -220,13 +242,8 @@ const Cart = () => {
                 </button>
 
                 {/* Cross Icon only visible on mobile */}
-                <button
-                  onClick={() => handleRemove(item.id)}
-                  className="text-gray-600 hover:text-black md:hidden ml-3"
-                >
-                  <X size={18} />
-                </button>
               </div>
+                
             </div>
           ))}
         </div>

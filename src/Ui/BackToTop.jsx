@@ -45,9 +45,9 @@ const StyledWrapper = styled.div`
   .button {
     width: 50px;
     height: 50px;
-    border-radius: 15px;
-    background-color: #1b4552;
-    border: 4px double #e9e9e9;
+    border-radius: 100%;
+    background-color: #02382A;
+    border: 2px double #e9e9e9;
     cursor: pointer;
     transition: 0.3s;
     display: flex;
@@ -68,6 +68,7 @@ const StyledWrapper = styled.div`
 
   .button:hover {
     width: 140px;
+    border-radius: 15px;
   }
 
   .button:hover .svgIcon {
