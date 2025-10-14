@@ -242,7 +242,7 @@ const VideoCard = ({ video, onClick }) => {
               <span className="text-[14px] font-bold text-gray-900">
                 Rs.{price}
               </span>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-gray-600 leading-relaxed line-clamp-1">
                 {reviews}
               </p>
             </div>
