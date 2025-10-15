@@ -1,196 +1,106 @@
-// import React, { useState } from "react";
-// import { X } from "lucide-react";
-// import c1 from "../assets/c1.jpg";
-// import c2 from "../assets/c2.jpg";
-// import Return from "../assets/Return.png";
-// import wishlistempty from "../assets/wishlistempty.png";
-// import { Link } from "react-router-dom";
-
-// const Wishlist = () => {
-//   const [wishlistItems, setWishlistItems] = useState([
-//     {
-//       id: 1,
-//       name: "Diamond Pearl Engagement Ring",
-//       price: 160,
-//       oldPrice: 170,
-//       color: "Silver",
-//       returnDays: 15,
-//       deliveryDate: "Feb 25, 2025",
-//       image: c1,
-//     },
-//     {
-//       id: 2,
-//       name: "Rose Gold Lotus Necklace",
-//       price: 200,
-//       oldPrice: 220,
-//       color: "Gold",
-//       returnDays: 15,
-//       deliveryDate: "Feb 25, 2025",
-//       image: c2,
-//     },
-//   ]);
-
-//   const handleRemove = (id) => {
-//     setWishlistItems(wishlistItems.filter((item) => item.id !== id));
-//   };
-
-//   return (
-//     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10 flex flex-col">
-//       <h2 className="text-2xl font-semibold mb-6">My Wishlist</h2>
-
-//       {wishlistItems.length > 0 ? (
-//         <div className="flex flex-col lg:flex-row gap-6">
-//           <div className="flex-1">
-//             {wishlistItems.map((item) => (
-//               <div
-//                 key={item.id}
-//                 className="bg-white rounded-2xl flex flex-col md:flex-row gap-4 p-4 mb-4 shadow-sm relative"
-//               >
-//                 {/* Remove Button */}
-//                 <button
-//                   onClick={() => handleRemove(item.id)}
-//                   className="absolute top-3 right-3 text-gray-600 hover:text-black"
-//                 >
-//                   <X size={18} />
-//                 </button>
-
-//                 {/* Product Image */}
-//                 <img
-//                   src={item.image}
-//                   alt={item.name}
-//                   className="w-full md:w-32 h-40 object-cover rounded-lg"
-//                 />
-
-//                 {/* Product Info */}
-//                 <div className="flex flex-col flex-1 gap-2">
-//                   <div>
-//                     <h3 className="text-md font-medium">{item.name}</h3>
-//                     <p className="text-sm text-gray-500">
-//                       ${item.price.toFixed(2)}{" "}
-//                       <span className="line-through text-gray-400 text-sm">
-//                         ${item.oldPrice.toFixed(2)}
-//                       </span>
-//                     </p>
-//                     <p className="text-sm text-gray-500">Color: {item.color}</p>
-//                   </div>
-
-//                   {/* Delivery and Return Info */}
-//                   <div className="text-sm text-gray-600 space-y-1">
-//                     <div className="flex items-center gap-2">
-//                       <img src={Return} alt="Return Icon" className="w-4 h-4" />
-//                       <p>{item.returnDays} Days return available</p>
-//                     </div>
-//                     <div className="flex items-center gap-2">
-//                       {/* <img src={Box} alt="Delivery Icon" className="w-4 h-4" /> */}
-//                       <p>Delivered by {item.deliveryDate}</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {/* Move to Cart Button */}
-//                 <div className="flex items-center md:ml-4">
-//                   <button className="border px-3 py-2 text-sm rounded-md hover:bg-gray-100 whitespace-nowrap">
-//                     MOVE TO CART
-//                   </button>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       ) : (
-//         // Empty Wishlist Section
-//         // <div className="flex flex-col items-center justify-center flex-1 sm:mb-40 mb-32">
-//         //   <div className="bg-white rounded-full p-6 shadow-sm mb-4">
-//         //     {/* <img src={Heart} alt="Empty Heart" className="w-10 h-10" /> */}
-//         //   </div>
-//         //   <h3 className="text-lg font-semibold text-gray-800 mb-2">
-//         //     Your wishlist is empty.
-//         //   </h3>
-//         //   <p className="text-sm text-gray-500 text-center max-w-md mb-6">
-//         //     You don’t have any products in your wishlist yet. You’ll find lots
-//         //     of interesting products on our Shop page.
-//         //   </p>
-//         //   <button className="bg-[#0d3b2e] text-white px-5 py-2 rounded-md hover:bg-[#0b3126] transition">
-//         //     Continue Shopping
-//         //   </button>
-//         // </div>
-//         <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
-//       <div className="justify-items-center">
-//         <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
-//           <img src={wishlistempty} alt="" />
-//         </div>
-//         <div className="justify-items-center">
-//           <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-5">
-//             Your Wishlist Is Empty.
-//           </h1>
-//           <p className="text-[#807D7E] text-[14px] text-center">
-//             You don’t have any products in the wishlist yet. You will find a lot
-// of interesting products on our Shop page.
-//           </p>
-//         </div>
-//         <div className="text-center bg-[#02382A] text-white px-4 py-1.5 rounded-[8px] w-fit mt-5">
-//           <Link to="/shop">Continue Shopping</Link>
-//         </div>
-//       </div>
-//     </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Wishlist;
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import c1 from "../assets/c1.jpg";
-import c2 from "../assets/c2.jpg";
 import Return from "../assets/Return.png";
 import wishlistempty from "../assets/wishlistempty.png";
 import { Link } from "react-router-dom";
+import { userInfo, ApiURL } from "../Variable";
+import axiosInstance from "../Axios/axios";
+import { getGuestId } from "../utils/guest";
+import toast from "react-hot-toast";
 
 const Wishlist = () => {
-  const [wishlistItems, setWishlistItems] = useState([
-    {
-      id: 1,
-      name: "Diamond Pearl Engagement Ring",
-      price: 160,
-      oldPrice: 170,
-      color: "Silver",
-      returnDays: 15,
-      deliveryDate: "Feb 25, 2025",
-      image: c1,
-    },
-    {
-      id: 2,
-      name: "Rose Gold Lotus Necklace",
-      price: 200,
-      oldPrice: 220,
-      color: "Gold",
-      returnDays: 15,
-      deliveryDate: "Feb 25, 2025",
-      image: c2,
-    },
-  ]);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleRemove = (id) => {
-    setWishlistItems(wishlistItems.filter((item) => item.id !== id));
+  // Fetch wishlist from backend
+
+  const fetchWishlist = async () => {
+    const identifier = userInfo?.u_id || getGuestId();
+    const query = userInfo?.u_id
+      ? `u_id=${identifier}`
+      : `guest_id=${identifier}`;
+
+    const response = await axiosInstance.get(`/getwishlist?${query}`);
+
+    if (response.data.status === 1) {
+      console.log("Wishlist items:", response.data.data);
+      setWishlistItems(response.data.data);
+    } else {
+      console.log("Wishlist empty or error:", response.data.message);
+      setWishlistItems([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchWishlist();
+    setLoading(false);
+  }, []);
+
+  // Remove from wishlist
+  const handleRemove = async (w_id) => {
+    try {
+      const response = await axiosInstance.post("/removewishlist", {
+        w_id,
+      });
+      if (response.data.status === 1) {
+        setWishlistItems((prev) => prev.filter((item) => item.w_id !== w_id));
+      } else {
+        toast.error(response.data.message || "Failed to remove item");
+      }
+    } catch (error) {
+      console.error("Error removing wishlist item:", error);
+      toast.error("Failed to remove item");
+    }
+  };
+
+  const handleMoveToCart = async (item) => {
+    try {
+      const identifier = userInfo?.u_id || getGuestId();
+
+      const payload = {
+        p_id: item.p_id,
+        sc_id: item.sc_id,
+        size_id: item.size_id,
+        pcolor_id: item.pcolor_id,
+        quantity: 1,
+        ...(userInfo?.u_id
+          ? { u_id: userInfo.u_id }
+          : { guest_id: identifier }),
+      };
+
+      // Add to cart API
+      const cartResponse = await axiosInstance.post("/createcart", payload);
+
+      if (cartResponse.data.status === 1) {
+        toast.success("Item moved to cart!");
+        // Optionally remove from wishlist
+        await handleRemove(item.w_id);
+      } else {
+        toast.error(cartResponse.data.message || "Failed to move to cart");
+      }
+    } catch (error) {
+      console.error("Error moving item to cart:", error);
+      toast.error("Failed to move item to cart");
+    }
   };
 
   return (
     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10 flex flex-col">
-      {wishlistItems.length > 0 ? (
+      {loading ? (
+        <p className="text-center text-gray-600 mt-10">Loading...</p>
+      ) : wishlistItems.length > 0 ? (
         <div>
           <h2 className="text-2xl font-semibold mb-6">My Wishlist</h2>
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1">
-              {wishlistItems.map((item) => (
+              {wishlistItems?.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.w_id}
                   className="bg-white rounded-2xl flex flex-col md:flex-row gap-4 p-4 mb-4 shadow-sm relative"
                 >
                   {/* Remove Button */}
                   <button
-                    onClick={() => handleRemove(item.id)}
+                    onClick={() => handleRemove(item.w_id)}
                     className="absolute top-3 right-3 text-gray-600 hover:text-black"
                   >
                     <X size={18} />
@@ -198,47 +108,36 @@ const Wishlist = () => {
 
                   {/* Product Image */}
                   <div className="flex items-center justify-center">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg"
-                  />
+                    <img
+                      src={`${ApiURL}/assets/Products/${item.images[0]}`}
+                      alt={item.product_name}
+                      className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg"
+                    />
                   </div>
 
                   {/* Product Info */}
-                  <div className="flex flex-col flex-1 gap-2">
+                  <div className="flex flex-col flex-1 gap-2 justify-center">
                     <div>
-                      <h3 className="text-md font-medium">{item.name}</h3>
+                      <h3 className="text-xl font-medium">
+                        {item.product_name}
+                      </h3>
                       <p className="text-sm text-gray-500">
                         ${item.price.toFixed(2)}{" "}
                         <span className="line-through text-gray-400 text-sm">
-                          ${item.oldPrice.toFixed(2)}
+                          ${item.original_price.toFixed(2)}
                         </span>
                       </p>
                       <p className="text-sm text-gray-500">
-                        Color: {item.color}
+                        Color: {item.color.color_name}
                       </p>
                     </div>
-
-                    {/* Delivery and Return Info */}
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={Return}
-                          alt="Return Icon"
-                          className="w-4 h-4"
-                        />
-                        <p>{item.returnDays} Days return available</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <p>Delivered by {item.deliveryDate}</p>
-                      </div>
-                    </div>
                   </div>
-
                   {/* Move to Cart Button */}
                   <div className="flex items-center md:ml-4">
-                    <button className="border px-3 py-2 text-sm rounded-md hover:bg-gray-100 whitespace-nowrap">
+                    <button
+                      onClick={() => handleMoveToCart(item)}
+                      className="border px-3 py-2 text-sm rounded-md hover:bg-gray-100 whitespace-nowrap"
+                    >
                       MOVE TO CART
                     </button>
                   </div>

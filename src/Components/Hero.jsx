@@ -1,38 +1,35 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
-import hero1 from "../assets/hero1.jpg";
-import hero2 from "../assets/hero2.jpg";
-import hero3 from "../assets/hero3.jpg";
-import hero4 from "../assets/hero4.jpg";
+
+import axiosInstance from "../Axios/axios";
+import { ApiURL } from "../Variable";
 
 const Hero = () => {
+  const [sliders, setSliders] = useState([]);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const textScrollRef = useRef(null);
   const animationRef = useRef(null);
 
-  // Product data with only main images
-  const products = [
-    {
-      id: 1,
-      mainImage: hero1,
-    },
-    {
-      id: 2,
-      mainImage: hero2,
-    },
-    {
-      id: 3,
-      mainImage: hero3,
-    },
-    {
-      id: 4,
-      mainImage: hero4,
-    },
-  ];
+  const getSlider = async () => {
+    try {
+      const response = await axiosInstance.get("/getsliders");
+      if (response?.data?.status === 1) {
+        setSliders(response?.data?.data);
+      } else {
+        setSliders([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getSlider();
+  }, []);
 
   return (
     // <div className="relative overflow-hidden bg-[#f6f3f0] z-0">
@@ -56,13 +53,13 @@ const Hero = () => {
             onSwiper={setSwiperInstance}
             className="w-full"
           >
-            {products.map((product) => (
-              <SwiperSlide key={product.id}>
+            {sliders?.map((img) => (
+              <SwiperSlide key={img.image_id}>
                 <div className="w-full h-full flex items-center justify-center ">
-                  {/* Main product image */}
+                  {/* Main img image */}
                   <img
-                    src={product.mainImage || "/placeholder.svg"}
-                    alt="Raha Organic Products"
+                    src={`${ApiURL}/assets/Sliders/${img?.image}`}
+                    alt="Glamgait imgs"
                     className="w-full h-full object-contain"
                   />
                 </div>

@@ -1,210 +1,170 @@
-import React, { useState } from "react";
-import { X, Check, Plus, Minus } from "lucide-react";
-import c1 from "../assets/c1.jpg";
-import c2 from "../assets/c2.jpg";
-import Return from "../assets/Return.png";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { X, Plus, Minus } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import cartempty from "../assets/cartempty.png";
-import { Link } from "react-router-dom";
-
+import axiosInstance from "../Axios/axios";
+import { ApiURL, userInfo } from "../Variable";
+import { getGuestId } from "../utils/guest";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Diamond Pearl Engagement Ring",
-      price: 160,
-      oldPrice: 170,
-      color: "Silver",
-      returnDays: 15,
-      deliveryDate: "Feb 25, 2025",
-      image: c1,
-      quantity: 1,
-      selected: true,
-    },
-    {
-      id: 2,
-      name: "Rose Gold Lotus Necklace",
-      price: 200,
-      oldPrice: 220,
-      color: "Gold",
-      returnDays: 15,
-      deliveryDate: "Feb 25, 2025",
-      image: c2,
-      quantity: 1,
-      selected: true,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCart = async () => {
+    try {
+      const identifier = userInfo?.u_id || getGuestId();
+      const query = userInfo?.u_id
+        ? `u_id=${identifier}`
+        : `guest_id=${identifier}`;
+
+      const response = await axiosInstance.get(`/getcart?${query}`);
+      if (response.data.status === 1) {
+        setCartItems(response.data.data);
+      } else {
+        setCartItems([]);
+      }
+    } catch (error) {
+      console.error("Fetch cart error:", error);
+      toast.error("Error fetching cart");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  // Update quantity
+  const updateCartQty = async (cart_id, quantity) => {
+    try {
+      const payload = { cart_id, quantity };
+      const response = await axiosInstance.post("/updatecart", payload);
+      if (response.data.status === 1) {
+        fetchCart();
+      } else {
+        toast.error(response.data.message || "Failed to update cart");
+      }
+    } catch (error) {
+      console.error("Update cart error:", error);
+      toast.error("Something went wrong");
+    }
+  };
 
   // Remove item
-  const handleRemove = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  const handleRemove = async (cart_id) => {
+    try {
+      const response = await axiosInstance.post("/removecart", {
+        cart_id,
+      });
+      if (response.data.status === 1) {
+        setCartItems((prev) => prev.filter((item) => item.cart_id !== cart_id));
+        toast.success("Item removed from cart");
+      } else {
+        toast.error(response.data.message || "Failed to remove item");
+      }
+    } catch (error) {
+      console.error("Remove cart item error:", error);
+      toast.error("Something went wrong");
+    }
   };
 
-  // Toggle selection (tick)
-  const toggleSelect = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
-    );
+  // Increase/decrease quantity
+  const increaseQty = (cart_id, currentQty) =>
+    updateCartQty(cart_id, currentQty + 1);
+  const decreaseQty = (cart_id, currentQty) => {
+    if (currentQty > 1) updateCartQty(cart_id, currentQty - 1);
   };
 
-  // Increase quantity
-  const increaseQty = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  // Decrease quantity
-  const decreaseQty = (id) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const selectedCount = cartItems.filter((item) => item.selected).length;
-  const subtotal = cartItems
-    .filter((item) => item.selected)
-    .reduce((acc, item) => acc + item.price * item.quantity, 0);
-
+  // Totals
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
   const taxes = 25;
   const delivery = 0;
   const grandTotal = subtotal + taxes + delivery;
 
-  // ✅ Empty Cart View
-  if (cartItems.length === 0) {
+  if (loading) {
     return (
-      // <div className="flex flex-col items-center justify-center min-h-screen bg-[#f3f0ed] px-4 pb-32">
-      //   <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
-      //     {/* <ShoppingBag className="w-10 h-10 text-[#0d3b2e]" /> */}
-      //     <img src={cartempty} alt="" />
-      //   </div>
-      //     <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-15">
-      //     Your cart is empty.
-      //   </h1>
-      //   <p className="text-sm text-gray-500 text-center max-w-md mb-6">
-      //     You don’t have any products in your cart yet. Start exploring our
-      //     collections and add your favorite items!
-      //   </p>
-      //   <button className="bg-[#0d3b2e] text-white px-5 py-2 rounded-md hover:bg-[#0b3126] transition">
-      //     Continue Shopping
-      //   </button>
-      // </div>
-      <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
-      <div className="justify-items-center">
-        <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
-          <img src={cartempty} alt="" />
-        </div>
-        <div className="justify-items-center">
-          <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-15">
-            Your Cart Is Empty.
-          </h1>
-          <p className="text-[#807D7E] text-[14px] text-center">
-            You don’t have any products in the wishlist yet. You will find a lot of interesting products on our Shop page.
-          </p>
-        </div>
-        <div className="text-center bg-[#02382A] text-white px-4 py-1.5 rounded-[8px] w-fit mt-5">
-          <Link to="/shop">Continue Shopping</Link>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Loading cart...</p>
       </div>
-    </div>
     );
   }
 
-  // 🛍️ Normal Cart Layout
+  if (cartItems.length === 0) {
+    return (
+      <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
+        <div className="text-center">
+          <img src={cartempty} alt="" className="mx-auto w-48 h-48" />
+          <h1 className="text-2xl font-bold mt-5">Your Cart Is Empty.</h1>
+          <p className="text-gray-500 text-sm mt-2">
+            You don’t have any products in your cart yet. Start exploring our
+            Shop page!
+          </p>
+          <div className="mt-5">
+            <Link
+              to="/shop"
+              className="bg-[#02382A] text-white px-6 py-2 rounded-md hover:bg-[#052d25]"
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10">
       <h2 className="text-2xl font-semibold mb-6">My Cart</h2>
-
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Section */}
         <div className="flex-1">
-          {/* ✅ Select All Section */}
-          <div className="flex items-center gap-2 mb-4">
+          {cartItems?.map((item) => (
             <div
-              onClick={() =>
-                setCartItems((prev) =>
-                  prev.map((item) => ({
-                    ...item,
-                    selected: selectedCount !== cartItems.length,
-                  }))
-                )
-              }
-              className={`w-5 h-5 flex items-center justify-center border rounded cursor-pointer transition ${
-                selectedCount === cartItems.length
-                  ? "bg-[#063d32] border-[#063d32]"
-                  : "border-gray-400"
-              }`}
-            >
-              {selectedCount === cartItems.length && (
-                <Check size={14} className="text-white" />
-              )}
-            </div>
-            <span className="text-sm text-gray-700">
-              {selectedCount}/{cartItems.length} Items Selected
-            </span>
-          </div>
-
-          {/* 🛒 Cart Items */}
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
+              key={item.cart_id}
               className="bg-white rounded-2xl flex flex-col md:flex-row gap-4 p-4 mb-4 shadow-sm relative"
             >
-              {/* Remove Button (Desktop only) */}
+              {/* Remove Button */}
               <button
-                onClick={() => handleRemove(item.id)}
+                onClick={() => handleRemove(item.cart_id)}
                 className="absolute top-3 right-3 text-gray-600 hover:text-black"
               >
                 <X size={18} />
               </button>
 
-              {/* Select Checkbox */}
-              <div
-                onClick={() => toggleSelect(item.id)}
-                className={`absolute top-3 left-3 w-5 h-5 flex items-center justify-center border rounded cursor-pointer transition ${
-                  item.selected
-                    ? "bg-[#063d32] border-[#063d32]"
-                    : "border-gray-400"
-                }`}
-              >
-                {item.selected && <Check size={14} className="text-white" />}
-              </div>
-              {/* Product Image */}
+              {/* Image */}
               <div className="flex justify-center md:block">
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={`${ApiURL}/assets/Products/${item.images[0]}`}
+                  alt={item.product_name}
                   className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg md:ml-6"
                 />
               </div>
-              {/* Product Info */}
-              <div className="flex flex-col justify-between flex-1">
+
+              {/* Info */}
+              <div className="flex flex-col  flex-1 justify-center">
                 <div>
-                  <h3 className="text-md font-medium">{item.name}</h3>
+                  <h3 className="text-md font-medium">{item.product_name}</h3>
                   <p className="text-sm text-gray-500">
                     ${item.price.toFixed(2)}{" "}
                     <span className="line-through text-gray-400 text-sm">
-                      ${item.oldPrice.toFixed(2)}
+                      ${item.original_price.toFixed(2)}
                     </span>
                   </p>
-                  <p className="text-sm text-gray-500">Color: {item.color}</p>
+                  <p className="text-sm text-gray-500">
+                    Color: {item.color?.color_name}
+                  </p>
 
-                  {/* Quantity Buttons */}
                   <div className="flex items-center gap-2 mt-3">
                     <span className="text-sm">Qty:</span>
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button
-                        onClick={() => decreaseQty(item.id)}
+                        onClick={() => decreaseQty(item.cart_id, item.quantity)}
                         className="px-2 py-1 text-gray-600 hover:text-black"
                       >
                         <Minus size={14} />
@@ -213,7 +173,7 @@ const Cart = () => {
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => increaseQty(item.id)}
+                        onClick={() => increaseQty(item.cart_id, item.quantity)}
                         className="px-2 py-1 text-gray-600 hover:text-black"
                       >
                         <Plus size={14} />
@@ -221,29 +181,7 @@ const Cart = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Delivery and Return Info */}
-                <div className="mt-3 text-sm text-gray-600 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <img src={Return} alt="Return Icon" className="w-4 h-4" />
-                    <p>{item.returnDays} Days return available</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* <img src={Box} alt="Delivery Icon" className="w-4 h-4" /> */}
-                    <p>Delivered by {item.deliveryDate}</p>
-                  </div>
-                </div>
               </div>
-
-              {/* ✅ Wishlist + Cross Button on Mobile */}
-              <div className="flex items-center justify-between md:justify-start md:gap-2 mt-2 md:mt-0">
-                <button className="border px-3 py-2 text-sm rounded-md hover:bg-gray-100">
-                  MOVE TO WISHLIST
-                </button>
-
-                {/* Cross Icon only visible on mobile */}
-              </div>
-                
             </div>
           ))}
         </div>
