@@ -58,7 +58,7 @@ const ProductCard = ({ product }) => {
     }
   };
   return (
-    <div className="w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md  duration-300 mx-auto z-10">
+    <div className="w-[220px] md:w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md  duration-300 mx-auto z-10">
       {/* Discount Badge */}
       {discount && (
         <div className="absolute top-2 left-2 bg-red-500 text-white text-[11px] font-semibold px-2 py-[2px] rounded-sm z-10">
@@ -78,7 +78,7 @@ const ProductCard = ({ product }) => {
       <img
         src={`${ApiURL}/assets/Products/${selectedColor?.productimages[0].image_url}`}
         alt={product?.name}
-        className="w-full h-[350px] object-cover"
+        className="w-full h-[300px] md:h-[350px] object-cover"
         onClick={handleCardClick}
       />
 

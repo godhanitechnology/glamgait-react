@@ -187,7 +187,7 @@ const Footer = () => {
         </div>
 
         {/* Brand Section */}
-        <div className="flex flex-col justify-between">
+        <div className="flex flex-col">
           <div>
             <Link to="/">
               <img src={logo} alt="Logo" />
@@ -199,21 +199,21 @@ const Footer = () => {
           </div>
           <div className="flex space-x-2">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/glamgait.in/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src={fb} alt="Facebook" className="h-7.5 w-7.5" />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/glamgait_india/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src={ig} alt="Instagram" className="h-7.5 w-7.5" />
             </a>
             <a
-              href="https://youtube.com"
+              href="https://www.youtube.com/@GlamgaitIndia"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -225,9 +225,14 @@ const Footer = () => {
         {/* Home Section */}
         <div>
           <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
-            Home
+            Quick Links
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
+            <li>
+              <Link to="/" className="hover:underline">
+                Home
+              </Link>
+            </li>
             <li>
               <Link to="/about" className="hover:underline">
                 About Us
@@ -259,7 +264,7 @@ const Footer = () => {
         {/* Categories Section */}
         <div>
           <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
-            Categories
+            Our Policy
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
             <li>
@@ -331,7 +336,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        © 2024 Fancy. All rights reserved.
+        © 2024 Glamgait. All rights reserved.
       </div>
 
       <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">

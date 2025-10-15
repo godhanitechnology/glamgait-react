@@ -110,6 +110,12 @@ import { Toaster } from "react-hot-toast";
 import Fabrics from "./Admin/pages/Fabric";
 import Sizes from "./Admin/pages/Size";
 import ProductAttributes from "./Admin/pages/ProductAttributes";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import ShippingPolicy from "./Pages/ShippingPolicy ";
+import RefundPolicy from "./Pages/RefundPolicy";
+import TermsofService from "./Pages/TermsofService";
+import PaymentOptions from "./Pages/PaymentOptions";
+import CancellationPolicy from "./Pages/CancellationPolicy";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -155,6 +161,12 @@ function App() {
             <Route path="/OrderDetails" element={<OrderDetails />} />
             <Route path="/myinfo" element={<PersonalInfo />} />
             <Route path="/selectaddress" element={<SelectAddress />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/shipping" element={<ShippingPolicy />} />
+          <Route path="/refund" element={<RefundPolicy />} />
+          <Route path="/terms" element={<TermsofService />} />
+          <Route path="/paymentoptions" element={<PaymentOptions />} />
+          <Route path="/cancellationpolicy" element={<CancellationPolicy />} />
             <Route path="*" element={<NotFound />} />
           </Route>
 

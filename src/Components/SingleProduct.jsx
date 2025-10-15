@@ -246,7 +246,7 @@ function SingleProduct() {
                   <h3 className="text-sm font-semibold text-gray-900">Size</h3>
                   <button
                     onClick={() => setShowSizePopup(true)}
-                    className="text-sm text-gray-600 underline hover:text-gray-900"
+                    className="text-sm text-gray-600 underline hover:text-gray-900 cursor-pointer"
                   >
                     Size Guide
                   </button>

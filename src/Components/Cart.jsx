@@ -132,7 +132,7 @@ const Cart = () => {
               {/* Remove Button */}
               <button
                 onClick={() => handleRemove(item.cart_id)}
-                className="absolute top-3 right-3 text-gray-600 hover:text-black"
+                className="absolute top-3 right-3 text-gray-600 hover:text-black cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -165,7 +165,7 @@ const Cart = () => {
                     <div className="flex items-center border border-gray-300 rounded-md">
                       <button
                         onClick={() => decreaseQty(item.cart_id, item.quantity)}
-                        className="px-2 py-1 text-gray-600 hover:text-black"
+                        className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
                       >
                         <Minus size={14} />
                       </button>
@@ -174,7 +174,7 @@ const Cart = () => {
                       </span>
                       <button
                         onClick={() => increaseQty(item.cart_id, item.quantity)}
-                        className="px-2 py-1 text-gray-600 hover:text-black"
+                        className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
                       >
                         <Plus size={14} />
                       </button>
@@ -201,7 +201,7 @@ const Cart = () => {
                 placeholder="OFFER50"
                 className="border border-gray-300 rounded-md flex-1 px-3 py-2 text-sm"
               />
-              <button className="bg-[#063d32] text-white px-4 py-2 rounded-md text-sm hover:bg-[#052d25]">
+              <button className="bg-[#063d32] text-white px-4 py-2 rounded-md text-sm cursor-pointer">
                 APPLY
               </button>
             </div>
@@ -225,7 +225,7 @@ const Cart = () => {
           </div>
 
           <button
-            className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-[#052d25]"
+            className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-white hover:text-[#02382A] border border-[#02382A] cursor-pointer"
             onClick={() => navigate("/selectaddress")}
           >
             CHECKOUT

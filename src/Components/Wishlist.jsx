@@ -101,7 +101,7 @@ const Wishlist = () => {
                   {/* Remove Button */}
                   <button
                     onClick={() => handleRemove(item.w_id)}
-                    className="absolute top-3 right-3 text-gray-600 hover:text-black"
+                    className="absolute top-3 right-3 text-gray-600 hover:text-black cursor-pointer"
                   >
                     <X size={18} />
                   </button>
@@ -136,7 +136,7 @@ const Wishlist = () => {
                   <div className="flex items-center md:ml-4">
                     <button
                       onClick={() => handleMoveToCart(item)}
-                      className="border px-3 py-2 text-sm rounded-md hover:bg-gray-100 whitespace-nowrap"
+                      className="border px-3 py-2 text-sm rounded-md hover:bg-[#02382A] hover:text-white whitespace-nowrap cursor-pointer"
                     >
                       MOVE TO CART
                     </button>
