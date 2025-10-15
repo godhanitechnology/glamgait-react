@@ -1,141 +1,15 @@
-// import React, { useRef } from "react";
-// import { NavLink } from "react-router-dom";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
-// import c1 from "../assets/c1.jpg";
-// import c2 from "../assets/c2.jpg";
-// import c3 from "../assets/c3.jpg";
-// import c4 from "../assets/c4.jpg";
-// import leftlight from "../assets/leftlight.png";
-// import rightlight from "../assets/rightlight.png";
-// import waves from "../assets/waves.png";
-
-// const categoryImages = {
-//   sarees: c1,
-//   lehengas: c2,
-//   salwarKameez: c3,
-//   kurtis: c4,
-//   kidsWear: c1,
-// };
-
-// const Categories = () => {
-//   const scrollRef = useRef(null);
-
-//   const scroll = (direction) => {
-//     if (scrollRef.current) {
-//       const scrollAmount = 300;
-//       scrollRef.current.scrollBy({
-//         left: direction === "left" ? -scrollAmount : scrollAmount,
-//         behavior: "smooth",
-//       });
-//     }
-//   };
-
-//   const categories = [
-//     { to: "/shop", label: "Sarees", image: categoryImages.sarees },
-//     { to: "/lehengas", label: "Lehengas", image: categoryImages.lehengas },
-//     { to: "/salwar-kameez", label: "Salwar Kameez", image: categoryImages.salwarKameez },
-//     { to: "/kurtis", label: "Kurtis", image: categoryImages.kurtis },
-//     { to: "/kids-wear", label: "Kids Wear", image: categoryImages.kidsWear }
-//   ];
-
-//   return (
-//     <section className="relative py-16 px-4 bg-[#F3F0ED]">
-//       {/* Top title and description */}
-//       <div className="text-center max-w-4xl mx-auto mb-12 relative z-10">
-//         <h2 className="text-4xl font-bold text-gray-800 mb-4">Shop by categories</h2>
-//         <p className="text-lg text-gray-600">Explore our categories and find your style</p>
-//       </div>
-
-//       {/* Scroll Buttons - Hidden on xl and above */}
-//       <div className="hidden lg:flex xl:hidden items-center justify-between max-w-7xl mx-auto mb-4 px-4 pointer-events-none">
-//         <button
-//           onClick={() => scroll("left")}
-//           className="absolute left-10 top-1/2 -translate-y-1/2 z-20 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition pointer-events-auto"
-//         >
-//           <ChevronLeft size={24} />
-//         </button>
-//         <button
-//           onClick={() => scroll("right")}
-//           className="absolute right-10 top-1/2 -translate-y-1/2 z-20 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition pointer-events-auto"
-//         >
-//           <ChevronRight size={24} />
-//         </button>
-//       </div>
-
-//       {/* Horizontal Scrollable Categories on <xl, Grid on xl+ */}
-//       <div className="max-w-7xl mx-auto relative z-10">
-//         <div
-//           ref={scrollRef}
-//           className="overflow-x-auto xl:overflow-visible hide-scrollbar scroll-smooth xl:px-0"
-//         >
-//           <div className="flex space-x-4 w-max xl:w-auto xl:grid xl:grid-cols-5 xl:gap-5 xl:space-x-0">
-//             {categories.map((category) => (
-//               <NavLink
-//                 key={category.to}
-//                 to={category.to}
-//                 className="bg-[#F3F0ED] rounded-lg overflow-hidden cursor-pointer min-w-[200px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[220px] flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
-//               >
-//                 <div className="relative pt-[120%] lg:w-60 lg:h-80 z-30">
-//                   <img
-//                     src={category.image}
-//                     alt={category.label}
-//                     className="absolute inset-0 w-full h-full object-cover hover:scale-105 hover:brightness-110 transition-all duration-300 rounded-xl"
-//                   />
-//                 </div>
-//                 <div className="mt-3 text-center pb-2">
-//                   <span className="text-gray-800 text-base md:text-lg font-semibold">
-//                     {category.label}
-//                   </span>
-//                 </div>
-//               </NavLink>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Decorative top right and most right waves */}
-//       <div className="hidden md:block overflow-x-hidden absolute -top-13 right-20 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-[28rem] 2xl:h-[28rem] z-0">
-//         <img src={waves} alt="Decorative" className="w-full h-full object-contain" />
-//       </div>
-//       <div className=" hidden md:block overflow-x-hidden absolute top-70 -right-33 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-[28rem] 2xl:h-[28rem] z-0 -rotate-30">
-//         <img src={waves} alt="Decorative" className="w-full h-full object-contain" />
-//       </div>
-
-//       {/* Decorative bottom images */}
-//       <div className="hidden md:block  relative overflow-visible z-10">
-//         <div className="absolute -bottom-20.5 left-75 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-25 xl:h-70 2xl:w-[28rem] 2xl:h-[28rem] transform translate-y-[50%]">
-//           <img src={leftlight} alt="Decorative" className="w-full h-full object-contain" />
-//         </div>
-//         <div className="absolute -bottom-45 right-40 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-60 xl:h-60 2xl:w-[28rem] 2xl:h-[28rem]  transform translate-y-[50%]">
-//           <img src={rightlight} alt="Decorative" className="w-full h-full object-contain" />
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Categories;
-
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import c1 from "../assets/c1.jpg";
-import c2 from "../assets/c2.jpg";
-import c3 from "../assets/c3.jpg";
-import c4 from "../assets/c4.jpg";
 import leftlight from "../assets/leftlight.png";
 import rightlight from "../assets/rightlight.png";
 import waves from "../assets/waves.png";
-
-const categoryImages = {
-  sarees: c1,
-  lehengas: c2,
-  salwarKameez: c3,
-  kurtis: c4,
-  kidsWear: c1,
-};
+import axiosInstance from "../Axios/axios";
+import { ApiURL } from "../Variable";
 
 const Categories = () => {
+  const [categories, setCategories] = useState([]);
+
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
@@ -148,17 +22,22 @@ const Categories = () => {
     }
   };
 
-  const categories = [
-    { to: "/shop", label: "Sarees", image: categoryImages.sarees },
-    { to: "/lehengas", label: "Lehengas", image: categoryImages.lehengas },
-    {
-      to: "/salwar-kameez",
-      label: "Salwar Kameez",
-      image: categoryImages.salwarKameez,
-    },
-    { to: "/kurtis", label: "Kurtis", image: categoryImages.kurtis },
-    { to: "/kids-wear", label: "Kids Wear", image: categoryImages.kidsWear },
-  ];
+  const getCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/getcategory");
+      if (response?.data?.status === 1) {
+        setCategories(response.data.data);
+      } else {
+        setCategories([]);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <section className="relative py-16 px-4 bg-[#F3F0ED] overflow-visible">
@@ -195,26 +74,31 @@ const Categories = () => {
           className="overflow-x-auto xl:overflow-visible hide-scrollbar scroll-smooth xl:px-0"
         >
           <div className="flex space-x-4 w-max xl:w-auto xl:grid xl:grid-cols-5 xl:gap-5 xl:space-x-0">
-            {categories.map((category) => (
-              <NavLink
-                key={category.to}
-                to={category.to}
-                className="bg-[#F3F0ED] rounded-lg overflow-hidden cursor-pointer min-w-[200px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[220px] flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
-              >
-                <div className="relative pt-[120%] lg:w-60 lg:h-80 z-30">
-                  <img
-                    src={category.image}
-                    alt={category.label}
-                    className="absolute inset-0 w-full h-full object-cover hover:scale-105 hover:brightness-110 transition-all duration-300 rounded-xl"
-                  />
-                </div>
-                <div className="mt-3 text-center pb-2">
-                  <span className="text-gray-800 text-base md:text-lg font-semibold">
-                    {category.label}
-                  </span>
-                </div>
-              </NavLink>
-            ))}
+            {categories?.map((category, index) => {
+              const image = category.cate_image;
+              return (
+                <NavLink
+                  key={category.cate_id || index}
+                  to={`/shop?cate_id=${
+                    category.cate_id
+                  }&category=${encodeURIComponent(category.cate_name)}`}
+                  className="bg-[#F3F0ED] rounded-lg overflow-hidden cursor-pointer min-w-[200px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[220px] flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
+                >
+                  <div className="relative pt-[120%] lg:w-60 lg:h-80 z-30">
+                    <img
+                      src={`${ApiURL}/assets/Category/${image}`}
+                      alt={category.cate_name}
+                      className="absolute inset-0 w-full h-full object-cover hover:scale-105 hover:brightness-110 transition-all duration-300 rounded-xl"
+                    />
+                  </div>
+                  <div className="mt-3 text-center pb-2">
+                    <span className="text-gray-800 text-base md:text-lg font-semibold capitalize">
+                      {category.cate_name}
+                    </span>
+                  </div>
+                </NavLink>
+              );
+            })}
           </div>
         </div>
       </div>

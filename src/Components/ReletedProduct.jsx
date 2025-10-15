@@ -1,13 +1,31 @@
-import React from "react";
 import ProductCard from "./ProductCard"; // Make sure this exists
-import products from "../data/products"; // Make sure product data is imported
 import HomePageBanner from "../Components/HomePageBanner";
 import singlebanner from "../assets/singlebanner.jpg";
+import axiosInstance from "../Axios/axios";
+import { useEffect, useState } from "react";
 
-const ReletedProduct = () => {
-  // Limit to 4 products from newArrivals or bestSeller
-  const reletedProducts = products?.newArrivals?.slice(0, 4) || [];
+const ReletedProduct = ({ cate_id, currentProductId }) => {
+  
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
+  const fetchProducts = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/productbycategory/${cate_id}`,
+        { limit: 5 }
+      );
+      const filteredProducts = response.data.data.filter(
+        (item) => item.p_id !== currentProductId
+      );
+      setRelatedProducts(filteredProducts);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [cate_id]);
   return (
     <section className="pt-12 px-4 bg-[#F3F0ED]">
       {/* Section Title */}
@@ -23,23 +41,22 @@ const ReletedProduct = () => {
       {/* Product Grid */}
       <div className="max-w-7xl mx-auto">
         <div className="flex space-x-4 overflow-x-auto lg:grid lg:grid-cols-4 md:gap-6 scrollbar-hide pb-12">
-          {reletedProducts.map((product) => (
+          {relatedProducts?.map((product) => (
             <div
-              key={product.id}
+              key={product.p_id}
               className="flex-shrink-0 w-[250px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"
             >
-              <ProductCard {...product} />
+              <ProductCard product={product} />
             </div>
           ))}
         </div>
       </div>
-      <div >
-           <HomePageBanner
-        title="Discover Timeless Comfort"
-        bgImage={singlebanner}
-      />
-
-    </div>
+      <div>
+        <HomePageBanner
+          title="Discover Timeless Comfort"
+          bgImage={singlebanner}
+        />
+      </div>
     </section>
   );
 };
