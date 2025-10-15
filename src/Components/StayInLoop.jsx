@@ -62,7 +62,7 @@ const StayInLoop = () => {
           <button
             type="submit"
             className="w-full md:w-auto px-6 py-3 bg-[#02382A] text-white rounded-lg md:rounded-none md:rounded-r-lg
- hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-200"
+ hover:bg-white hover:text-[#02382A] border border-[#02382A] focus:outline-none transition duration-200"
           >
             SIGN UP
           </button>

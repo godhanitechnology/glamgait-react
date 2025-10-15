@@ -1,7 +1,6 @@
 // NewArrivels.jsx
 import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
-import waves from "../assets/waves.png";
 import axiosInstance from "../Axios/axios";
 import { ApiURL } from "../Variable";
 
@@ -37,16 +36,7 @@ const NewArrivels = () => {
     activeTab === "newArrivals" ? newArrivals : bestSeller;
 
   return (
-    <section className="relative sm:pt-0 md:pt-16 md:px-4 bg-[#F3F0ED] overflow-x-hidden">
-      {/* Decorative Lanterns */}
-      <div className=" relative overflow-visible z-10">
-        <img
-          src={waves}
-          alt="Wave Decoration"
-          className="absolute top-90 -right-10 lg:top-90 lg:-right-33 xl:right-20 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-[28rem] 2xl:h-[28rem] z-0 -rotate-30"
-        />
-      </div>
-
+    <section className="relative sm:pt-0 md:pt-16 md:px-4 bg-[#F3F0ED] overflow-hidden">
       {/* Title and Description */}
       <div className="text-center max-w-4xl mx-auto mb-8 relative z-20">
         <h2 className="text-[30px] md:text-[34px] xl:text-[34px] font-bold text-gray-800 mb-2">
@@ -83,27 +73,17 @@ const NewArrivels = () => {
         </button>
       </div>
       <div className="max-w-7xl mx-auto relative z-20">
-        <div className="flex space-x-4 overflow-x-auto lg:grid  lg:grid-cols-4 md:gap-6 scrollbar-hide py-2 ">
+        <div className="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-5 scrollbar-hide py-2 px-4">
           {currentProducts?.map((product) => (
             <div
               key={product.p_id}
-              className="flex-shrink-0 w-[250px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"
+              className="flex-shrink-0 w-[220px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"
             >
-              <ProductCard product={product}  />
+              <ProductCard product={product} />
             </div>
           ))}
         </div>
       </div>
-
-      {/* Decorative Waves */}
-
-      {/* <div className="relative overflow-visible z-10">
-        <img
-          src={waves}
-          alt="Wave Decoration"
-          className="absolute -bottom-50 right-100 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-[28rem] 2xl:h-[28rem] z-0 scale-x-90"
-        />
-      </div> */}
     </section>
   );
 };

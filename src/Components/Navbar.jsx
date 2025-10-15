@@ -162,7 +162,8 @@ const Navbar = () => {
                 // placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full flex-1 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="w-full flex-1 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
+                placeholder="Search..."
               />
             </div>
           </form>

@@ -75,7 +75,7 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="First, Last Name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02382A]"
                 />
                 <input
                   type="email"
@@ -83,14 +83,14 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email Address"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02382A]"
                 />
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Your Message"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 h-24 resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02382A] h-24 resize-none"
                 />
                 <button
                   type="submit"
@@ -121,7 +121,7 @@ const Contact = () => {
                 </div>
                 <a
                   href="tel:+23408112364568"
-                  className="text-gray-700 hover:text-green-600 transition-colors"
+                  className="text-gray-700 transition-colors"
                 >
                   +234 081-1236-4568
                 </a>
@@ -131,25 +131,25 @@ const Contact = () => {
                   <img src={mail} alt="" />
                 </div>
                 <a
-                  href="mailto:hello@info.com.ng"
-                  className="text-gray-700 hover:text-green-600 transition-colors"
+                  href="mailto:support@glamgait.com"
+                  className="text-gray-700 transition-colors"
                 >
-                  hello@info.com.ng
+                  support@glamgait.com
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex space-x-3">
                   <a
-                    href="https://www.instagram.com"
+              href="https://www.instagram.com/glamgait_india/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-700 hover:text-green-600 transition-colors"
+                    className="text-gray-700 transition-colors"
                   >
                     <span className="sr-only">Instagram</span>
                     <img src={ig} alt="" className="h-8 w-8"/>
                   </a>
                   <a
-                    href="https://www.facebook.com"
+              href="https://www.facebook.com/glamgait.in/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-700 transition-colors"
@@ -158,10 +158,10 @@ const Contact = () => {
                     <img src={fb} alt="" className="h-8 w-8"/>
                   </a>
                   <a
-                    href="https://www.twitter.com"
+              href="https://www.youtube.com/@GlamgaitIndia"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-700 hover:text-green-600 transition-colors"
+                    className="text-gray-700 transition-colors"
                   >
                     <span className="sr-only">Youtube</span>
                     <img src={yt} alt="" className="h-7.5 w-7.5"/>

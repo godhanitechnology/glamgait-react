@@ -29,7 +29,7 @@ const Categories = () => {
         setCategories(response.data.data);
       } else {
         setCategories([]);
-      }
+      } 
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -77,26 +77,28 @@ const Categories = () => {
             {categories?.map((category, index) => {
               const image = category.cate_image;
               return (
-                <NavLink
-                  key={category.cate_id || index}
-                  to={`/shop?cate_id=${
-                    category.cate_id
-                  }&category=${encodeURIComponent(category.cate_name)}`}
-                  className="bg-[#F3F0ED] rounded-lg overflow-hidden cursor-pointer min-w-[200px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[220px] flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
-                >
-                  <div className="relative pt-[120%] lg:w-60 lg:h-80 z-30">
-                    <img
-                      src={`${ApiURL}/assets/Category/${image}`}
-                      alt={category.cate_name}
-                      className="absolute inset-0 w-full h-full object-cover hover:scale-105 hover:brightness-110 transition-all duration-300 rounded-xl"
-                    />
-                  </div>
-                  <div className="mt-3 text-center pb-2">
-                    <span className="text-gray-800 text-base md:text-lg font-semibold capitalize">
-                      {category.cate_name}
-                    </span>
-                  </div>
-                </NavLink>
+                <div className="hover:scale-105 transition-all duration-300">
+                  <NavLink
+                    key={category.cate_id || index}
+                    to={`/shop?cate_id=${
+                      category.cate_id
+                    }&category=${encodeURIComponent(category.cate_name)}`}
+                    className="rounded-lg overflow-hidden cursor-pointer flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
+                  >
+                    <div className="relative pt-[120%] w-42 h-60 md:w-60 md:h-87 z-30">
+                      <img
+                        src={`${ApiURL}/assets/Category/${image}`}
+                        alt={category.cate_name}
+                        className="absolute inset-0 w-full h-full object-cover hover:brightness-110 transition-all duration-300"
+                      />
+                    </div>
+                    <div className="mt-3 text-center pb-2">
+                      <span className="text-gray-800 text-base md:text-lg font-semibold capitalize">
+                        {category.cate_name}
+                      </span>
+                    </div>
+                  </NavLink>
+                </div>
               );
             })}
           </div>
@@ -128,7 +130,7 @@ const Categories = () => {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="hidden md:block absolute bottom-[-50px] right-10 md:-bottom-80 md:-right-5 lg:-bottom-80 lg:right-10 xl:-bottom-85 xl:right-20 2xl:right-80 w-48 h-48 md:w-64 md:h-64 lg:w-70 lg:h-70 xl:w-80 xl:h-80 2xl:w-90 2xl:h-90">
+        <div className="hidden md:block absolute bottom-[-50px] right-10 md:-bottom-49 md:-right-5 lg:-bottom-55 lg:right-10 xl:-bottom-74 xl:right-20 2xl:right-80 w-48 h-48 md:w-64 md:h-64 lg:w-70 lg:h-70 xl:w-80 xl:h-80 2xl:w-90 2xl:h-90">
           <img
             src={rightlight}
             alt="Decorative"
