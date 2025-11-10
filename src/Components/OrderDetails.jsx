@@ -1,47 +1,58 @@
-import React, { useState } from "react";
-import c1 from "../assets/c1.jpg";
-import c2 from "../assets/c2.jpg";
+import React, { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "./SideBar";
+import axiosInstance from "../Axios/axios";
+import { ApiURL, userInfo } from "../Variable";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams();
+  const user = userInfo();
+  const u_id = user?.u_id;
 
-  // Step progress setup
-  const steps = ["Order Placed", "Inprogress", "Shipped", "Delivered"];
-  const currentStatus = "Shipped";
-  const currentStepIndex = steps.indexOf(currentStatus);
-  const progressPercent =
-    currentStepIndex === -1
-      ? 0
-      : (currentStepIndex / (steps.length - 1)) * 98;
-  const dotHalfPx = 10;
+  const [order, setOrder] = useState(null);
 
-  // ✅ Dynamic product list (for cross functionality)
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Printed white coat",
-      color: "White",
-      qty: 1,
-      price: 29.0,
-      img: c1,
-    },
-    {
-      id: 2,
-      name: "Men Blue Shirt",
-      color: "Blue",
-      qty: 1,
-      price: 29.0,
-      img: c2,
-    },
-  ]);
-
-  // ✅ Remove product handler
-  const handleRemove = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  // Status map
+  const statusMap = {
+    1: "Pending",
+    2: "Accepted",
+    3: "Preparing",
+    4: "Shipped",
+    5: "Delivered",
+    6: "Cancelled",
   };
+
+  // Fetch order details
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!u_id || !orderId) return;
+
+      try {
+        const res = await axiosInstance.get(
+          `${ApiURL}/getorder/${u_id}/${orderId}`
+        );
+        setOrder(res.data.data);
+      } catch (err) {
+        console.error("Error fetching order details:", err);
+        setOrder(null);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [u_id, orderId]);
+
+  if (!order) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading order details...
+      </div>
+    );
+  }
+
+  // Progress bar width logic
+  const progressPercent =
+    order.status === 6 ? 100 : ((order.status - 1) / 4) * 100; // since 5 = Delivered
 
   return (
     <div className="bg-[#f3f0ed] min-h-screen flex flex-col md:flex-row font-inter">
@@ -68,122 +79,173 @@ const OrderDetails = () => {
         <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-800">
-              Order no: <span className="font-normal">#123456789</span>
+              Order no: <span className="font-normal">#{order.orderId}</span>
             </h3>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
               Placed on:{" "}
-              <span className="text-gray-700">2 June 2023, 2:40 PM</span>
+              <span className="text-gray-700">{order.date || "N/A"}</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              Status:{" "}
+              <span
+                className={`font-semibold ${
+                  order.status === 6 ? "text-red-500" : "text-[#00382e]"
+                }`}
+              >
+                {statusMap[order.status]}
+              </span>
             </p>
           </div>
-          <p className="text-sm sm:text-base text-gray-700">
-            Total:{" "}
-            <span className="font-semibold">
-              $
-              {products
-                .reduce((sum, p) => sum + p.price * p.qty, 0)
-                .toFixed(2)}
-            </span>
-          </p>
+
+          <div className="text-sm sm:text-base text-gray-700">
+            <p>
+              Total:{" "}
+              <span className="font-semibold">
+                ₹{order.totalPrice.toFixed(2)}
+              </span>
+            </p>
+            <p>
+              Shipping:{" "}
+              <span className="font-semibold">
+                ₹{order.shippingCharge.toFixed(2)}
+              </span>
+            </p>
+            <p>
+              Tax:{" "}
+              <span className="font-semibold">₹{order.tax.toFixed(2)}</span>
+            </p>
+            <p>
+              Grand Total:{" "}
+              <span className="font-semibold">
+                ₹{order.grandTotal.toFixed(2)}
+              </span>
+            </p>
+          </div>
         </div>
 
         {/* Progress Tracker */}
         <div className="w-full mb-10">
           <div className="relative">
-            {/* Steps */}
+            {/* Step indicators */}
             <div className="relative z-20 flex justify-between items-center">
-              {steps.map((step, i) => {
-                const isActive = i <= currentStepIndex;
-                return (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center text-center relative z-30"
-                  >
+              {Object.entries(statusMap)
+                .filter(([key]) => key !== "6")
+                .map(([key, label]) => {
+                  const isActive =
+                    order.status >= Number(key) && order.status !== 6;
+                  return (
                     <div
-                      className={`w-5 h-5 rounded-full mb-2 ${isActive ? "bg-[#00382e]" : "bg-gray-300"
-                        }`}
-                    />
-                    <p
-                      className={`text-[10px] sm:text-xs md:text-sm font-medium ${isActive ? "text-gray-800" : "text-gray-400"
-                        }`}
+                      key={key}
+                      className="flex flex-col items-center text-center relative z-30"
                     >
-                      {step}
-                    </p>
-                  </div>
-                );
-              })}
+                      <div
+                        className={`w-5 h-5 rounded-full mb-2 transition-all duration-300 ${
+                          order.status === 6
+                            ? "bg-red-500"
+                            : isActive
+                            ? "bg-[#00382e]"
+                            : "bg-gray-300"
+                        }`}
+                      />
+                      <p
+                        className={`text-[10px] sm:text-xs md:text-sm font-medium ${
+                          order.status === 6
+                            ? "text-red-500"
+                            : isActive
+                            ? "text-gray-800"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {label}
+                      </p>
+                    </div>
+                  );
+                })}
             </div>
 
-            {/* Light background line */}
-          <div className="absolute top-[10px] left-[32px] right-[32px] h-[2px] bg-gray-200 z-10" />
+            {/* Background line */}
+            <div className="absolute top-[10px] left-[32px] right-[32px] h-[2px] bg-gray-200 z-10" />
 
-
-            {/* Dark active line */}
+            {/* Active progress line */}
             <div
-              className="absolute top-[10px] left-[32px] h-[2px] bg-[#00382e] z-20 transition-all duration-500"
+              className={`absolute top-[10px] left-[32px] h-[2px] ${
+                order.status === 6 ? "bg-red-500" : "bg-[#00382e]"
+              } z-20 transition-all duration-500`}
               style={{
-                width: `calc((100% - 20px) * ${progressPercent / 100})`,
+                width:
+                  order.status === 6
+                    ? "100%"
+                    : `calc((100% - 20px) * ${progressPercent / 100})`,
               }}
             />
           </div>
 
-          {/* Progress Note */}
           <div className="mt-6 bg-white p-3 sm:p-5 rounded-md text-xs sm:text-sm text-gray-700 shadow-sm">
             <p>
-              <span className="font-medium">8 June 2023, 3:40 PM —</span> Your
-              order is currently{" "}
-              <span className="font-semibold">{currentStatus}</span>.
+              Current status:{" "}
+              <span
+                className={`font-semibold ${
+                  order.status === 6 ? "text-red-500" : "text-[#00382e]"
+                }`}
+              >
+                {statusMap[order.status]}
+              </span>
             </p>
+            {order.status === 6 && (
+              <p className="text-red-500 text-xs mt-1">
+                This order has been cancelled.
+              </p>
+            )}
           </div>
         </div>
 
         {/* Product List */}
         <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-200">
-          {products.length === 0 ? (
+          {order.orderItems.length === 0 ? (
             <div className="p-6 text-center text-gray-500 text-sm">
-              No products remaining in this order.
+              No products in this order.
             </div>
           ) : (
-            products.map((product) => (
+            order.orderItems.map((item) => (
               <div
-                key={product.id}
+                key={item.orderItemId}
                 className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 gap-4"
               >
-                {/* Left: Image + Info */}
                 <div className="flex items-center gap-4 w-full sm:w-auto">
                   <img
-                    src={product.img}
-                    alt={product.name}
+                    src={`${ApiURL}/assets/Products/${item.imageUrl}`}
+                    alt={item.productName}
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-md object-cover"
                   />
                   <div>
                     <h3 className="font-semibold text-gray-800 text-sm sm:text-base">
-                      {product.name}
+                      {item.productName}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                      <span className="font-medium">Color:</span>{" "}
-                      <span className="text-gray-800">{product.color}</span>
-                    </p>
+                    {item.color && (
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                        <span className="font-medium">Color:</span>{" "}
+                        <span className="text-gray-800">
+                          {item.color?.color_name}
+                        </span>
+                      </p>
+                    )}
+                    {item.size && (
+                      <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                        <span className="font-medium">Size:</span>{" "}
+                        <span className="text-gray-800">{item.size}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                {/* Right: Qty, Price & Delete */}
                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto text-sm sm:text-base text-gray-700">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <span className="font-semibold">Qty:</span>
-                    <span>{product.qty}</span>
+                    <span>{item.quantity}</span>
                   </div>
-
                   <span className="font-semibold text-gray-800 ml-4">
-                    ${product.price.toFixed(2)}
+                    ₹{item.price.toFixed(2)}
                   </span>
-
-                  <button
-                    onClick={() => handleRemove(product.id)}
-                    className="ml-4 text-gray-400 hover:text-red-600 text-lg sm:text-xl transition-all"
-                    aria-label="Remove item"
-                  >
-                    ×
-                  </button>
                 </div>
               </div>
             ))

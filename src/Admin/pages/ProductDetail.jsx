@@ -45,7 +45,6 @@ const ProductDetail = () => {
       setProduct(productData);
     } catch (error) {
       console.error("Error fetching product:", error);
-      toast.error("Failed to fetch product details");
       navigate("/admin/product");
     } finally {
       setLoading(false);
@@ -64,7 +63,6 @@ const ProductDetail = () => {
         navigate("/admin/product");
       } catch (error) {
         console.error("Error deleting product:", error);
-        toast.error("Failed to delete product");
       }
     }
   };

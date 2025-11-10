@@ -46,12 +46,10 @@ const InstagramSection = () => {
   const handleUpload = async () => {
     if (!file) {
       setError("Please select an image or video to upload");
-      toast.error("Please select an image or video to upload");
       return;
     }
     if (!instaLink) {
       setError("Please add an Instagram link");
-      toast.error("Please add an Instagram link");
       return;
     }
 
@@ -82,7 +80,6 @@ const InstagramSection = () => {
       }
     } catch (err) {
       setError("Failed to upload file");
-      toast.error("Failed to upload file");
       showToaster(false, "Failed to upload file");
     } finally {
       setIsUploading(false);
@@ -112,7 +109,6 @@ const InstagramSection = () => {
       }
     } catch (err) {
       setError("Failed to delete media");
-      toast.error("Failed to delete media");
       showToaster(false, "Failed to delete media");
     } finally {
       setDeleteModal({ isOpen: false, insta_id: null, image_name: "" });
@@ -129,7 +125,6 @@ const InstagramSection = () => {
       }
     } catch (err) {
       setError("Error fetching images");
-      toast.error("Error fetching images");
     }
   };
 

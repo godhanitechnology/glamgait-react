@@ -11,22 +11,19 @@ import toast from "react-hot-toast";
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = userInfo();
 
   // Fetch wishlist from backend
 
   const fetchWishlist = async () => {
-    const identifier = userInfo?.u_id || getGuestId();
-    const query = userInfo?.u_id
-      ? `u_id=${identifier}`
-      : `guest_id=${identifier}`;
+    const identifier = user?.u_id || getGuestId();
+    const query = user?.u_id ? `u_id=${identifier}` : `guest_id=${identifier}`;
 
     const response = await axiosInstance.get(`/getwishlist?${query}`);
 
     if (response.data.status === 1) {
-      console.log("Wishlist items:", response.data.data);
       setWishlistItems(response.data.data);
     } else {
-      console.log("Wishlist empty or error:", response.data.message);
       setWishlistItems([]);
     }
   };
@@ -45,17 +42,17 @@ const Wishlist = () => {
       if (response.data.status === 1) {
         setWishlistItems((prev) => prev.filter((item) => item.w_id !== w_id));
       } else {
-        toast.error(response.data.message || "Failed to remove item");
+        console.log(response.data.message || "Failed to remove item");
       }
     } catch (error) {
       console.error("Error removing wishlist item:", error);
-      toast.error("Failed to remove item");
+      console.log("Failed to remove item");
     }
   };
 
   const handleMoveToCart = async (item) => {
     try {
-      const identifier = userInfo?.u_id || getGuestId();
+      const identifier = user?.u_id || getGuestId();
 
       const payload = {
         p_id: item.p_id,
@@ -63,9 +60,7 @@ const Wishlist = () => {
         size_id: item.size_id,
         pcolor_id: item.pcolor_id,
         quantity: 1,
-        ...(userInfo?.u_id
-          ? { u_id: userInfo.u_id }
-          : { guest_id: identifier }),
+        ...(user?.u_id ? { u_id: user.u_id } : { guest_id: identifier }),
       };
 
       // Add to cart API
@@ -76,11 +71,11 @@ const Wishlist = () => {
         // Optionally remove from wishlist
         await handleRemove(item.w_id);
       } else {
-        toast.error(cartResponse.data.message || "Failed to move to cart");
+        console.log(cartResponse.data.message || "Failed to move to cart");
       }
     } catch (error) {
       console.error("Error moving item to cart:", error);
-      toast.error("Failed to move item to cart");
+      console.log("Failed to move item to cart");
     }
   };
 
@@ -122,9 +117,9 @@ const Wishlist = () => {
                         {item.product_name}
                       </h3>
                       <p className="text-sm text-gray-500">
-                        ${item.price.toFixed(2)}{" "}
+                        ₹{item.price.toFixed(2)}{" "}
                         <span className="line-through text-gray-400 text-sm">
-                          ${item.original_price.toFixed(2)}
+                          ₹{item.original_price.toFixed(2)}
                         </span>
                       </p>
                       <p className="text-sm text-gray-500">

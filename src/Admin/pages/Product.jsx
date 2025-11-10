@@ -45,14 +45,12 @@ const Product = () => {
         productData: [],
         totalCount: 0,
       };
-      console.log(productData, "productdata");
 
       setProducts(productData || []);
       setTotalPages(Math.ceil(totalCount / itemsPerPage));
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
     }
@@ -76,7 +74,6 @@ const Product = () => {
       fetchProducts(currentPage, searchTerm);
     } catch (error) {
       console.error("Error updating product status:", error);
-      toast.error("Failed to update product status");
     }
   };
 

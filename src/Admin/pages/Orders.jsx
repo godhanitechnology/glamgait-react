@@ -31,36 +31,32 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [limit] = useState(20);
 
   useEffect(() => {
     fetchOrders(currentPage, searchTerm);
   }, [currentPage, searchTerm]);
 
-  const fetchOrders = async (page, search = "") => {
+  const fetchOrders = async (page = 1, search = "") => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`${ApiURL}/getallorders`, {
-        params: { page, limit: 10, search },
+      const response = await axiosInstance.post(`${ApiURL}/getallorders`, {
+        page,
+        limit: limit,
+        search,
       });
-      console.log(
-        "GetAllOrders API response:",
-        JSON.stringify(response.data, null, 2)
-      );
       if (response?.data?.status === 1) {
         setOrders(response.data.data.orders || []);
         setTotalPages(response.data.data.totalPages || 1);
         setTotalOrders(response.data.data.totalOrders || 0);
       } else {
-        toast.error(response.data.description || "Failed to fetch orders!");
         setOrders([]);
         setTotalPages(1);
         setTotalOrders(0);
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
-      toast.error(
-        error.response?.data?.description || "Failed to fetch orders!"
-      );
+     
       setOrders([]);
       setTotalPages(1);
       setTotalOrders(0);
@@ -79,11 +75,10 @@ const AdminOrders = () => {
         fetchOrders(currentPage, searchTerm);
         toast.success("Status updated successfully!");
       } else {
-        toast.error(response.data.description || "Status update failed!");
+        console.log(response.data.description || "Status update failed!");
       }
     } catch (error) {
       console.error("Status update failed:", error);
-      toast.error(error.response?.data?.description || "Status update failed!");
     }
   };
   1;
@@ -103,13 +98,11 @@ const AdminOrders = () => {
         fetchOrders(currentPage, searchTerm);
         toast.success("Order cancelled successfully!");
       } else {
-        toast.error(response.data.description || "Order cancellation failed!");
+        console.log(response.data.description || "Order cancellation failed!");
       }
     } catch (error) {
       console.error("Cancel failed:", error);
-      toast.error(
-        error.response?.data?.description || "Order cancellation failed!"
-      );
+      
     }
   };
 
@@ -162,7 +155,7 @@ const AdminOrders = () => {
               </p>
             </div>
           ) : (
-            orders.map((order) => (
+            orders?.map((order) => (
               <div
                 key={order.orderId}
                 className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md"
@@ -254,62 +247,66 @@ const AdminOrders = () => {
                           </h3>
                         </div>
                         <div className="space-y-2 text-sm text-gray-600">
-                          {order.customerName !== "N/A" && (
-                            <p>
-                              <span className="font-medium text-gray-800">
-                                Name:
-                              </span>{" "}
-                              {order.customerName}
-                            </p>
-                          )}
-                          {order.address !== "N/A" && (
+                          {order.address.first_name !== "N/A" &&
+                            order.address.last_name !== "N/A" && (
+                              <p>
+                                <span className="font-medium text-gray-800">
+                                  Name:
+                                </span>{" "}
+                                {order.address.first_name}{" "}
+                                {order?.address?.last_name}
+                              </p>
+                            )}
+                          {order.address.address !== "N/A" && (
                             <p>
                               <span className="font-medium text-gray-800">
                                 Address:
                               </span>{" "}
-                              {order.address}
+                              {order.address.address}
                             </p>
                           )}
-                          {(order.city !== "N/A" || order.state !== "N/A") && (
+                          {(order.address.city !== "N/A" ||
+                            order.address.state !== "N/A") && (
                             <p>
                               <span className="font-medium text-gray-800">
                                 Location:
                               </span>{" "}
-                              {order.city || "N/A"}, {order.state || "N/A"}{" "}
-                              {order.postalCode !== "N/A"
-                                ? ` - ${order.postalCode}`
+                              {order.address.city || "N/A"},{" "}
+                              {order.address.state || "N/A"}{" "}
+                              {order.address.zip_code !== "N/A"
+                                ? ` - ${order.address.zip_code}`
                                 : ""}
                             </p>
                           )}
-                          {order.phone !== "N/A" && (
+                          {order.address.phone_number !== "N/A" && (
                             <p>
                               <span className="font-medium text-gray-800">
                                 Phone:
                               </span>{" "}
-                              {order.phone}
+                              {order.address.phone_number}
                             </p>
                           )}
-                          {order.email !== "N/A" && (
+                          {order.address.email !== "N/A" && (
                             <p>
                               <span className="font-medium text-gray-800">
                                 Email:
                               </span>{" "}
-                              {order.email}
+                              {order.address.email}
                             </p>
                           )}
-                          {order.addressType !== "N/A" && (
+                          {order.address.add_type !== "N/A" && (
                             <p>
                               <span className="font-medium text-gray-800">
                                 Type:
                               </span>{" "}
-                              {order.addressType}
+                              {order.address.add_type}
                             </p>
                           )}
                           {!(
-                            order.customerName !== "N/A" ||
-                            order.address !== "N/A" ||
-                            order.email !== "N/A" ||
-                            order.phone !== "N/A"
+                            order.address.customerName !== "N/A" ||
+                            order.address.address !== "N/A" ||
+                            order.address.email !== "N/A" ||
+                            order.address.phone_number !== "N/A"
                           ) && (
                             <p className="text-gray-500 italic">
                               No shipping details available
@@ -330,24 +327,24 @@ const AdminOrders = () => {
                           <div className="flex justify-between py-1 border-b border-gray-200">
                             <span className="text-gray-600">Subtotal</span>
                             <span className="font-medium text-gray-900">
-                              ₹{order.totalPrice.toFixed(2)}
+                              ₹{order?.totalPrice.toFixed(2)}
                             </span>
                           </div>
                           <div className="flex justify-between py-1 border-b border-gray-200">
                             <span className="text-gray-600">Shipping</span>
                             <span className="font-medium text-gray-900">
-                              ₹{order.shippingCharge.toFixed(2)}
+                              ₹{order?.shippingCharge.toFixed(2)}
                             </span>
                           </div>
                           <div className="flex justify-between py-1 border-b border-gray-200">
                             <span className="text-gray-600">Tax</span>
                             <span className="font-medium text-gray-900">
-                              ₹{order.tax.toFixed(2)}
+                              ₹{order?.tax.toFixed(2)}
                             </span>
                           </div>
                           <div className="flex justify-between py-2 border-b border-gray-200 font-semibold text-lg text-gray-800">
                             <span>Grand Total</span>
-                            <span>₹{order.grandTotal.toFixed(2)}</span>
+                            <span>₹{order?.grandTotal.toFixed(2)}</span>
                           </div>
                         </div>
                       </div>
@@ -356,12 +353,12 @@ const AdminOrders = () => {
                     {/* Order Items */}
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                       <h3 className="font-semibold text-lg mb-4 text-gray-800">
-                        Order Items ({order.orderItems?.length || 0})
+                        Order Items ({order?.orderItems?.length || 0})
                       </h3>
                       <div className="space-y-4">
                         {order?.orderItems?.map((item) => (
                           <div
-                            key={item.orderItemId}
+                            key={item?.orderItemId}
                             className="flex flex-col sm:flex-row items-start gap-4 border-b border-gray-200 pb-4 last:border-0"
                           >
                             <img
@@ -382,7 +379,7 @@ const AdminOrders = () => {
                                 {item.productName || "Unknown Item"}
                               </h4>
                               <p className="text-xs sm:text-sm text-gray-600 mb-1">
-                               Sub-Category: {item.subCategoryName || "N/A"}
+                                Sub-Category: {item.subCategoryName || "N/A"}
                               </p>
                               {item.color && (
                                 <div className="flex items-center gap-2 mb-2">

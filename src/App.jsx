@@ -1,69 +1,3 @@
-// import { useState , useEffect} from "react";
-
-// import "./App.css";
-// import Navbar from "./Components/Navbar";
-// import { Route, Routes, useLocation  } from "react-router-dom";
-// import HomePage from "./Pages/HomePage";
-// import SingleProductPage from "./Pages/SingleProductPage";
-// import WhatsAppIcon from "./Ui/WhatsappIcon";
-// import NotFound from "./Components/NotFound";
-// import Contact from "./Components/Contact";
-// import Footer from "./Components/Footer";
-// import AllProductPage from "./Pages/AllProductPage";
-// import Register from "./Components/Register";
-// import Login from "./Components/Login";
-
-// import Cart from "./Components/Cart";
-// import Wishlist from "./Components/Wishlist";
-// import AboutPage from "./Pages/AboutPage";
-// import Blog from "./Components/Blog";
-// import SingleBlog from "./Components/SingleBlog";
-// import Profileorder from "./Components/Profileorder";
-// import OrderDetails from "./Components/OrderDetails";
-// import PersonalInfo from "./Components/PersonalInfo";
-// import SelectAddress from "./Components/SelectAddress";
-// import BackToTop from "./Ui/BackToTop";
-
-// function App() {
-//   const location = useLocation();
-
-//   // ✅ Scroll to top when location changes
-//   useEffect(() => {
-//     window.scrollTo(0, 0);
-//   }, [location]);
-
-//   return (
-//     <>
-//       <div className="relative">
-//         <Navbar />
-//         <Routes>
-// <Route path="/" element={<HomePage />} />
-// <Route path="/product/:productId" element={<SingleProductPage />} />
-// <Route path="/contact" element={<Contact />} />
-// <Route path="/shop" element={<AllProductPage />} />
-// <Route path="/register" element={<Register />} />
-// <Route path="/login" element={<Login />} />
-// <Route path="/cart" element={<Cart />} />
-// <Route path="/wishlist" element={<Wishlist />} />
-// <Route path="/about" element={<AboutPage />} />
-// <Route path="/blog" element={<Blog />} />
-// <Route path="/blog/:id" element={<SingleBlog />} />
-// <Route path="/myorders" element={<Profileorder />} />
-// <Route path="/OrderDetails" element={<OrderDetails />} />
-// <Route path="/myinfo" element={<PersonalInfo />} />
-// <Route path="/selectaddress" element={<SelectAddress />} />
-// <Route path="*" element={<NotFound />} />
-//         </Routes>
-// <Footer />
-// <WhatsAppIcon />
-// <BackToTop/>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default App;
-
 import {
   Routes,
   Route,
@@ -116,6 +50,7 @@ import RefundPolicy from "./Pages/RefundPolicy";
 import TermsofService from "./Pages/TermsofService";
 import PaymentOptions from "./Pages/PaymentOptions";
 import CancellationPolicy from "./Pages/CancellationPolicy";
+import OrderConfirmation from "./Components/OrderConfirmation";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -130,7 +65,35 @@ const ScrollToTop = () => {
 function App() {
   return (
     <>
-      <Toaster />
+      <Toaster
+        position="top-right" // Left side
+        toastOptions={{
+          // Default options for all toasts
+          duration: 4000,
+          style: {
+            background: "#F3F0ED", // match website background
+            color: "#1f2937", // dark gray text
+            padding: "16px 20px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            fontSize: "14px",
+            fontWeight: 500,
+            maxWidth: "300px",
+          },
+          success: {
+            iconTheme: {
+              primary: "#22c55e", // green
+              secondary: "#FFFFFF",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444", // red
+              secondary: "#FFFFFF",
+            },
+          },
+        }}
+      />
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
@@ -158,15 +121,20 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<SingleBlog />} />
             <Route path="/myorders" element={<Profileorder />} />
-            <Route path="/OrderDetails" element={<OrderDetails />} />
+            <Route path="/orderdetails/:orderId" element={<OrderDetails />} />
             <Route path="/myinfo" element={<PersonalInfo />} />
             <Route path="/selectaddress" element={<SelectAddress />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/shipping" element={<ShippingPolicy />} />
-          <Route path="/refund" element={<RefundPolicy />} />
-          <Route path="/terms" element={<TermsofService />} />
-          <Route path="/paymentoptions" element={<PaymentOptions />} />
-          <Route path="/cancellationpolicy" element={<CancellationPolicy />} />
+            <Route path="/shipping" element={<ShippingPolicy />} />
+            <Route path="/refund" element={<RefundPolicy />} />
+            <Route path="/terms" element={<TermsofService />} />
+            <Route path="/paymentoptions" element={<PaymentOptions />} />
+            <Route
+              path="/cancellationpolicy"
+              element={<CancellationPolicy />}
+            />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+
             <Route path="*" element={<NotFound />} />
           </Route>
 

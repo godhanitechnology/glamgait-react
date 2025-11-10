@@ -45,7 +45,6 @@ const fetchContacts = async (page = 1, limit = itemsPerPage, search = searchTerm
     setTotalPages(totalPages);
   } catch (error) {
     console.error("Error fetching contacts:", error);
-    toast.error("Error fetching contacts");
   } finally {
     setLoading(false);
   }
@@ -73,7 +72,6 @@ const fetchContacts = async (page = 1, limit = itemsPerPage, search = searchTerm
       toast.success("Request Deleted...");
       fetchContacts(currentPage);
     } catch (error) {
-      toast.error("Error deleting Request");
       console.error("Error deleting contact:", error);
     } finally {
       setDeleteModal({ isOpen: false, contactId: null, name: "" });
@@ -227,7 +225,7 @@ const fetchContacts = async (page = 1, limit = itemsPerPage, search = searchTerm
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() =>
-                            handleDelete(contact.contactId, contact.name)
+                            handleDelete(contact.contact_id, contact.name)
                           }
                           className="text-red-600 hover:text-red-900"
                           aria-label={`Delete contact request from ${

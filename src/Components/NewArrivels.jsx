@@ -8,13 +8,10 @@ const NewArrivels = () => {
   const [activeTab, setActiveTab] = useState("newArrivals");
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true);
-        // 👇 Fetch both new arrivals & best sellers (can be separate APIs)
         const [newArrivalsRes, bestSellerRes] = await Promise.all([
           axiosInstance.post(`${ApiURL}/getproducts`, { limit: 8 }),
           axiosInstance.post(`${ApiURL}/getproducts`, { limit: 8 }),
@@ -23,14 +20,11 @@ const NewArrivels = () => {
         setBestSeller(bestSellerRes.data.data || []);
       } catch (error) {
         console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchProducts();
   }, []);
 
-  console.log(newArrivals, "new");
 
   const currentProducts =
     activeTab === "newArrivals" ? newArrivals : bestSeller;

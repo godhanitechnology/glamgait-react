@@ -1,12 +1,9 @@
-// ReviewCard.jsx
-import React from "react";
-
 // Assets (update these with actual paths)
 import pattern from "../assets/pattern.png";
 import quoteLeft from "../assets/quoteLeft.png";
 import rightlight from "../assets/rightlight.png";
 
-const ReviewCard = ({ name, review, image }) => {
+const ReviewCard = ({ name, review }) => {
   return (
     <div className="relative w-[300px] h-50 sm:w-[350px] md:w-[400px] 2xl:w-[700px] 2xl:h-[400px] rounded-xl bg-white overflow-hidden flex items-center justify-items-center">
       {/* Pattern (Left Side) */}
@@ -35,16 +32,18 @@ const ReviewCard = ({ name, review, image }) => {
 
       <div className="relative justify-items-center z-20 p-8">
         <div className="flex items-center gap-3 mb-2">
-          <img
+          {/* <img
             src={image}
             alt={name}
             className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-20 2xl:h-20 rounded-full object-cover border-2 border-gray-200"
-          />
+          /> */}
         </div>
-          <div>
-            <p className="text-sm sm:text-base 2xl:text-[24px] font-semibold text-gray-800 mb-2">{name}</p>
-          </div>
-        <p className="text-[12px] xl:text-[14px] 2xl:text-[20px] text-center text-gray-600 leading-relaxed line-clamp-3 md:px-4 2xl:px-8">
+        <div>
+          <p className="text-sm sm:text-base 2xl:text-[24px] font-semibold text-gray-800 mb-2">
+            {name}
+          </p>
+        </div>
+        <p className="text-[12px] xl:text-[14px] 2xl:text-[20px] text-center text-gray-600 leading-relaxed line-clamp-3 md:px-8 2xl:px-8">
           {review}
         </p>
       </div>

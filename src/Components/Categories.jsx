@@ -29,7 +29,7 @@ const Categories = () => {
         setCategories(response.data.data);
       } else {
         setCategories([]);
-      } 
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -74,12 +74,12 @@ const Categories = () => {
           className="overflow-x-auto xl:overflow-visible hide-scrollbar scroll-smooth xl:px-0"
         >
           <div className="flex space-x-4 w-max xl:w-auto xl:grid xl:grid-cols-5 xl:gap-5 xl:space-x-0">
-            {categories?.map((category, index) => {
+            {categories?.map((category) => {
               const image = category.cate_image;
               return (
                 <div className="hover:scale-105 transition-all duration-300">
                   <NavLink
-                    key={category.cate_id || index}
+                    key={category.cate_id}
                     to={`/shop?cate_id=${
                       category.cate_id
                     }&category=${encodeURIComponent(category.cate_name)}`}

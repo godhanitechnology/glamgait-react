@@ -11,7 +11,7 @@ const Topbar = ({ onMenuClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("GlamGait");
     navigate("/");
   };
 

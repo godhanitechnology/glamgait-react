@@ -85,7 +85,6 @@ const Dashboard = () => {
     try {
       const res = await axiosInstance.get(`${ApiURL}/usercount`);
       setUserCount(res.data.data.count);
-      console.log(res.data.data.count, "stats");
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -98,7 +97,6 @@ const Dashboard = () => {
     try {
       const res = await axiosInstance.get(`${ApiURL}/chart-data`);
       setChartData(res.data.data.chartData);
-      console.log("dataaa", res.data.data.chartData);
     } catch (error) {
       console.error("Error fetching chart data:", error);
     }
@@ -109,7 +107,6 @@ const Dashboard = () => {
     try {
       const res = await axiosInstance.get(`${ApiURL}/order-status-data`);
       setOrderStatusData(res.data.data.orderStatusData);
-      console.log("dataaa", res.data.data.orderStatusData);
     } catch (error) {
       console.error("Error fetching order status data:", error);
     }
