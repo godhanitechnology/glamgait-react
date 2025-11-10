@@ -3,7 +3,6 @@
 // import video from "../data/video"; // Your video data array
 // import waves from "../assets/waves.png";
 
-
 // const WatchAndBuy = () => {
 //   const containerRef = useRef(null);
 //   const scrollerRef = useRef(null);
@@ -109,6 +108,7 @@ import React, { useEffect, useRef, useState } from "react";
 import VideoCard from "./VideoCard";
 import axiosInstance from "../Axios/axios";
 import { ApiURL } from "../Variable";
+import { Link } from "react-router-dom";
 
 const WatchAndBuy = () => {
   const containerRef = useRef(null);
@@ -123,16 +123,15 @@ const WatchAndBuy = () => {
 
   const fetchProducts = async () => {
     try {
-      
       const response = await axiosInstance.post(`${ApiURL}/getproducts`, {
-        limit:10,
-        is_expert_choice:1
+        limit: 10,
+        is_expert_choice: 1,
       });
 
       setProducts(response.data.data);
     } catch (error) {
       console.error("Error fetching products:", error);
-    } 
+    }
   };
 
   function addAnimation() {
@@ -173,11 +172,15 @@ const WatchAndBuy = () => {
       >
         <ul
           ref={scrollerRef}
-          className={`flex w-max shrink-0 flex-nowrap gap-6 py-4 px-4 ${start ? "animate-scroll" : ""}`}
+          className={`flex w-max shrink-0 flex-nowrap gap-6 py-4 px-4 ${
+            start ? "animate-scroll" : ""
+          }`}
         >
-          {products.map((product) => (
+          {products?.map((product) => (
             <li key={product.p_id} className="shrink-0 w-80">
-              <VideoCard product={product} />
+              <Link to={`/product/${product.p_id}`}>
+                <VideoCard product={product} />
+              </Link>
             </li>
           ))}
         </ul>

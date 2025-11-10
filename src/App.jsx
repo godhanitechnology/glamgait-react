@@ -51,28 +51,18 @@ import TermsofService from "./Pages/TermsofService";
 import PaymentOptions from "./Pages/PaymentOptions";
 import CancellationPolicy from "./Pages/CancellationPolicy";
 import OrderConfirmation from "./Components/OrderConfirmation";
-
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
+import ScrollToTop from "./Components/ScrollToTop";
 
 function App() {
   return (
     <>
       <Toaster
-        position="top-right" // Left side
+        position="top-right"
         toastOptions={{
-          // Default options for all toasts
-          duration: 4000,
+          duration: 500,
           style: {
-            background: "#F3F0ED", // match website background
-            color: "#1f2937", // dark gray text
+            background: "#F3F0ED",
+            color: "#1f2937",
             padding: "16px 20px",
             borderRadius: "12px",
             boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
