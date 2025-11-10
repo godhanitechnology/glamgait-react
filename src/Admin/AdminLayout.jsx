@@ -10,11 +10,11 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const user = userInfo();
 
-  // useEffect(() => {
-  //   if (!user?.auth_token || user?.u_type !== "0") {
-  //     navigate("/login", { replace: true });
-  //   }
-  // }, [user, navigate]);
+  useEffect(() => {
+    if (!user?.auth_token || user?.role !== "admin") {
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex h-screen bg-gray-100">

@@ -9,13 +9,15 @@ import toast from "react-hot-toast";
 
 const Cart = () => {
   const navigate = useNavigate();
+  const user = userInfo();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isLoggedIn = !!user?.u_id && !!user?.auth_token;
 
   const fetchCart = async () => {
     try {
-      const identifier = userInfo?.u_id || getGuestId();
-      const query = userInfo?.u_id
+      const identifier = user?.u_id || getGuestId();
+      const query = user?.u_id
         ? `u_id=${identifier}`
         : `guest_id=${identifier}`;
 
@@ -27,7 +29,6 @@ const Cart = () => {
       }
     } catch (error) {
       console.error("Fetch cart error:", error);
-      toast.error("Error fetching cart");
     } finally {
       setLoading(false);
     }
@@ -45,11 +46,10 @@ const Cart = () => {
       if (response.data.status === 1) {
         fetchCart();
       } else {
-        toast.error(response.data.message || "Failed to update cart");
+        console.log(response.data.message || "Failed to update cart");
       }
     } catch (error) {
       console.error("Update cart error:", error);
-      toast.error("Something went wrong");
     }
   };
 
@@ -63,11 +63,11 @@ const Cart = () => {
         setCartItems((prev) => prev.filter((item) => item.cart_id !== cart_id));
         toast.success("Item removed from cart");
       } else {
-        toast.error(response.data.message || "Failed to remove item");
+        console.log(response.data.message || "Failed to remove item");
       }
     } catch (error) {
-      console.error("Remove cart item error:", error);
-      toast.error("Something went wrong");
+      console.log(error);
+      
     }
   };
 
@@ -76,6 +76,19 @@ const Cart = () => {
     updateCartQty(cart_id, currentQty + 1);
   const decreaseQty = (cart_id, currentQty) => {
     if (currentQty > 1) updateCartQty(cart_id, currentQty - 1);
+  };
+
+  const handleCheckout = () => {
+    if (!isLoggedIn) {
+      console.log("Please log in to proceed to checkout");
+      navigate("/login");
+      return;
+    }
+    if (!cartItems.length) {
+      console.log("Cart is empty");
+      return;
+    }
+    navigate("/selectaddress", { state: { cartItems } });
   };
 
   // Totals
@@ -151,9 +164,9 @@ const Cart = () => {
                 <div>
                   <h3 className="text-md font-medium">{item.product_name}</h3>
                   <p className="text-sm text-gray-500">
-                    ${item.price.toFixed(2)}{" "}
+                   ₹{item.price.toFixed(2)}{" "}
                     <span className="line-through text-gray-400 text-sm">
-                      ${item.original_price.toFixed(2)}
+                     ₹{item.original_price.toFixed(2)}
                     </span>
                   </p>
                   <p className="text-sm text-gray-500">
@@ -190,7 +203,7 @@ const Cart = () => {
         <div className="bg-white rounded-2xl p-6 shadow-sm w-full lg:w-1/3 h-fit">
           <div className="flex justify-between mb-4">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>₹{subtotal.toFixed(2)}</span>
           </div>
 
           <div className="mb-4">
@@ -209,7 +222,7 @@ const Cart = () => {
 
           <div className="flex justify-between mt-4">
             <span>Taxes</span>
-            <span>${taxes.toFixed(2)}</span>
+            <span>₹{taxes.toFixed(2)}</span>
           </div>
 
           <div className="flex justify-between mt-2">
@@ -221,12 +234,12 @@ const Cart = () => {
 
           <div className="flex justify-between font-semibold">
             <span>Grand Total</span>
-            <span>${grandTotal.toFixed(2)}</span>
+            <span>₹{grandTotal.toFixed(2)}</span>
           </div>
 
           <button
             className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-white hover:text-[#02382A] border border-[#02382A] cursor-pointer"
-            onClick={() => navigate("/selectaddress")}
+            onClick={handleCheckout}
           >
             CHECKOUT
           </button>

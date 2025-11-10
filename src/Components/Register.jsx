@@ -1,138 +1,3 @@
-// import React from "react";
-// import fb1 from "../assets/fb1.svg";
-// import apple from "../assets/apple.svg";
-// import google from "../assets/google.svg";
-// import rightlight from "../assets/rightlight.png";
-// import waves from "../assets/waves.png";
-// import loginmain from "../assets/loginmain.jpg";
-// import { useNavigate } from "react-router-dom";
-
-// const Register = () => {
-//   const navigate = useNavigate();
-//   return (
-//     <div className="relative flex flex-col md:flex-row h-[calc(100vh-80px)] bg-white font-inter overflow-hidden mt-[-20px] sm:px-20">
-//       {/* ✅ Decorative Lamp (Right side on mobile, centered on desktop) */}
-//       <img
-//         src={rightlight}
-//         alt="Decorative Lamp"
-//         className="
-//     absolute
-//     top-[5%] right-[0%]
-//     md:top-[23%] md:right-[50%]
-//     transform md:-translate-y-1/2 md:translate-x-1/2
-//     w-28 sm:w-32 md:w-40
-//     sm:opacity-100
-//     opacity-60
-//     pointer-events-none
-//     transition-all duration-500
-//     z-20 md:z-0
-//   "
-//       />
-//       <img
-//         src={waves}
-//         alt="Top Right Decoration"
-//         className="
-//     absolute
-//     top-0
-//     right-0
-//     object-contain
-//     opacity-90
-//     pointer-events-none
-//     z-30
-//   "
-//       />
-
-//       {/* Left Side Image */}
-//       <div className="hidden lg:flex w-1/2 h-full">
-//         <img
-//           src={loginmain}
-//           alt="Login main"
-//           className="w-full h-[80vh] object-contain self-center"
-//         />
-//       </div>
-
-//       {/* Right Side Form */}
-//       <div className="flex flex-col justify-center items-center w-full md:w-1/2 px-2 sm:px-4 md:px-6 lg:px-10 h-full my-10 relative z-10">
-//         <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-center font-serif">
-//           Create Account
-//         </h2>
-
-//         {/* Input Fields */}
-//         <div className="w-full max-w-md space-y-2">
-//           <input
-//             type="text"
-//             placeholder="First Name"
-//             className="w-full border border-gray-200 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900"
-//           />
-//           <input
-//             type="text"
-//             placeholder="Last Name"
-//             className="w-full border border-gray-200 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900"
-//           />
-//           <input
-//             type="email"
-//             placeholder="Email"
-//             className="w-full border border-gray-200 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900"
-//           />
-//           <input
-//             type="password"
-//             placeholder="Password"
-//             className="w-full border border-gray-200 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900"
-//           />
-
-//           {/* ✅ Create Account Button */}
-//           <button className="w-full bg-black text-white py-3 rounded-md mt-4 hover:bg-gray-900 transition duration-300">
-//             Create Account
-//           </button>
-
-//           {/* Already Have Account */}
-//           <div className="flex justify-center gap-1 mt-2 text-sm text-gray-600">
-//             <p>Already Have An Account?</p>
-//             <button
-//               onClick={() => navigate("/login")}
-//               className="text-black font-medium hover:underline"
-//             >
-//               Log In
-//             </button>
-//           </div>
-
-//           {/* OR Divider */}
-//           <div className="flex items-center justify-center mt-3">
-//             <span className="text-gray-400 text-sm">Or</span>
-//           </div>
-
-//           {/* Social Login */}
-//           <div className="flex justify-center gap-6 mt-2">
-//             <img
-//               src={apple}
-//               alt="Apple"
-//               className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-//             />
-//             <img
-//               src={google}
-//               alt="Google"
-//               className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-//             />
-//             <img
-//               src={fb1}
-//               alt="Facebook"
-//               className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-//             />
-//           </div>
-
-//           {/* Terms and Conditions */}
-//           <p className="text-center text-xs text-gray-500 mt-4">
-//             By Clicking Register Now you Agree to Terms & Conditions and
-//             Privacy Policy
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Register;
-
 // src/pages/Register.jsx
 import React, { useState } from "react";
 import loginmain from "../assets/loginmain.jpg"; // adjust if path differs
@@ -141,9 +6,50 @@ import apple from "../assets/apple.svg";
 import google from "../assets/google.svg";
 import rightlight from "../assets/rightlight.png";
 import leftlight from "../assets/leftlight.png";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../Axios/axios";
+import toast from "react-hot-toast";
 
 const Register = () => {
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { first_name, last_name, email, password } = formData;
+    if (!first_name || !last_name || !email || !password) {
+      console.log("Please fill all fields");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("/userregister", formData);
+      if (response.data.status === 1) {
+        toast.success("Registration Successful!");
+        navigate("/login");
+      } else {
+        console.log(response.data.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center overflow-hidden bg-white">
@@ -182,28 +88,40 @@ const Register = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleRegister}>
             <input
               type="text"
+              name="first_name"
               placeholder="First Name"
+              value={formData.first_name}
+              onChange={handleChange}
               className="w-full px-4 py-3 bg-[#F3F0ED] rounded-md  focus:outline-none focus:border-[#063d32]"
             />
             <input
               type="text"
+              name="last_name"
               placeholder="Last Name"
+              value={formData.last_name}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-md bg-[#F3F0ED] focus:outline-none focus:border-[#063d32]"
             />
 
             <input
               type="email"
+              name="email"
               placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
               className="w-full px-4 py-3 rounded-md bg-[#F3F0ED] focus:outline-none focus:border-[#063d32]"
             />
 
             <div className="relative">
               <input
                 type={passwordVisible ? "text" : "password"}
+                name="password"
                 placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-3 rounded-md bg-[#F3F0ED] focus:outline-none focus:border-[#063d32] cursor-pointer"
               />
               <button
@@ -217,21 +135,22 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#02382A] text-white py-3 rounded-md hover:bg-[#ffffff] border border-[#02382A] hover:text-[#02382A] transition"
+              disabled={loading}
+              className="w-full bg-[#02382A] text-white py-3 rounded-md hover:bg-white border border-[#02382A] hover:text-[#02382A] transition"
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 
           {/* Already have account */}
           <p className="text-center text-sm mt-4">
             Already Have An Account?{" "}
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-[#063d32] font-medium hover:underline"
             >
               Log In
-            </a>
+            </Link>
           </p>
 
           {/* Divider */}

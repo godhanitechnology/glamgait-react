@@ -35,7 +35,7 @@ export const showToaster = (status, description) => {
   if (status === 1) {
     toast.success(description, { autoClose: 3000 });
   } else {
-    toast.error(description, { autoClose: 3000 });
+    console.log(description, { autoClose: 3000 });
   }
 };
 

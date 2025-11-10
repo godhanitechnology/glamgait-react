@@ -43,7 +43,6 @@ const Users = () => {
       setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching users:", error);
-      toast.error("Error fetching users");
     } finally {
       setLoading(false);
     }
@@ -77,7 +76,6 @@ const Users = () => {
       fetchUsers(currentPage);
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Error deleting user");
     } finally {
       setDeleteModal({ isOpen: false, userId: null, full_name: "" });
     }

@@ -31,7 +31,7 @@ const Sliders = () => {
 
     setSelectedImages((prev) => {
       if (prev.length + files.length > 3 && !editingImage) {
-        toast.error("You can only upload up to 3 images.");
+        console.log("You can only upload up to 3 images.");
         return prev;
       }
       return editingImage ? files.slice(0, 1) : [...prev, ...files];
@@ -52,7 +52,7 @@ const Sliders = () => {
   // Add or Update
   const saveSliderImages = async () => {
     if (selectedImages.length === 0) {
-      toast.error("Please select an image first.");
+      console.log("Please select an image first.");
       return;
     }
 
@@ -87,7 +87,6 @@ const Sliders = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error saving image...");
     } finally {
       setAddLoading(false);
     }
@@ -104,7 +103,6 @@ const Sliders = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error deleting image...");
     } finally {
       setDeleteModal({ isOpen: false, image_id: null, image_name: "" });
     }
@@ -121,7 +119,6 @@ const Sliders = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed To Fetch Slider List.");
     }
   };
 
@@ -175,7 +172,7 @@ const Sliders = () => {
                 )
                 ?.map((img) => (
                   <div
-                    key={img.id}
+                    key={img.image_id}
                     className="relative border rounded overflow-hidden group"
                   >
                     <div className="w-full aspect-[16/9] bg-gray-200">

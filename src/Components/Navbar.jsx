@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo.svg";
 import axiosInstance from "../Axios/axios";
+import { userInfo } from "../Variable";
 
 const Navbar = () => {
   const location = useLocation();
@@ -18,6 +19,9 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const user = userInfo();
+  const u_id = user?.u_id;
+  const token = user?.auth_token;
 
   const searchParams = new URLSearchParams(location.search);
   const currentCateId = searchParams.get("cate_id");
@@ -88,7 +92,7 @@ const Navbar = () => {
 
             {/* Desktop menu */}
             <div className="hidden lg:flex space-x-6 mr-6">
-              {menuItems.map((item) => (
+              {menuItems?.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
@@ -124,12 +128,16 @@ const Navbar = () => {
                 <Link to="/cart" className="cursor-pointer hover:text-black">
                   <ShoppingCart className="hover:text-black" />
                 </Link>
-                <Link
-                  to="/register"
+                <CircleUser
                   className="cursor-pointer hover:text-black"
-                >
-                  <CircleUser className="hover:text-black" />
-                </Link>
+                  onClick={() => {
+                    if (u_id && token) {
+                      navigate("/myorders");
+                    } else {
+                      navigate("/login");
+                    }
+                  }}
+                />
               </div>
 
               {/* Mobile hamburger */}

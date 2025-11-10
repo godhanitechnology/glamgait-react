@@ -21,6 +21,7 @@ function SingleProduct() {
   const [showSizePopup, setShowSizePopup] = useState(false);
   const [selectedColorImages, setSelectedColorImages] = useState([]);
   const [videoFiles, setVideoFiles] = useState([]);
+  const user = userInfo();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -65,8 +66,8 @@ function SingleProduct() {
     if (!product) return;
 
     const payload = {
-      u_id: userInfo?.u_id || undefined,
-      guest_id: userInfo?.u_id ? undefined : getGuestId(),
+      u_id: user?.u_id || undefined,
+      guest_id: user?.u_id ? undefined : getGuestId(),
       p_id: product.p_id,
       sc_id: product.sc_id,
       size_id:
@@ -83,11 +84,11 @@ function SingleProduct() {
       if (response.data.status === 1) {
         toast.success("Added to cart successfully");
       } else {
-        toast.error(response.data.message || "Failed to add to cart");
+        console.log(response.data.message || "Failed to add to cart");
       }
     } catch (error) {
       console.error("Add to cart error:", error);
-      toast.error("Something went wrong");
+      console.log("Something went wrong");
     }
   };
 
@@ -165,10 +166,10 @@ function SingleProduct() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-gray-900">
-                  ${product.price}
+                  ₹{product.price}
                 </span>
                 <span className="text-xl text-gray-400 line-through">
-                  ${product.original_price}
+                  ₹{product.original_price}
                 </span>
                 {discount && (
                   <span className="text-sm text-white bg-red-600 px-2 py-0.5 rounded-md">
@@ -305,7 +306,7 @@ function SingleProduct() {
                 <div>
                   <h4 className="font-semibold text-gray-900">Free Shipping</h4>
                   <p className="text-sm text-gray-600">
-                    On all U.S. orders over $100
+                    On all Over India orders over ₹1500
                   </p>
                 </div>
               </div>

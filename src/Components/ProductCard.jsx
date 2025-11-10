@@ -10,8 +10,7 @@ import { getGuestId } from "../utils/guest";
 const ProductCard = ({ product }) => {
   const [selectedColor, setSelectedColor] = useState(product.productcolors[0]);
   const [isAdding, setIsAdding] = useState(false);
-
-  console.log(product, "product");
+  const user = userInfo();
 
   const navigate = useNavigate();
 
@@ -32,15 +31,16 @@ const ProductCard = ({ product }) => {
     setIsAdding(true);
 
     try {
-
-      const firstSizeId = product.productsizes?.length ? product.productsizes[0].size_id : null;
+      const firstSizeId = product.productsizes?.length
+        ? product.productsizes[0].size_id
+        : null;
       const wishlistData = {
-        u_id: userInfo?.u_id || null,
-        guest_id: !userInfo?.u_id ? getGuestId() : null,
+        u_id: user?.u_id || null,
+        guest_id: !user?.u_id ? getGuestId() : null,
         p_id: product.p_id,
         sc_id: product.sc_id,
         pcolor_id: selectedColor?.pcolor_id || null,
-        size_id: firstSizeId ||null,
+        size_id: firstSizeId || null,
       };
 
       const response = await axiosInstance.post("/addtowishlist", wishlistData);
@@ -48,11 +48,10 @@ const ProductCard = ({ product }) => {
       if (response.data.status === 1) {
         toast.success("Added to wishlist");
       } else {
-        toast.error(response.data.message || "Already in wishlist");
+        console.log(response.data.message || "Already in wishlist");
       }
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      toast.error("Failed to add to wishlist");
     } finally {
       setIsAdding(false);
     }
@@ -60,7 +59,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="w-[220px] md:w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md  duration-300 mx-auto z-10">
       {/* Discount Badge */}
-      {discount && (
+      {discount > 0 && (
         <div className="absolute top-2 left-2 bg-red-500 text-white text-[11px] font-semibold px-2 py-[2px] rounded-sm z-10">
           {discount}% off
         </div>
@@ -96,17 +95,17 @@ const ProductCard = ({ product }) => {
           </div>
           <div className="text-right">
             <span className="text-gray-400 line-through text-[11px] block">
-              ${product?.original_price}
+              ₹{product?.original_price}
             </span>
             <span className="text-[13px] font-semibold text-gray-800">
-              ${product?.price}
+              ₹{product?.price}
             </span>
           </div>
         </div>
 
         {/* Color Swatches */}
         <div className="flex items-center gap-2 mt-2">
-          {product?.productcolors?.map((color, idx) => (
+          {product?.productcolors?.map((color) => (
             <span
               key={color?.pcolor_id}
               onClick={() => setSelectedColor(color)}
