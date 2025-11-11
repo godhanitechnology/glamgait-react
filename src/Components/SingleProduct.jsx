@@ -452,7 +452,9 @@ function SingleProduct() {
                 )}
               </div>
               <div>
-                <span className="text-[#02382A] font-bold">inclusive of all taxes</span>
+                <span className="text-[#02382A] font-bold">
+                  inclusive of all taxes
+                </span>
               </div>
             </div>
 

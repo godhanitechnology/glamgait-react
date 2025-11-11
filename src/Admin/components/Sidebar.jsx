@@ -12,6 +12,7 @@ import {
   Instagram,
   SlidersHorizontal,
   Grid2X2,
+  MegaphoneIcon,
 } from "lucide-react";
 
 const Sidebar = ({ onClose }) => {
@@ -22,12 +23,12 @@ const Sidebar = ({ onClose }) => {
       icon: LayoutDashboard,
       end: true,
     },
+    { name: "Announcements", path: "/admin/announcements", icon: MegaphoneIcon },
     { name: "Categories", path: "/admin/categories", icon: Grid2X2 },
     { name: "Subcategory", path: "/admin/subcategories", icon: Grid },
     { name: "Attributes", path: "/admin/product-attributes", icon: Palette },
     { name: "Colors", path: "/admin/colors", icon: Palette },
     { name: "Sizes", path: "/admin/sizes", icon: Palette },
-
     { name: "Products", path: "/admin/product", icon: Box },
     { name: "Orders", path: "/admin/orders", icon: ClipboardList },
     { name: "Users", path: "/admin/users", icon: Users },

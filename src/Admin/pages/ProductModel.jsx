@@ -13,12 +13,15 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     work_id: "",
     occasion_id: "",
     style_id: "",
-
     price: "",
     original_price: "",
     description: "",
     model: "",
     fit: "",
+    sku: "",
+    meta_title: "",
+    meta_description: "",
+    keywords: "",
     is_expert_choice: false,
     colors: [{ color_id: "", productimages: [] }],
     sizes: [{ size_id: "" }],
@@ -103,12 +106,15 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
         work_id: product.work_id || "",
         occasion_id: product.occasion_id || "",
         style_id: product.style_id || "",
-
         price: product.price || "",
         original_price: product.original_price || "",
         description: product.description || "",
         model: product.model || "",
         fit: product.fit || "",
+        sku: product.sku || "",
+        meta_title: product.meta_title || "",
+        meta_description: product.description || "",
+        keywords: product.keywords || "",
         is_expert_choice: product.is_expert_choice || false,
         colors: product.productcolors?.length
           ? product.productcolors.map((color) => ({
@@ -328,6 +334,10 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     data.append("description", formData.description);
     data.append("model", formData.model);
     data.append("fit", formData.fit);
+    data.append("sku", formData.sku);
+    data.append("meta_title", formData.meta_title);
+    data.append("meta_description", formData.meta_description);
+    data.append("keywords", formData.keywords);
     data.append("is_expert_choice", formData.is_expert_choice ? "1" : "0");
 
     data.append(
@@ -392,7 +402,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       }
     } catch (error) {
       console.error("Error saving product:", error);
-      
     } finally {
       setIsSubmitting(false);
     }
@@ -599,6 +608,64 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
+            {/* SKU */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                SKU *
+              </label>
+              <input
+                type="text"
+                name="sku"
+                value={formData.sku}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+                placeholder="e.g., DRS-1023-BLK"
+              />
+            </div>
+
+            {/* Meta Title */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Meta Title
+              </label>
+              <input
+                type="text"
+                name="meta_title"
+                value={formData.meta_title}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+                placeholder="Short SEO title for product"
+              />
+            </div>
+
+            {/* Meta Description */}
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Meta Description
+              </label>
+              <textarea
+                name="meta_description"
+                value={formData.meta_description}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none min-h-[80px]"
+                placeholder="Short product SEO description (max 160 characters)"
+              />
+            </div>
+
+            {/* Keywords */}
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Keywords
+              </label>
+              <input
+                type="text"
+                name="keywords"
+                value={formData.keywords}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+                placeholder="e.g., silk saree, designer dress, festive wear"
+              />
+            </div>
           </div>
 
           <div>
@@ -622,7 +689,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 onChange={handleInputChange}
                 className="mr-2 h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
               />
-              Expert Choice
+              Add To Reel Section
             </label>
           </div>
 
