@@ -107,13 +107,13 @@ const OrderDetails = () => {
             <p>
               Shipping:{" "}
               <span className="font-semibold">
-                ₹{order.shippingCharge.toFixed(2)}
+                {/* ₹{order.shippingCharge.toFixed(2)} */}Free
               </span>
             </p>
-            <p>
+            {/* <p>
               Tax:{" "}
               <span className="font-semibold">₹{order.tax.toFixed(2)}</span>
-            </p>
+            </p> */}
             <p>
               Grand Total:{" "}
               <span className="font-semibold">

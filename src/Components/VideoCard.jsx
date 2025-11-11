@@ -78,9 +78,9 @@ const VideoCard = ({ product }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
-  
   // Flatten all images across colors
-  const allMedia = product?.productcolors?.flatMap((c) => c.productimages) || [];
+  const allMedia =
+    product?.productcolors?.flatMap((c) => c.productimages) || [];
 
   // Pick first mp4 if exists, otherwise first image
   const videoFile = allMedia.find((img) => img.image_url.endsWith(".mp4"));
@@ -88,13 +88,11 @@ const VideoCard = ({ product }) => {
 
   const mediaSrc = videoFile?.image_url || imageFile?.image_url || "";
 
-  const handleCardClick = useCallback(() => {
-   
-  }, []);
+  const handleCardClick = useCallback(() => {}, []);
 
   const handlePlayPause = (e) => {
     e.stopPropagation();
-    if (!videoFile) return; 
+    if (!videoFile) return;
     if (videoRef.current) {
       if (isPlaying) videoRef.current.pause();
       else videoRef.current.play();
@@ -104,7 +102,7 @@ const VideoCard = ({ product }) => {
 
   return (
     <Link
-      to={product.to || "#"}
+      to={`/product/${product?.p_id}`}
       className="relative overflow-hidden cursor-pointer w-full max-w-[300px] mx-auto"
       onClick={handleCardClick}
     >

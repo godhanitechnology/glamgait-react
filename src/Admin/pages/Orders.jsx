@@ -338,9 +338,9 @@ const AdminOrders = () => {
                           </div>
                           <div className="flex justify-between py-1 border-b border-gray-200">
                             <span className="text-gray-600">Tax</span>
-                            <span className="font-medium text-gray-900">
+                            {/* <span className="font-medium text-gray-900">
                               ₹{order?.tax.toFixed(2)}
-                            </span>
+                            </span> */}
                           </div>
                           <div className="flex justify-between py-2 border-b border-gray-200 font-semibold text-lg text-gray-800">
                             <span>Grand Total</span>

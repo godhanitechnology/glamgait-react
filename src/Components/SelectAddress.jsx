@@ -18,7 +18,7 @@ const SelectAddress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addressType, setAddressType] = useState("HOME");
   const [subtotal, setSubtotal] = useState(0);
-  const [taxes, setTaxes] = useState(0);
+  // const [taxes, setTaxes] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [showAllAddresses, setShowAllAddresses] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -42,12 +42,12 @@ const SelectAddress = () => {
         0
       );
       setSubtotal(sub);
-      setTaxes(25);
+      // setTaxes(25);
       setDeliveryFee(0);
     }
   }, []);
 
-  const grandTotal = subtotal + taxes + deliveryFee;
+  const grandTotal = subtotal + deliveryFee;
 
   // Load Razorpay script
   useEffect(() => {
@@ -78,7 +78,7 @@ const SelectAddress = () => {
       })),
       subtotal,
       shipping: deliveryFee,
-      tax: taxes,
+      // tax: taxes,
       total: grandTotal,
       address_id: selectedAddress,
       payment_method: paymentMethod.toLowerCase(),
@@ -119,7 +119,6 @@ const SelectAddress = () => {
           description: `Order #${order_id}`,
           order_id: rzp_order_id,
           handler: async function (razorpayResponse) {
-
             const payload = {
               razorpay_payment_id: razorpayResponse.razorpay_payment_id,
               razorpay_order_id: razorpayResponse.razorpay_order_id,
@@ -321,10 +320,10 @@ const SelectAddress = () => {
                   <span>Subtotal</span>
                   <span>₹{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                {/* <div className="flex justify-between text-sm">
                   <span>Taxes</span>
                   <span>₹{taxes.toFixed(2)}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between text-sm">
                   <span>Delivery Fee</span>
                   <span className="text-green-600 font-medium">
@@ -337,12 +336,12 @@ const SelectAddress = () => {
                 <span>Grand Total</span>
                 <span>₹{grandTotal.toFixed(2)}</span>
               </div>
-              {/* <button
+              <button
                 onClick={handleContinue}
                 className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-[#052d25] transition"
               >
                 {paymentMethod === "Online" ? "PAY NOW" : "CONFIRM ORDER"}
-              </button> */}
+              </button>
             </>
           ) : (
             <p className="text-gray-500">No cart items found.</p>

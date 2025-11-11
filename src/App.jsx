@@ -52,6 +52,7 @@ import PaymentOptions from "./Pages/PaymentOptions";
 import CancellationPolicy from "./Pages/CancellationPolicy";
 import OrderConfirmation from "./Components/OrderConfirmation";
 import ScrollToTop from "./Components/ScrollToTop";
+import Announcement from "./Admin/pages/Announcements";
 
 function App() {
   return (
@@ -131,6 +132,7 @@ function App() {
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="announcements" element={<Announcement />} />
             <Route path="categories" element={<Categories />} />
             <Route path="subcategories" element={<SubCategories />} />
             <Route path="colors" element={<Colors />} />

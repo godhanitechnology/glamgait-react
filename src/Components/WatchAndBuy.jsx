@@ -178,9 +178,7 @@ const WatchAndBuy = () => {
         >
           {products?.map((product) => (
             <li key={product.p_id} className="shrink-0 w-80">
-              <Link to={`/product/${product.p_id}`}>
                 <VideoCard product={product} />
-              </Link>
             </li>
           ))}
         </ul>

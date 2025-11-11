@@ -394,7 +394,7 @@ const Profileorder = () => {
               <div className="mt-4 border-t pt-3 text-right space-y-1">
                 <p>Subtotal: ₹{order.totalPrice.toFixed(2)}</p>
                 <p>Shipping: ₹{order.shippingCharge.toFixed(2)}</p>
-                <p>Tax: ₹{order.tax.toFixed(2)}</p>
+                {/* <p>Tax: ₹{order.tax.toFixed(2)}</p> */}
                 <p className="font-semibold">
                   Grand Total: ₹{order.grandTotal.toFixed(2)}
                 </p>
