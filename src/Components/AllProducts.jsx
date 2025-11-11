@@ -418,9 +418,9 @@ const Allproducts = () => {
             </div>
 
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 justify-items-center">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 ">
                 {products.map((product) => (
-                  <div className="flex-shrink-0 w-[250px] sm:w-[240px] md:w-[225px] lg:w-[260px] xl:w-[300px]">
+                  <div className="flex sm:w-[240px] md:w-[225px] lg:w-[260px] xl:w-[280px]">
                     <ProductCard key={product.p_id} product={product} />
                   </div>
                 ))}

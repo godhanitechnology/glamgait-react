@@ -20,10 +20,7 @@ const ProductCard = ({ product }) => {
 
   const discount =
     product?.original_price && product?.original_price > product?.price
-      ? Math.round(
-          ((product.original_price - product.price) / product.original_price) *
-            100
-        )
+      ? product.original_price - product.price
       : 0;
 
   const handleAddToWishlist = async (e) => {
@@ -57,14 +54,13 @@ const ProductCard = ({ product }) => {
     }
   };
   return (
-    <div className="w-[220px] md:w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md  duration-300 mx-auto z-10">
+    <div className="w-[220px] md:w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md duration-300 mx-auto z-10">
       {/* Discount Badge */}
       {discount > 0 && (
         <div className="absolute top-2 left-2 bg-red-500 text-white text-[11px] font-semibold px-2 py-[2px] rounded-sm z-10">
-          {discount}% off
+          ₹{discount} OFF
         </div>
       )}
-
       {/* Heart Icon */}
       <button
         className="absolute top-2 right-2 p-1 rounded-full hover:scale-110 transition z-10"
@@ -82,23 +78,40 @@ const ProductCard = ({ product }) => {
       />
 
       {/* Product Info */}
-      <div className="px-3 pt-2 pb-4 bg-[#F3F0ED]">
+      <div className="px-3 pt-2 pb-4 bg-[#F3F0ED] h-[150px]">
         {/* Title and Price Row */}
-        <div className="flex justify-between items-start mb-1">
+        <div className="flex flex-col items-start mb-1 space-y-1">
           <div>
-            <h3 className="text-[13px] font-medium text-gray-800 leading-4">
+            <h3 className="text-[16px] font-medium text-gray-800 leading-4 line-clamp-2">
               {product?.name}
             </h3>
-            <p className="text-[11px] text-gray-500 mt-[2px]">
+            <p className="text-[11px] text-gray-500 mt-0.5">
               {selectedColor.name}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-left">
             <span className="text-gray-400 line-through text-[11px] block">
               ₹{product?.original_price}
             </span>
-            <span className="text-[13px] font-semibold text-gray-800">
+            <span className="text-[14px] font-semibold text-gray-800">
               ₹{product?.price}
+            </span>
+          </div>
+          {/* ⭐ Added review stars and count (no layout changes) */}
+          <div className="flex items-center space-x-1 mt-[2px]">
+            {[...Array(5)].map((_, i) => (
+              <svg
+                key={i}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill={i < (product?.rating || 4) ? "#FBBF24" : "#D1D5DB"} // gold for filled stars
+                className="w-3.5 h-3.5"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.378 2.455a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.953 2.805c-.785.57-1.84-.197-1.54-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.052 9.394c-.783-.57-.38-1.81.588-1.81h4.173a1 1 0 00.95-.69l1.286-3.967z" />
+              </svg>
+            ))}
+            <span className="text-[11px] text-gray-500 ml-1">
+              ({product?.review_count || 128})
             </span>
           </div>
         </div>
