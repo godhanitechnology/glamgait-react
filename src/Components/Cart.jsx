@@ -112,8 +112,13 @@ const Cart = () => {
     return (
       <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
         <div className="text-center">
-          <img src={cartempty} alt="" className="mx-auto w-48 h-48" />
-          <h1 className="text-2xl font-bold mt-5">Your Cart Is Empty.</h1>
+<div className="w-40 h-24 md:w-[300px] md:h-[200px] mx-auto">
+              <img
+                src={cartempty}
+                alt="Empty Wishlist"
+                className="w-full h-full object-contain"
+              />
+            </div>          <h1 className="text-2xl font-bold mt-5">Your Cart Is Empty.</h1>
           <p className="text-gray-500 text-sm mt-2">
             You don’t have any products in your cart yet. Start exploring our
             Shop page!
