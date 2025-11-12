@@ -5,6 +5,9 @@ import HomePageBanner from "../Components/HomePageBanner";
 import singlebanner from "../assets/singlebanner.jpg";
 import { useSearchParams } from "react-router-dom";
 import axiosInstance from "../Axios/axios";
+import { reviewsData } from "../data/reviews";
+import ReviewCard from "./ReviewCard";
+import CategoryReviewSlider from "./CategoryReviewSlider";
 
 const Allproducts = () => {
   const [filters, setFilters] = useState({
@@ -28,16 +31,20 @@ const Allproducts = () => {
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [sortBy, setSortBy] = useState("a-z");
-  const [expandedSections, setExpandedSections] = useState({
-    category: true,
-    size: true,
-    price: true,
-  });
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-
+  const [categoryReviews, setCategoryReviews] = useState([]);
   const [page, setPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const limit = 6;
+
+  useEffect(() => {
+    if (categoryName) {
+      const filtered = reviewsData.filter(
+        (review) => review.category.toLowerCase() === categoryName.toLowerCase()
+      );
+      setCategoryReviews(filtered);
+    }
+  }, [categoryName]);
 
   useEffect(() => {
     const fetchCategoryFilters = async () => {
@@ -451,8 +458,15 @@ const Allproducts = () => {
             </button>
           ))}
         </div>
+        {/* AUTO-SCROLLING REVIEW SLIDER */}
       </div>
-
+      {categoryReviews.length > 0 && (
+        <CategoryReviewSlider
+          reviews={categoryReviews}
+          direction="left"
+          speed="slow"
+        />
+      )}
       <HomePageBanner
         title="Discover Timeless Comfort"
         bgImage={singlebanner}

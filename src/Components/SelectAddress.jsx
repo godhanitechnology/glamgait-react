@@ -27,7 +27,7 @@ const SelectAddress = () => {
   const fetchAddresses = async () => {
     try {
       const res = await axiosInstance.post(`${ApiURL}/getaddress`, { u_id });
-      setAddresses(res.data.data);
+      setAddresses(res.data.data || []);
     } catch (error) {
       setAddresses([]);
       console.error("Error fetching addresses:", error);
@@ -174,6 +174,16 @@ const SelectAddress = () => {
       console.error("Error creating order:", error);
     }
   };
+
+  console.log(addresses?.length, "length");
+
+  useEffect(() => {
+    if (addresses?.length === 0) {
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, [addresses, cartItems]);
 
   const displayedAddresses = showAllAddresses
     ? addresses
@@ -354,6 +364,7 @@ const SelectAddress = () => {
           onClose={() => setIsModalOpen(false)}
           addressType={addressType}
           setAddressType={setAddressType}
+          refreshAddresses={fetchAddresses}
         />
       )}
     </div>

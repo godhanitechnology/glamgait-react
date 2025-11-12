@@ -236,14 +236,6 @@ const Navbar = () => {
   const [categories, setCategories] = useState([]);
   const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
   const [announcements, setAnnouncements] = useState([]);
-
-  // const announcements = [
-  //   "⚡ Diwali Sale Live — Flat 20% OFF on All Products!",
-  //   "🚚 Free Shipping on Orders Above ₹999!",
-  //   "💎 New Arrivals Just Landed — Check Them Out!",
-  //   "🎁 Buy 2 Get 1 Free on Selected Items!",
-  // ];
-
   const user = userInfo();
   const u_id = user?.u_id;
   const token = user?.auth_token;
@@ -254,7 +246,7 @@ const Navbar = () => {
 
   // Auto-change announcements every 4 seconds
   useEffect(() => {
-    if (announcements.length === 0) return; // ✅ avoid error when empty
+    if (announcements.length === 0) return; //avoid error when empty
     const interval = setInterval(() => {
       setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
     }, 4000);
