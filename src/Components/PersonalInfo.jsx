@@ -64,9 +64,12 @@ const PersonalInfo = () => {
 
   // DELETE address
   const handleDeleteAddress = async (add_id) => {
-    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    if (!window.confirm("Are you sure you want to delete this address?"))
+      return;
     try {
-      const res = await axiosInstance.post(`${ApiURL}/deleteaddress`, { add_id });
+      const res = await axiosInstance.delete(
+        `${ApiURL}/deleteaddress/${add_id}`
+      );
       if (res.data.status === 1) {
         toast.success("Address deleted successfully");
         fetchAddress();
@@ -121,7 +124,9 @@ const PersonalInfo = () => {
                   />
                 ) : (
                   <p className="font-medium text-gray-800">
-                    {field === "password" ? "••••••••" : userData[field] || "N/A"}
+                    {field === "password"
+                      ? "••••••••"
+                      : userData[field] || "N/A"}
                   </p>
                 )}
               </div>
@@ -176,7 +181,9 @@ const PersonalInfo = () => {
                 <p className="font-medium text-gray-900 mb-1">
                   {addr.first_name} {addr.last_name}
                 </p>
-                <p className="text-sm text-gray-700 mb-1">{addr.phone_number}</p>
+                <p className="text-sm text-gray-700 mb-1">
+                  {addr.phone_number}
+                </p>
                 <p className="text-sm text-gray-600 mb-4 leading-snug">
                   {addr.address}, {addr.apartment}, {addr.city}-{addr.zip_code},{" "}
                   {addr.state}
