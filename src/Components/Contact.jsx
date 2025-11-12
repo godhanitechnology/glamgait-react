@@ -68,9 +68,9 @@ const Contact = () => {
         <img
           src={pattern}
           alt="Pattern"
-          className="absolute right-0 bottom-0 h-30 w-30 md:h-60 md:w-65 rotate-180 z-0"
+          className="abso+lute right-0 bottom-0 h-30 w-30 md:h-60 md:w-65 rotate-180 z-0"
         />
-        <div className="text-center mb-10">
+        <div className="text-center mb-5">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
             Get in Touch
           </h2>
@@ -108,7 +108,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Your Message"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02382A] h-24 resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#02382A] h-40 resize-none"
                 />
                 <button
                   type="submit"
@@ -154,7 +154,7 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-64 sm:h-72 lg:h-80">
+            <div className="w-full h-50 ">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.974713693577!2d3.409401614279148!3d6.427678895304472!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c8a3c8e8e8e%3A0x1234567890abcdef!2sVictoria%20Island%2C%20Lagos!5e0!3m2!1sen!2sng!4v1634567890!5m2!1sen!2sng"
                 width="100%"
