@@ -154,6 +154,8 @@ const Review = () => {
                   {review?.createdAt?.split("T")[0]}
                 </p>
                 <p className="mb-2">{review?.message}</p>
+                {console.log(review.image_url, "review")}
+
                 {review?.image_url && (
                   <div className="flex items-center gap-2">
                     <img

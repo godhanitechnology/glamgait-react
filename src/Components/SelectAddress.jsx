@@ -237,9 +237,6 @@ const SelectAddress = () => {
                         <span>{address.phone_number}</span>
                       </div>
                     </div>
-                    <button className="text-gray-600 hover:text-black">
-                      <MoreVertical size={20} />
-                    </button>
                   </div>
                 </div>
               ))}
