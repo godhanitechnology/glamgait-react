@@ -106,14 +106,28 @@ const Categories = () => {
       </div>
 
       {/* Decorative top right and most right waves */}
-      <div className="hidden md:block absolute top-0 right-20 md:-top-5 md:right-5 lg:right-30 lg:-top-15 xl:right-40 xl:-top-30 2xl:right-80 2xl:-top-30 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-120 2xl:h-120 z-0">
+      {/* <div className="hidden md:block absolute top-0 right-20 md:-top-5 md:right-5 lg:right-30 lg:-top-15 xl:right-40 xl:-top-30 2xl:right-80 2xl:-top-30 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-120 2xl:h-120 z-0">
+        <img
+          src={waves}
+          alt="Decorative"
+          className="w-full h-full object-contain"
+        />
+      </div> */}
+      <div className="absolute h-55 -top-5 -right-5 sm:h-60 sm:right-5 md:h-80 lg:h-100 lg:-top-13 xl:right-30 2xl:right-50 2k:right-100 4k:right-140 -rotate-10 z-0">
         <img
           src={waves}
           alt="Decorative"
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="hidden md:block absolute top-50 right-[-50px] lg:top-60 lg:-right-20 xl:top-50 xl:-right-10 2xl:top-50 2xl:right-20 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-120 2xl:h-120 z-0 -rotate-30">
+      {/* <div className="hidden md:block absolute top-50 right-[-50px] lg:top-60 lg:-right-20 xl:top-50 xl:-right-10 2xl:top-50 2xl:right-20 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 2xl:w-120 2xl:h-120 z-0 -rotate-30">
+        <img
+          src={waves}
+          alt="Decorative"
+          className="w-full h-full object-contain"
+        />
+      </div> */}
+      <div className="hidden md:block absolute md:h-90 md:-right-25 md:top-60 xl:-right-30 2xl:-right-5 2k:right-40 4k:right-90 z-0 -rotate-25">
         <img
           src={waves}
           alt="Decorative"
@@ -123,14 +137,28 @@ const Categories = () => {
 
       {/* Decorative bottom images */}
       <div className=" relative overflow-visible z-10">
-        <div className="absolute -bottom-30 -left-7 sm:-bottom-34 sm:left-25 md:-bottom-48 md:left-28 lg:-bottom-53 lg:left-48 xl:-top-12 xl:left-38 2xl:left-80 w-30 h-40 sm:w-40 sm:h-45 md:w-50 md:h-60 lg:w-60 lg:h-65 xl:w-70 xl:h-80 2xl:w-90 2xl:h-90">
+        {/* <div className="absolute -bottom-30 -left-7 sm:-bottom-34 sm:left-25 md:-bottom-48 md:left-28 lg:-bottom-53 lg:left-48 xl:-top-12 xl:left-38 2xl:left-80 w-30 h-40 sm:w-40 sm:h-45 md:w-50 md:h-60 lg:w-60 lg:h-65 xl:w-70 xl:h-80 2xl:w-90 2xl:h-90">
+          <img
+            src={leftlight}
+            alt="Decorative"
+            className="w-full h-full object-contain"
+          />
+        </div> */}
+        <div className="absolute h-30 -top-5 left-5 sm:-top-10 sm:left-35 sm:h-35 md:h-45 md:left-50 md:-top-12 lg:h-50 xl:h-55 lg:left-50 2xl:left-80 2k:left-120 4k:left-200">
           <img
             src={leftlight}
             alt="Decorative"
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="hidden md:block absolute bottom-[-50px] right-10 md:-bottom-49 md:-right-5 lg:-bottom-55 lg:right-10 xl:-bottom-74 xl:right-20 2xl:right-80 w-48 h-48 md:w-64 md:h-64 lg:w-70 lg:h-70 xl:w-80 xl:h-80 2xl:w-90 2xl:h-90">
+        {/* <div className="hidden md:block absolute bottom-[-50px] right-10 md:-bottom-49 md:-right-5 lg:-bottom-55 lg:right-10 xl:-bottom-74 xl:right-20 2xl:right-80 w-48 h-48 md:w-64 md:h-64 lg:w-70 lg:h-70 xl:w-80 xl:h-80 2xl:w-90 2xl:h-90">
+          <img
+            src={rightlight}
+            alt="Decorative"
+            className="w-full h-full object-contain"
+          />
+        </div> */}
+        <div className="hidden md:block absolute h-40 -right-2 -top-15 sm:h-55 sm:right-5 md:h-60 lg:h-70 lg:right-5 xl:h-80 2xl:right-50 2k:right-100 4k:right-150">
           <img
             src={rightlight}
             alt="Decorative"

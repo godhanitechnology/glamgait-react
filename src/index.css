@@ -9,31 +9,16 @@
   scrollbar-width: none; /* Firefox */
 }
 
+@theme {
+  --breakpoint-xs: 325px;    /* Extra small devices */
+  --breakpoint-sm: 576px;    /* Small devices */
+  --breakpoint-md: 768px;    /* Medium devices */
+  --breakpoint-lg: 992px;    /* Large devices */
+  --breakpoint-xl: 1200px;   /* Extra large devices */
+  --breakpoint-2xl: 1440px;  /* 2x Extra large devices */
+    --breakpoint-2k: 1920px;   /* 4K Ultra HD displays */
+    --breakpoint-4k: 2350px;   /* 4K Ultra HD displays */
 
-
-/* Medium devices (≥ 768px) */
-@media (min-width: 768px) {
-  /* md breakpoint */
-}
-
-/* Large devices (≥ 1024px) */
-@media (min-width: 1024px) {
-  /* lg breakpoint */
-}
-
-/* Extra Large devices (≥ 1280px) */
-@media (min-width: 1280px) {
-  /* xl breakpoint */
-}
-
-/* 2K Screens (≥ 1920px) */
-@media (min-width: 1920px) {
-  /* custom 2xl breakpoint */
-}
-
-/* 4K Screens (≥ 2560px) */
-@media (min-width: 2560px) {
-  /* custom 3xl / 4k breakpoint */
 }
 
 h1, h2, h3 {

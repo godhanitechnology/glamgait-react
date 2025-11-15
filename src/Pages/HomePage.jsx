@@ -113,7 +113,7 @@ const HomePage = () => {
         </div>
 
         {/* === Waves 1 === */}
-        <div className="hidden md:block absolute -top-48 right-0 md:top-80 md:-right-20 lg:top-114 lg:-right-25 xl:top-120 xl:-right-30 2xl:top-120 2xl:right-30 z-10 pointer-events-none">
+        <div className="hidden md:block absolute -top-48 right-0 md:top-80 md:-right-20 lg:top-114 lg:-right-25 2xl:-right-25 2k:right-0 4k:right-50 z-10 pointer-events-none">
           <img
             src={waves}
             alt="Wave Decoration"
