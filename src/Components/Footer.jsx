@@ -157,22 +157,22 @@ const Footer = () => {
       <img
         src={leftlonglight}
         alt="Decor"
-        className="absolute -right-1 lg:-left-10 lg:top-10 lg:w-20 xl:left-10 xl:top-0 xl:w-25 2xl:left-60 z-11 pointer-events-none"
+        className="absolute -right-1 lg:-left-10 lg:top-10 lg:w-20 xl:-left-10 xl:top-0 xl:w-25 2xl:left-0 z-11 pointer-events-none"
       />
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:left-105 lg:w-10 xl:left-150 xl:w-9 2xl:left-210 z-10 pointer-events-none"
+        className="hidden lg:block absolute lg:left-105 lg:w-10 xl:left-120 xl:w-9 2xl:left-150 2k:left-210 4k:left-270 z-10 pointer-events-none"
       />
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:left-115 lg:w-8 xl:left-160 xl:w-7 2xl:left-220 z-10 pointer-events-none"
+        className="hidden lg:block absolute lg:left-115 lg:w-8 xl:left-130 xl:w-7 2xl:left-160 2k:left-220 4k:left-280 z-10 pointer-events-none"
       />
       <img
         src={leftlonglight}
         alt="Decor"
-        className="hidden lg:block absolute lg:-right-5 lg:w-18 xl:right-35 xl:w-20 2xl:right-90 z-10 pointer-events-none"
+        className="hidden lg:block absolute lg:-right-5 lg:w-18 xl:right-5 xl:w-20 2xl:right-0 z-10 pointer-events-none"
       />
 
       {/* Footer Content */}
@@ -310,9 +310,9 @@ const Footer = () => {
               <div className="h-5 w-5">
                 <img src={locationf} alt="" />
               </div>
-              123 Fashion St., Suite 456
+              address-312,capital plaza,near 
               <br />
-              City, State, ZIP Code
+              d-mart,yogi chowk,surat-395010
             </li>
             <li className="flex gap-2 items-center">
               <div className="h-5 w-5">
@@ -337,6 +337,9 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
         © 2024 Glamgait. All rights reserved.
+      </div>
+      <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
+      Design by Godhani Technology.
       </div>
 
       <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">

@@ -25,16 +25,16 @@ const StayInLoop = () => {
         <img
           src={pattern}
           alt="Pattern"
-          className="hidden md:block absolute -right-3 top-0 h-60 w-70 -scale-x-90 2xl:h-[400px] 2xl:w-[400px] z-0"
+          className="hidden md:block absolute -right-5 top-0 h-60 w-70 -scale-x-90 2xl:h-[400px] 2xl:w-[400px] z-0"
         />
       </div>
 
       {/* Left Lantern Image */}
-      <div className="absolute left-5 top-1/2 transform -translate-y-1/2">
+      <div className="absolute left-5 top-20 lg:top-1/2 transform -translate-y-1/2">
         <img
           src={leftlight}
           alt="Decorative"
-          className="hidden md:block w-30 h-50 object-contain"
+          className="hidden md:block h-35 lg:h-50 object-contain"
         />
       </div>
 

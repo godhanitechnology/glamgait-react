@@ -68,7 +68,7 @@ const Contact = () => {
         <img
           src={pattern}
           alt="Pattern"
-          className="abso+lute right-0 bottom-0 h-30 w-30 md:h-60 md:w-65 rotate-180 z-0"
+          className="absolute right-0 bottom-0 h-30 w-30 md:h-60 md:w-65 rotate-180 z-0"
         />
         <div className="text-center mb-5">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
@@ -127,9 +127,8 @@ const Contact = () => {
               <div className="flex items-center gap-3">
                 <div className="h-5 w-5"><img src={location} alt="Location" /></div>
                 <p className="text-gray-700">
-                  Information technologies
-                  <br /> building, Victoria Island, Lagos,
-                  <br /> Nigeria.
+                  address-312,capital plaza,
+                  <br /> near d mart,yogi chowk,surat-395010
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -154,17 +153,19 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-50 ">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.974713693577!2d3.409401614279148!3d6.427678895304472!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8c8a3c8e8e8e%3A0x1234567890abcdef!2sVictoria%20Island%2C%20Lagos!5e0!3m2!1sen!2sng!4v1634567890!5m2!1sen!2sng"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                className="rounded-lg"
-              ></iframe>
-            </div>
+            <div className="w-full h-50">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d8846.404820175454!2d72.8843111781607!3d21.213796584853206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDEyJzMzLjciTiA3MsKwNTMnMTIuNyJF!5e0!3m2!1sen!2sin!4v1763113460967!5m2!1sen!2sin"
+    width="100%"
+    height="100%"
+    style={{ border: 0 }}
+    allowFullScreen=""
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+    className="rounded-lg"
+  ></iframe>
+</div>
+
           </div>
         </div>
       </div>
