@@ -24,7 +24,7 @@ const CategoryReviewCard = ({
       {/* RIGHT: Content */}
       <div className="flex-1 p-4 sm:p-5 md:p-6 relative flex flex-col">
         {/* Quote Icons */}
-        <img
+        {/* <img
           src={quoteLeft}
           alt="Quote"
           className="absolute left-3 top-3 w-5 sm:w-6 md:w-7 opacity-70 pointer-events-none"
@@ -33,7 +33,7 @@ const CategoryReviewCard = ({
           src={quoteLeft}
           alt="Quote"
           className="absolute right-3 top-1 w-9 sm:w-11 md:w-14 -scale-x-100 opacity-10 pointer-events-none"
-        />
+        /> */}
 
         {/* Light Glow */}
         <img

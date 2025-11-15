@@ -38,6 +38,62 @@ const Allproducts = () => {
   const limit = 6;
 
   useEffect(() => {
+    const cate_id = searchParams.get("cate_id");
+    const collection = searchParams.get("collection");
+    const fabric = searchParams.get("fabric");
+    const occasion = searchParams.get("occasion");
+    const work = searchParams.get("work");
+    const style = searchParams.get("style");
+    const highlight = searchParams.get("highlight");
+
+    // Set selected filters from URL
+    if (collection) {
+      const matched = filters.subcategories.find(
+        (s) => s.name === decodeURIComponent(collection)
+      );
+      if (matched) setSelectedSubcategories([matched.sc_id]);
+    } else {
+      setSelectedSubcategories([]);
+    }
+
+    if (fabric) {
+      const matched = filters.fabrics.find(
+        (f) => f.name === decodeURIComponent(fabric)
+      );
+      if (matched) setSelectedFabrics([matched.f_id]);
+    } else {
+      setSelectedFabrics([]);
+    }
+
+    if (occasion) {
+      const matched = filters.occasions.find(
+        (o) => o.name === decodeURIComponent(occasion)
+      );
+      if (matched) setSelectedOccasions([matched.occasion_id]);
+    } else {
+      setSelectedOccasions([]);
+    }
+
+    if (work) {
+      const matched = filters.works.find(
+        (w) => w.name === decodeURIComponent(work)
+      );
+      if (matched) setSelectedWorks([matched.work_id]);
+    } else {
+      setSelectedWorks([]);
+    }
+
+    if (style) {
+      const matched = filters.styles.find(
+        (s) => s.name === decodeURIComponent(style)
+      );
+      if (matched) setSelectedStyles([matched.style_id]);
+    } else {
+      setSelectedStyles([]);
+    }
+  }, [searchParams, filters]);
+
+  useEffect(() => {
     if (categoryName) {
       const filtered = reviewsData.filter(
         (review) => review.category.toLowerCase() === categoryName.toLowerCase()
