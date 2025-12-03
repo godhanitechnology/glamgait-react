@@ -22,7 +22,7 @@ const CustomersSay = ({ direction = "left", speed = "fast" }) => {
 
       if (response.data.status === 1) {
         const data = response.data.data;
-        setReviews(data.reviwes || []);
+        setReviews(data.reviews || []);
       } else {
         setReviews([]);
       }
@@ -66,6 +66,8 @@ const CustomersSay = ({ direction = "left", speed = "fast" }) => {
     );
   }
 
+  console.log(reviews, "reviews");
+
   return (
     <section className="relative bg-[#F3F0ED] py-16 overflow-hidden">
       {/* Decorative Waves */}
@@ -101,7 +103,7 @@ const CustomersSay = ({ direction = "left", speed = "fast" }) => {
           {reviews?.map((item, idx) => (
             <li key={idx} className="shrink-0">
               <ReviewCard
-                name={item?.user?.first_name}
+                name={item?.reviewer_name}
                 review={item?.message}
                 image={item?.image}
               />

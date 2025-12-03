@@ -23,7 +23,7 @@ const Users = () => {
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     userId: null,
-    full_name: "",
+    first_name: "",
   });
 
   const userData = userInfo();
@@ -63,8 +63,8 @@ const Users = () => {
     }
   };
 
-  const handleDelete = (userId, full_name) => {
-    setDeleteModal({ isOpen: true, userId, full_name });
+  const handleDelete = (userId, first_name) => {
+    setDeleteModal({ isOpen: true, userId, first_name });
   };
 
   const confirmDelete = async () => {
@@ -77,7 +77,7 @@ const Users = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
     } finally {
-      setDeleteModal({ isOpen: false, userId: null, full_name: "" });
+      setDeleteModal({ isOpen: false, userId: null, first_name: "" });
     }
   };
 
@@ -139,7 +139,7 @@ const Users = () => {
                       <td className="px-6 py-4 whitespace-nowrap flex items-center gap-3">
                         <UserCircleIcon className="h-8 w-8 text-gray-400" />
                         <span className="text-gray-800 font-medium">
-                          {user.full_name}
+                          {user.first_name}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -147,9 +147,9 @@ const Users = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <button
-                          onClick={() => handleDelete(user.u_id, user.full_name)}
+                          onClick={() => handleDelete(user.u_id, user.first_name)}
                           className="text-red-600 hover:text-red-900"
-                          aria-label={`Delete ${user.full_name}`}
+                          aria-label={`Delete ${user.first_name}`}
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
@@ -190,11 +190,11 @@ const Users = () => {
       <ConfirmDeleteModal
         isOpen={deleteModal.isOpen}
         onClose={() =>
-          setDeleteModal({ isOpen: false, userId: null, full_name: "" })
+          setDeleteModal({ isOpen: false, userId: null, first_name: "" })
         }
         onConfirm={confirmDelete}
         itemType="user"
-        itemName={deleteModal.full_name}
+        itemName={deleteModal.first_name}
       />
     </div>
   );

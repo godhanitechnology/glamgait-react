@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 import { Trash2, X } from "lucide-react";
 
-const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm, itemType, itemName }) => {
+const ConfirmDeleteModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  itemType,
+  itemName,
+}) => {
   const modalRef = useRef(null);
   const cancelButtonRef = useRef(null);
 

@@ -32,11 +32,11 @@ const ReviewCard = ({ name, review }) => {
 
       <div className="relative justify-items-center z-20 p-8">
         <div className="flex items-center gap-3 mb-2">
-          {/* <img
-            src={image}
+          <img
+            src={rightlight}
             alt={name}
             className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-20 2xl:h-20 rounded-full object-cover border-2 border-gray-200"
-          /> */}
+          />
         </div>
         <div>
           <p className="text-sm sm:text-base 2xl:text-[24px] font-semibold text-gray-800 mb-2">

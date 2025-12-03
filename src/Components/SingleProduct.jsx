@@ -730,7 +730,12 @@ function SingleProduct() {
           />
         )}
         {showPopup && <ReturnsDetails onClose={() => setShowPopup(false)} />}
-        {showSizePopup && <ImagePop onClose={() => setShowSizePopup(false)} />}
+        {showSizePopup && (
+          <ImagePop
+            onClose={() => setShowSizePopup(false)}
+            image={product?.category?.cate_chart}
+          />
+        )}
         <ReletedProduct
           cate_id={product.cate_id}
           currentProductId={product.p_id}

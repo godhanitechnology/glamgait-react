@@ -2,6 +2,9 @@
 import toast from "react-hot-toast";
 
 export const ApiURL = import.meta.env.VITE_APP_URL;
+export const COURIER_URL = import.meta.env.VITE_COURIER_URL;
+
+
 export const razorpayKEY = import.meta.env.VITE_RAZORPAY_KEY;
 export const SecretKey = import.meta.env.VITE_APP_SECRET_KEY;
 

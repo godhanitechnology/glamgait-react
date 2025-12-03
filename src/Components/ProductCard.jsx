@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
@@ -6,10 +6,13 @@ import { ApiURL, userInfo } from "../Variable";
 import axiosInstance from "../Axios/axios";
 import toast from "react-hot-toast";
 import { getGuestId } from "../utils/guest";
+import RatingBadge from "./RatingBadge";
 
 const ProductCard = ({ product }) => {
   const [selectedColor, setSelectedColor] = useState(product.productcolors[0]);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isWished, setIsWished] = useState(false);
+  const [wishlistId, setWishlistId] = useState(null);
+
   const user = userInfo();
 
   const navigate = useNavigate();
@@ -22,37 +25,83 @@ const ProductCard = ({ product }) => {
     product?.original_price && product?.original_price > product?.price
       ? product.original_price - product.price
       : 0;
+  useEffect(() => {
+    const checkWishlist = async () => {
+      if (!product.p_id || !selectedColor?.pcolor_id) return;
 
-  const handleAddToWishlist = async (e) => {
+      try {
+        const identifier = user?.u_id || getGuestId();
+        const query = user?.u_id
+          ? `u_id=${identifier}`
+          : `guest_id=${identifier}`;
+        const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+        if (res.data.status === 1) {
+          const wishedItem = res.data.data.find(
+            (item) =>
+              item.p_id === product.p_id &&
+              item.pcolor_id === selectedColor.pcolor_id
+          );
+
+          if (wishedItem) {
+            setIsWished(true);
+            setWishlistId(wishedItem.w_id);
+          } else {
+            setIsWished(false);
+            setWishlistId(null);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to check wishlist", err);
+      }
+    };
+
+    checkWishlist();
+  }, [product.p_id, selectedColor?.pcolor_id, user]);
+
+  const toggleWishlist = async (e) => {
     e.stopPropagation();
-    setIsAdding(true);
 
     try {
-      const firstSizeId = product.productsizes?.length
-        ? product.productsizes[0].size_id
-        : null;
-      const wishlistData = {
-        u_id: user?.u_id || null,
-        guest_id: !user?.u_id ? getGuestId() : null,
-        p_id: product.p_id,
-        sc_id: product.sc_id,
-        pcolor_id: selectedColor?.pcolor_id || null,
-        size_id: firstSizeId || null,
-      };
+      if (isWished && wishlistId) {
+        // Remove from wishlist using w_id
+        const res = await axiosInstance.post("/removewishlist", {
+          w_id: wishlistId,
+        });
 
-      const response = await axiosInstance.post("/addtowishlist", wishlistData);
-
-      if (response.data.status === 1) {
-        toast.success("Added to wishlist");
+        if (res.data.status === 1) {
+          setIsWished(false);
+          setWishlistId(null);
+          toast.success("Removed from wishlist");
+        }
       } else {
-        console.log(response.data.message || "Already in wishlist");
+        // Add to wishlist
+        const firstSizeId = product.productsizes?.[0]?.size_id || null;
+        const payload = {
+          u_id: user?.u_id || null,
+          guest_id: !user?.u_id ? getGuestId() : null,
+          p_id: product.p_id,
+          sc_id: product.sc_id,
+          pcolor_id: selectedColor.pcolor_id,
+          size_id: firstSizeId,
+        };
+
+        const res = await axiosInstance.post("/addtowishlist", payload);
+
+        if (res.data.status === 1) {
+          // Extract w_id from response (adjust path as per your API)
+          const newWishlistItem = res.data.data || res.data.wishlist;
+          setWishlistId(newWishlistItem?.w_id || newWishlistItem?.id);
+          setIsWished(true);
+          toast.success("Added to wishlist");
+        }
       }
-    } catch (error) {
-      console.error("Error adding to wishlist:", error);
-    } finally {
-      setIsAdding(false);
+    } catch (err) {
+      toast.error("Something went wrong");
+      console.error(err);
     }
   };
+
   return (
     <div className="w-[220px] md:w-full bg-[#F3F0ED] rounded-xl overflow-hidden relative hover:shadow-md duration-300 mx-auto z-10">
       {/* Discount Badge */}
@@ -64,9 +113,16 @@ const ProductCard = ({ product }) => {
       {/* Heart Icon */}
       <button
         className="absolute top-2 right-2 p-1 rounded-full hover:scale-110 transition z-10"
-        onClick={handleAddToWishlist}
+        onClick={toggleWishlist}
       >
-        <Heart size={20} className="text-gray-600" />
+        <Heart
+          size={20}
+          className={`transition-all duration-300 ${
+            isWished
+              ? "fill-red-500 text-red-500 "
+              : "text-gray-600 hover:text-red-500"
+          } `}
+        />{" "}
       </button>
 
       {/* Product Image */}
@@ -82,7 +138,7 @@ const ProductCard = ({ product }) => {
         {/* Title and Price Row */}
         <div className="flex flex-col items-start mb-1 space-y-1">
           <div>
-            <h3 className="text-[16px] font-medium text-gray-800 leading-4 line-clamp-2">
+            <h3 className="text-[16px] font-medium text-gray-800 leading-4 line-clamp-1">
               {product?.name}
             </h3>
             <p className="text-[11px] text-gray-500 mt-0.5">
@@ -97,23 +153,8 @@ const ProductCard = ({ product }) => {
               ₹{product?.price}
             </span>
           </div>
-          {/* ⭐ Added review stars and count (no layout changes) */}
-          <div className="flex items-center space-x-1 mt-[2px]">
-            {[...Array(5)].map((_, i) => (
-              <svg
-                key={i}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill={i < (product?.rating || 4) ? "#FBBF24" : "#D1D5DB"} // gold for filled stars
-                className="w-3.5 h-3.5"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.173c.969 0 1.371 1.24.588 1.81l-3.378 2.455a1 1 0 00-.364 1.118l1.287 3.967c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.953 2.805c-.785.57-1.84-.197-1.54-1.118l1.287-3.967a1 1 0 00-.364-1.118L2.052 9.394c-.783-.57-.38-1.81.588-1.81h4.173a1 1 0 00.95-.69l1.286-3.967z" />
-              </svg>
-            ))}
-            <span className="text-[11px] text-gray-500 ml-1">
-              ({product?.review_count || 128})
-            </span>
-          </div>
+          {/* Dynamic Rating & Review Count */}
+          <RatingBadge p_id={product.p_id} />
         </div>
 
         {/* Color Swatches */}

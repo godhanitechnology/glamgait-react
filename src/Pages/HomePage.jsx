@@ -91,11 +91,8 @@ import WatchAndBuy from "../Components/WatchAndBuy";
 import StayInLoop from "../Components/StayInLoop";
 import leftlight from "../assets/leftlight.png";
 import waves from "../assets/waves.png";
-import useScrollRestoration from "../hooks/useScrollRestoration";
 
 const HomePage = () => {
-  useScrollRestoration("home");
-
   return (
     // ✅ Restrict only this wrapper from creating Y scroll
     <div className="overflow-x-hidden relative">

@@ -1,7 +1,8 @@
 import { X } from "lucide-react";
 import c1 from "../assets/c1.jpg";
+import { ApiURL } from "../Variable";
 
-const ImagePop = ({ onClose }) => {
+const ImagePop = ({ onClose ,image}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-[400px] max-w-[90%] rounded-xl overflow-hidden shadow-2xl">
@@ -14,7 +15,7 @@ const ImagePop = ({ onClose }) => {
         </button>
 
         {/* 🖼️ Image */}
-        <img src={c1} alt="Popup" className="w-full h-auto object-cover" />
+        <img src={`${ApiURL}/assets/Category/${image}`} alt="Popup" className="w-full h-auto object-cover" />
       </div>
     </div>
   );

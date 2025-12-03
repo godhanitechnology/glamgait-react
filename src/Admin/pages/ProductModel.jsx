@@ -23,6 +23,10 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     meta_description: "",
     keywords: "",
     is_expert_choice: false,
+    weight: "",
+    length: "",
+    width: "",
+    height: "",
     colors: [{ color_id: "", productimages: [] }],
     sizes: [{ size_id: "" }],
   });
@@ -112,6 +116,10 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
         model: product.model || "",
         fit: product.fit || "",
         sku: product.sku || "",
+        weight: product.weight || "",
+        height: product.height || "",
+        length: product.length || "",
+        width: product.width || "",
         meta_title: product.meta_title || "",
         meta_description: product.description || "",
         keywords: product.keywords || "",
@@ -294,6 +302,27 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       setIsSubmitting(false);
       return;
     }
+
+    if (!formData.weight.trim()) {
+      console.log("Product weight is required");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!formData.height.trim()) {
+      console.log("Product height is required");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!formData.length.trim()) {
+      console.log("Product length is required");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!formData.width.trim()) {
+      console.log("Product width is required");
+      setIsSubmitting(false);
+      return;
+    }
     // if (!formData.sc_id) {
     //   console.log("Sub-Category is required");
     //   setIsSubmitting(false);
@@ -339,7 +368,10 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     data.append("meta_description", formData.meta_description);
     data.append("keywords", formData.keywords);
     data.append("is_expert_choice", formData.is_expert_choice ? "1" : "0");
-
+    data.append("weight", formData.weight);
+    data.append("length", formData.length);
+    data.append("width", formData.width);
+    data.append("height", formData.height);
     data.append(
       "colors",
       JSON.stringify(
@@ -620,6 +652,66 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
                 placeholder="e.g., DRS-1023-BLK"
+              />
+            </div>
+
+            {/* Weight */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Weight
+              </label>
+              <input
+                type="number"
+                name="weight"
+                placeholder="Weight in Kg"
+                value={formData.weight}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+              />
+            </div>
+
+            {/* Length */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Length
+              </label>
+              <input
+                type="number"
+                name="length"
+                placeholder="length in cm"
+                value={formData.length}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+              />
+            </div>
+
+            {/* Width */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Width
+              </label>
+              <input
+                type="number"
+                name="width"
+                placeholder="width in cm"
+                value={formData.width}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+              />
+            </div>
+
+            {/* Height */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Height
+              </label>
+              <input
+                type="number"
+                name="height"
+                placeholder="height in cm"
+                value={formData.height}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
 

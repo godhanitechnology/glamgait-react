@@ -8,8 +8,10 @@ import axiosInstance from "../Axios/axios";
 import { reviewsData } from "../data/reviews";
 import ReviewCard from "./ReviewCard";
 import CategoryReviewSlider from "./CategoryReviewSlider";
+import ScrollToTop from "./ScrollToTop";
 
 const Allproducts = () => {
+  ScrollToTop()
   const [filters, setFilters] = useState({
     subcategories: [],
     fabrics: [],

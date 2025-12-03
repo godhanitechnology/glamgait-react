@@ -152,7 +152,7 @@ import locationf from "../assets/locationf.svg";
 
 const Footer = () => {
   return (
-    <footer className="relative w-full font-inter text-[#1c1c1c] lg:h-[900px] overflow-hidden">
+    <footer className="relative w-full font-inter text-[#1c1c1c] lg:min-h-[900px] overflow-hidden">
       {/* Decorative Lamps */}
       <img
         src={leftlonglight}
@@ -292,7 +292,7 @@ const Footer = () => {
                 Payment Options{" "}
               </Link>
             </li>
-             <li>
+            <li>
               <Link to="/cancellationpolicy" className="hover:underline">
                 Cancellation Policy
               </Link>
@@ -306,13 +306,13 @@ const Footer = () => {
             Contact Us
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
-            <li className="flex gap-2 items-center">
+            <li className="flex gap-2 ">
               <div className="h-5 w-5">
                 <img src={locationf} alt="" />
               </div>
-              address-312,capital plaza,near 
+              312, Capital Plaza, Near
               <br />
-              d-mart,yogi chowk,surat-395010
+              D-mart, Yogi Chowk, Surat-395010
             </li>
             <li className="flex gap-2 items-center">
               <div className="h-5 w-5">
@@ -336,10 +336,10 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        © 2024 Glamgait. All rights reserved.
+        © 2024 TRISHULOM CLOTHS ONLINE. All rights reserved.
       </div>
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-      Design by Godhani Technology.
+        Design by Godhani Technology.
       </div>
 
       <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">

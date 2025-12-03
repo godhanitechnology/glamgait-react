@@ -51,8 +51,8 @@ import TermsofService from "./Pages/TermsofService";
 import PaymentOptions from "./Pages/PaymentOptions";
 import CancellationPolicy from "./Pages/CancellationPolicy";
 import OrderConfirmation from "./Components/OrderConfirmation";
-import ScrollToTop from "./Components/ScrollToTop";
 import Announcement from "./Admin/pages/Announcements";
+import SmartScrollManager from "./Components/SmartScrollManager";
 
 function App() {
   return (
@@ -86,7 +86,7 @@ function App() {
         }}
       />
       <BrowserRouter>
-        <ScrollToTop />
+        <SmartScrollManager />
         <Routes>
           {/* Client Routes */}
           <Route
