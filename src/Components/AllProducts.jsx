@@ -11,7 +11,7 @@ import CategoryReviewSlider from "./CategoryReviewSlider";
 import ScrollToTop from "./ScrollToTop";
 
 const Allproducts = () => {
-  ScrollToTop()
+  ScrollToTop();
   const [filters, setFilters] = useState({
     subcategories: [],
     fabrics: [],
@@ -164,9 +164,11 @@ const Allproducts = () => {
         payload
       );
 
+      console.log(products, "products");
+
       if (response.data.status === 1) {
-        setProducts(response.data.data);
-        setTotalProducts(response.data.total_count); // total products from backend
+        setProducts(response.data.data.products);
+        setTotalProducts(response.data.total_count);
       } else {
         setProducts([]);
         setTotalProducts(0);
@@ -482,9 +484,9 @@ const Allproducts = () => {
               </select>
             </div>
 
-            {products.length > 0 ? (
+            {products?.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 ">
-                {products.map((product) => (
+                {products?.map((product) => (
                   <div className="flex sm:w-[240px] md:w-[225px] lg:w-[260px] xl:w-[280px]">
                     <ProductCard key={product.p_id} product={product} />
                   </div>

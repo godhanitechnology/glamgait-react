@@ -232,6 +232,8 @@ const Profileorder = () => {
       try {
         if (!u_id) return;
         const res = await axiosInstance.get(`${ApiURL}/getorder/${u_id}`);
+        console.log(res.data.data);
+
         if (res.data.status === 1) {
           setOrders(res.data.data);
         } else {
@@ -319,13 +321,9 @@ const Profileorder = () => {
                     <span className="font-medium text-gray-800">Order no:</span>{" "}
                     {order.orderId}
                   </p>
+                  <p className="font-light">Customer: {order.address.name} </p>
                   <p className="font-light">
-                    Customer: {order.address.first_name}{" "}
-                    {order.address.last_name}
-                  </p>
-                  <p className="font-light">
-                    Address: {order.address.address}, {order.address.city},{" "}
-                    {order.address.state}
+                    Address: {order.address.fullAddress},
                   </p>
                 </div>
 
@@ -374,7 +372,7 @@ const Profileorder = () => {
                         </p>
                       )}
                       <p className="text-sm text-gray-600">
-                        Color: {item.color?.color_name || "N/A"}
+                        Color: {item.color_name || "N/A"}
                       </p>
                       <p className="text-sm text-gray-600">
                         Qty: {item.quantity}

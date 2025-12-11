@@ -1,254 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { Link, useLocation, useNavigate } from "react-router-dom";
-// import {
-//   Search,
-//   Heart,
-//   ShoppingCart,
-//   TextAlignEnd,
-//   X,
-//   CircleUser,
-// } from "lucide-react";
-// import logo from "../assets/logo.svg";
-// import axiosInstance from "../Axios/axios";
-// import { userInfo } from "../Variable";
-
-// const Navbar = () => {
-//   const location = useLocation();
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [isAtBottom, setIsAtBottom] = useState(false);
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-//   const [categories, setCategories] = useState([]);
-//   const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
-//   const [announcements, setAnnouncements] = useState([]);
-//   const user = userInfo();
-//   const u_id = user?.u_id;
-//   const token = user?.auth_token;
-//   const searchParams = new URLSearchParams(location.search);
-//   const currentCateId = searchParams.get("cate_id");
-//   const navigate = useNavigate();
-//   const toggleMenu = () => setIsOpen(!isOpen);
-
-//   // Auto-change announcements every 4 seconds
-//   useEffect(() => {
-//     if (announcements.length === 0) return; //avoid error when empty
-//     const interval = setInterval(() => {
-//       setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
-//     }, 4000);
-//     return () => clearInterval(interval);
-//   }, [announcements]);
-
-//   // Handle scroll detection
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       const windowHeight = window.innerHeight;
-//       const documentHeight = document.documentElement.scrollHeight;
-//       const scrollPosition = window.scrollY + windowHeight;
-//       setIsAtBottom(scrollPosition >= documentHeight - 10);
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     if (searchQuery.trim() !== "") {
-//       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-//       setIsMobileSearchOpen(false);
-//     }
-//   };
-//   const getAnnouncements = async () => {
-//     try {
-//       const response = await axiosInstance.get("/getannouncements");
-//       if (response?.data?.status === 1) {
-//         setAnnouncements(response?.data?.data);
-//       } else {
-//         setAnnouncements([]);
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   const getCategories = async () => {
-//     try {
-//       const response = await axiosInstance.get("/getcategory");
-//       if (response?.data?.status === 1) {
-//         setCategories(response?.data?.data);
-//       } else {
-//         setCategories([]);
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     getCategories();
-//     getAnnouncements();
-//   }, []);
-
-//   const menuItems = [
-//     { to: "/", label: "Home" },
-//     ...categories.map((cat) => ({
-//       to: `/shop?cate_id=${cat.cate_id}&category=${encodeURIComponent(
-//         cat.cate_name
-//       )}`,
-//       label: cat.cate_name,
-//       cate_id: cat.cate_id,
-//     })),
-//     { to: "/contact", label: "Contact Us" },
-//   ];
-
-//   return (
-//     <>
-//       {/* Announcement Bar */}
-//       {announcements.length > 0 && (
-//         <div className="w-full bg-[#02382A] text-white text-sm py-2 text-center font-medium tracking-wide overflow-hidden">
-//           <div className="transition-all duration-500 ease-in-out">
-//             <span
-//               key={announcements[currentAnnouncement]?.ann_id}
-//               className="block animate-fade"
-//             >
-//               {announcements[currentAnnouncement]?.text}{" "}
-//               <Link to="/shop" className="underline">
-//                 Shop Now
-//               </Link>
-//             </span>
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Main Navbar */}
-//       <nav className="sticky top-0 z-60">
-//         <div className="bg-[#F3F0ED] shadow-md">
-//           <div className="max-w-7xl mx-auto w-full px-4 py-4 flex justify-between items-center">
-//             {/* Logo */}
-//             <Link to="/" className="text-xl font-bold text-black">
-//               <img src={logo} alt="GlamGait Logo" className="h-10 w-auto" />
-//             </Link>
-
-//             {/* Desktop Menu */}
-//             <div className="hidden lg:flex space-x-6 mr-6">
-//               {menuItems?.map((item) => (
-//                 <Link
-//                   key={item.to}
-//                   to={item.to}
-//                   className={
-//                     item.cate_id
-//                       ? item.cate_id.toString() === currentCateId
-//                         ? "text-black font-medium"
-//                         : "text-[#767676] hover:text-black"
-//                       : location.pathname === item.to
-//                       ? "text-black font-medium"
-//                       : "text-[#767676] hover:text-black"
-//                   }
-//                 >
-//                   {item.label}
-//                 </Link>
-//               ))}
-//             </div>
-
-//             {/* Icons + Hamburger */}
-//             <div className="flex items-center">
-//               <div className="flex space-x-4 text-gray-600">
-//                 <Search
-//                   className="cursor-pointer hover:text-black"
-//                   onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-//                 />
-//                 <Link
-//                   to="/wishlist"
-//                   className="cursor-pointer hover:text-black"
-//                 >
-//                   <Heart className="hover:text-black" />
-//                 </Link>
-//                 <Link to="/cart" className="cursor-pointer hover:text-black">
-//                   <ShoppingCart className="hover:text-black" />
-//                 </Link>
-//                 <CircleUser
-//                   className="cursor-pointer hover:text-black"
-//                   onClick={() => {
-//                     if (u_id && token) {
-//                       navigate("/myorders");
-//                     } else {
-//                       navigate("/login");
-//                     }
-//                   }}
-//                 />
-//               </div>
-
-//               {/* Mobile Hamburger */}
-//               <button
-//                 className="lg:hidden ml-4 text-gray-600 hover:text-black"
-//                 onClick={toggleMenu}
-//               >
-//                 {isOpen ? <X size={24} /> : <TextAlignEnd size={24} />}
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </nav>
-
-//       {/* Search Bar */}
-// {isMobileSearchOpen && (
-//   <div
-//     className={`fixed ${
-//       isAtBottom ? "bottom-0" : ""
-//     } w-full bg-white shadow-md px-4 py-3 flex items-center justify-center z-60`}
-//   >
-//     <form
-//       onSubmit={handleSearch}
-//       className="flex w-full max-w-xl items-center"
-//     >
-//       <div className="relative w-full">
-//         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-//         <input
-//           type="text"
-//           value={searchQuery}
-//           onChange={(e) => setSearchQuery(e.target.value)}
-//           className="w-full flex-1 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none"
-//           placeholder="Search..."
-//         />
-//       </div>
-//     </form>
-//   </div>
-// )}
-
-//       {/* 📱 Mobile Menu */}
-//       {isOpen && (
-//         <div
-//           className={`lg:hidden fixed ${
-//             isAtBottom ? "bottom-0" : "top-[72px]"
-//           } left-0 w-full bg-[#F3F0ED] z-50 shadow-md px-4 py-4 transition-all duration-300 ease-in-out`}
-//         >
-//           <div className="flex flex-col space-y-4">
-//             {menuItems.map((item) => (
-//               <Link
-//                 key={item.to}
-//                 to={item.to}
-//                 className={
-//                   item.cate_id
-//                     ? item.cate_id.toString() === currentCateId
-//                       ? "text-black font-medium"
-//                       : "text-[#767676] hover:text-black"
-//                     : location.pathname === item.to
-//                     ? "text-black font-medium"
-//                     : "text-[#767676] hover:text-black"
-//                 }
-//                 onClick={toggleMenu}
-//               >
-//                 {item.label}
-//               </Link>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-// export default Navbar;
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -284,6 +33,7 @@ const Navbar = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState({});
+  const [megaMenuCache, setMegaMenuCache] = useState({});
 
   const searchParams = new URLSearchParams(location.search);
   const currentCateId = searchParams.get("cate_id");
@@ -310,6 +60,13 @@ const Navbar = () => {
 
   const fetchCategoryFilters = async (cate_id) => {
     if (!cate_id) return;
+
+    // If already cached, use it!
+    if (megaMenuCache[cate_id]) {
+      setMegaMenuData(megaMenuCache[cate_id]);
+      return;
+    }
+
     try {
       const [subRes, fabricRes, workRes, occRes, styleRes] = await Promise.all([
         axiosInstance.get(`/getsubcategory/${cate_id}`),
@@ -319,13 +76,22 @@ const Navbar = () => {
         axiosInstance.get(`/getstyles/${cate_id}`),
       ]);
 
-      setMegaMenuData({
+      const data = {
         Collection: subRes?.data?.data || [],
         Fabric: fabricRes?.data?.data || [],
         Work: workRes?.data?.data || [],
         Occasion: occRes?.data?.data || [],
         Style: styleRes?.data?.data || [],
-      });
+      };
+
+      // Save to cache
+      setMegaMenuCache((prev) => ({
+        ...prev,
+        [cate_id]: data,
+      }));
+
+      // Set current menu
+      setMegaMenuData(data);
     } catch (error) {
       console.error("Error fetching filters:", error);
     }
@@ -386,14 +152,15 @@ const Navbar = () => {
   }, [categories]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery(""); // optional: clear input
       setIsMobileSearchOpen(false);
     }
   };
-
   const toggleMobileSection = (cate_id, section) => {
     setMobileExpanded((prev) => ({
       ...prev,
@@ -439,27 +206,36 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8 mr-6">
-            {menuItems.map((item) => (
+            {menuItems?.map((item) => (
               <div
                 key={item.to}
                 className="relative"
                 onMouseEnter={() => {
                   if (item.cate_id) {
                     setHoveredCategory(item);
-                    fetchCategoryFilters(item.cate_id);
-                    setShowMegaMenu(true);
+                    if (megaMenuCache[item.cate_id]) {
+                      setMegaMenuData(megaMenuCache[item.cate_id]);
+                      setShowMegaMenu(true);
+                    } else {
+                      fetchCategoryFilters(item.cate_id);
+                      setShowMegaMenu(true);
+                    }
                   }
                 }}
+                // onMouseLeave={() => {
+                //   setShowMegaMenu(false);
+                //   setHoveredCategory(null);
+                // }}
               >
                 <Link
                   to={item.to}
                   className={`text-[16px] font-medium transition-colors ${
                     item.cate_id
                       ? item.cate_id.toString() === currentCateId
-                        ? "text-black font-medium"
+                        ? "text-black font-bold"
                         : "text-[#767676] hover:text-black"
                       : location.pathname === item.to
-                      ? "text-black font-medium"
+                      ? "text-black font-bold"
                       : "text-[#767676] hover:text-black"
                   }`}
                 >
@@ -498,6 +274,7 @@ const Navbar = () => {
         </div>
 
         {/* Mega Menu – Desktop */}
+
         {showMegaMenu && hoveredCategory?.cate_id && (
           <div
             className="max-w-5xl mx-auto absolute inset-x-0 top-full bg-[#f3f0ed] shadow-xl border-t"
@@ -516,14 +293,14 @@ const Navbar = () => {
                       Collections
                     </h3>
                     <ul className="space-y-2">
-                      {megaMenuData.Collection.map((it, i) => (
+                      {megaMenuData?.Collection?.map((it, i) => (
                         <li key={i}>
                           <Link
                             to={`/shop?cate_id=${
                               hoveredCategory.cate_id
                             }&collection=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
-                            onClick={() => setShowMegaMenu(false)} // ADD THIS
+                            onClick={() => setShowMegaMenu(false)}
                           >
                             {it.name}
                           </Link>
@@ -533,7 +310,7 @@ const Navbar = () => {
                   </div>
                 )}
 
-                {megaMenuData.Fabric?.length > 0 && (
+                {megaMenuData?.Fabric?.length > 0 && (
                   <div>
                     <h3 className="font-bold text-[16px] uppercase tracking-widest text-gray-900 mb-4">
                       Fabric
@@ -546,6 +323,7 @@ const Navbar = () => {
                               hoveredCategory.cate_id
                             }&fabric=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
+                            onClick={() => setShowMegaMenu(false)}
                           >
                             {it.name}
                           </Link>
@@ -555,7 +333,7 @@ const Navbar = () => {
                   </div>
                 )}
 
-                {megaMenuData.Occasion?.length > 0 && (
+                {megaMenuData?.Occasion?.length > 0 && (
                   <div>
                     <h3 className="font-bold text-[16px] uppercase tracking-widest text-gray-900 mb-4">
                       Occasion
@@ -568,6 +346,7 @@ const Navbar = () => {
                               hoveredCategory.cate_id
                             }&occasion=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
+                            onClick={() => setShowMegaMenu(false)}
                           >
                             {it.name}
                           </Link>
@@ -590,6 +369,7 @@ const Navbar = () => {
                               hoveredCategory.cate_id
                             }&work=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
+                            onClick={() => setShowMegaMenu(false)}
                           >
                             {it.name}
                           </Link>
@@ -612,6 +392,7 @@ const Navbar = () => {
                               hoveredCategory.cate_id
                             }&style=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
+                            onClick={() => setShowMegaMenu(false)}
                           >
                             {it.name}
                           </Link>

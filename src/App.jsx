@@ -1,11 +1,4 @@
-import {
-  Routes,
-  Route,
-  BrowserRouter,
-  useLocation,
-  Outlet,
-} from "react-router-dom";
-import { useEffect } from "react"; // Import useEffect
+import { Routes, Route, BrowserRouter, Outlet } from "react-router-dom";
 import "./App.css";
 import Navbar from "./Components/Navbar";
 import HomePage from "./Pages/HomePage";
@@ -53,6 +46,7 @@ import CancellationPolicy from "./Pages/CancellationPolicy";
 import OrderConfirmation from "./Components/OrderConfirmation";
 import Announcement from "./Admin/pages/Announcements";
 import SmartScrollManager from "./Components/SmartScrollManager";
+import SearchResults from "./Components/SearchResults";
 
 function App() {
   return (
@@ -101,7 +95,7 @@ function App() {
             }
           >
             <Route path="/" element={<HomePage />} />
-            <Route path="/product/:p_id" element={<SingleProductPage />} />
+            <Route path="/product" element={<SingleProductPage />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/shop" element={<AllProductPage />} />
             <Route path="/register" element={<Register />} />
@@ -120,6 +114,7 @@ function App() {
             <Route path="/refund" element={<RefundPolicy />} />
             <Route path="/terms" element={<TermsofService />} />
             <Route path="/paymentoptions" element={<PaymentOptions />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route
               path="/cancellationpolicy"
               element={<CancellationPolicy />}

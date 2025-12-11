@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PlusCircle, Trash2, X, Check, Upload } from "lucide-react";
+import { PlusCircle, Trash2, X } from "lucide-react";
 import { ApiURL, userInfo } from "../../Variable";
 import toast from "react-hot-toast";
 import axiosInstance from "../../Axios/axios";
@@ -16,8 +16,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     price: "",
     original_price: "",
     description: "",
-    model: "",
-    fit: "",
     sku: "",
     meta_title: "",
     meta_description: "",
@@ -27,7 +25,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     length: "",
     width: "",
     height: "",
-    colors: [{ color_id: "", productimages: [] }],
+    colors: [{ color_id: "", images: [] }],
     sizes: [{ size_id: "" }],
   });
   const [categories, setCategories] = useState([]);
@@ -36,70 +34,18 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
   const [works, setWorks] = useState([]);
   const [occasions, setOccasions] = useState([]);
   const [styles, setStyles] = useState([]);
-
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
   const [mediaPreviews, setMediaPreviews] = useState([]);
   const [existingMedia, setExistingMedia] = useState([]);
   const [deletedMediaIds, setDeletedMediaIds] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [existingSizes, setExistingSizes] = useState([]);
 
-  const userData = userInfo();
-  const token = userData?.token;
+  const [stockMatrix, setStockMatrix] = useState({}); // color_id-psize_id
+  const [colorQuantities, setColorQuantities] = useState({}); // color_id only for no-size products
+  const [colorIdToPColorId, setColorIdToPColorId] = useState({});
 
-  // Fetch all categories initially
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axiosInstance.get(`${ApiURL}/getcategory`);
-        setCategories(res?.data?.data || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCategories();
-  }, []);
 
-  // Fetch subcategories, colors, and sizes (unchanged)
-  useEffect(() => {
-    if (!formData.cate_id) return;
-
-    const fetchCategoryData = async () => {
-      try {
-        const [
-          subRes,
-          fabricRes,
-          workRes,
-          occRes,
-          styleRes,
-          colorRes,
-          sizeRes,
-        ] = await Promise.all([
-          axiosInstance.get(`${ApiURL}/getsubcategory/${formData.cate_id}`),
-          axiosInstance.get(`${ApiURL}/getfabrics/${formData.cate_id}`),
-          axiosInstance.get(`${ApiURL}/getworks/${formData.cate_id}`),
-          axiosInstance.get(`${ApiURL}/getoccasions/${formData.cate_id}`),
-          axiosInstance.get(`${ApiURL}/getstyles/${formData.cate_id}`),
-          axiosInstance.get(`${ApiURL}/getcolor`),
-          axiosInstance.get(`${ApiURL}/getsize/${formData.cate_id}`),
-        ]);
-
-        setSubCategories(subRes.data.data || []);
-        setFabrics(fabricRes.data.data || []);
-        setWorks(workRes.data.data || []);
-        setOccasions(occRes.data.data || []);
-        setStyles(styleRes.data.data || []);
-        setColorsList(colorRes.data.data || []);
-        setSizesList(sizeRes.data.data || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCategoryData();
-  }, [formData.cate_id]);
-
-  // Populate form for edit
   useEffect(() => {
     if (product) {
       setFormData({
@@ -112,42 +58,123 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
         style_id: product.style_id || "",
         price: product.price || "",
         original_price: product.original_price || "",
-        description: product.description || "",
-        model: product.model || "",
-        fit: product.fit || "",
-        sku: product.sku || "",
-        weight: product.weight || "",
-        height: product.height || "",
-        length: product.length || "",
-        width: product.width || "",
         meta_title: product.meta_title || "",
-        meta_description: product.description || "",
+        meta_description: product.meta_description || "",
         keywords: product.keywords || "",
         is_expert_choice: product.is_expert_choice || false,
-        colors: product.productcolors?.length
-          ? product.productcolors.map((color) => ({
-              color_id: color.color_id,
-              productimages: [],
-            }))
-          : [{ color_id: "", productimages: [] }],
-        sizes: product.productsizes?.length
-          ? product.productsizes.map((size) => ({ size_id: size.size_id }))
-          : [{ size_id: "" }],
+        description: product.description || "",
+        weight: product.weight || "",
+        length: product.length || "",
+        width: product.width || "",
+        height: product.height || "",
+        sku: product.sku || "",
+        colors: product.productcolors?.map((pc) => ({
+          color_id: pc.color_id,
+          images: [],
+        })) || [{ color_id: "", images: [] }],
+        sizes: product.productsizes?.map((ps) => ({
+          size_id: ps.size_id,
+        })) || [{ size_id: "" }],
       });
 
-      setExistingMedia(product.productcolors || []);
-      setDeletedMediaIds([]);
-      setMediaPreviews([]);
+      // Build pcolor_id mapping
+      const mapping = {};
+      product.productcolors?.forEach((pc) => {
+        mapping[pc.color_id] = pc.pcolor_id;
+      });
+      setColorIdToPColorId(mapping);
+      
+      // Load stock: size-based or color-only
+      if (product.has_sizes && product.productvariants) {
+      const stock = {};
+      product.productvariants.forEach((v) => {
+        if (v.pcolor_id && v.psize_id) {
+          const key = `${v.color_id}-${v.size_id}`;
+          stock[key] = v.remaining_qty || 0;
+        }
+      });
+      // Ensure every cell exists with at least 0
+      product.productcolors?.forEach((pc) => {
+        product.productsizes?.forEach((ps) => {
+          const key = `${pc.color_id}-${ps.size_id}`;
+          if (!(key in stock)) stock[key] = 0;
+        });
+      });
+      setStockMatrix(stock);
+    } else if (product.productvariants) {
+      const qtyMap = {};
+      product.productvariants.forEach((v) => {
+        if (v.pcolor_id && !v.psize_id) {
+          const colorId = Object.keys(mapping).find(
+            (cid) => mapping[cid] === v.pcolor_id
+          );
+          if (colorId) qtyMap[colorId] = v.remaining_qty || 0;
+        }
+      });
+      setColorQuantities(qtyMap);
+    }
+
+      // Existing images
+      setExistingMedia(
+        product.productcolors?.map((pc) => ({
+          pcolor_id: pc.pcolor_id,
+          color_name: pc.color?.color_name,
+          images: pc.productimages || [],
+        })) || []
+      );
     }
   }, [product]);
 
   useEffect(() => {
-    return () => {
-      mediaPreviews.forEach((previewGroup) =>
-        previewGroup?.forEach((preview) => URL.revokeObjectURL(preview))
-      );
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get(`${ApiURL}/getcategory`);
+        setCategories(res?.data?.data || []);
+      } catch (err) {
+        console.error(err);
+      }
     };
-  }, [mediaPreviews]);
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (formData.cate_id) {
+      Promise.all([
+        axiosInstance
+          .get(`${ApiURL}/getcolor`)
+          .then((r) => setColorsList(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getsize/${formData.cate_id}`)
+          .then((r) => setSizesList(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getsubcategory/${formData.cate_id}`)
+          .then((r) => setSubCategories(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getworks/${formData.cate_id}`)
+          .then((r) => setWorks(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getfabrics/${formData.cate_id}`)
+          .then((r) => setFabrics(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getstyles/${formData.cate_id}`)
+          .then((r) => setStyles(r.data.data || [])),
+        axiosInstance
+          .get(`${ApiURL}/getoccasions/${formData.cate_id}`)
+          .then((r) => setOccasions(r.data.data || [])),
+      ]).catch((err) => console.error(err));
+    }
+  }, [formData.cate_id]);
+
+  const handleStockChange = (colorId, sizeId, value) => {
+    const num = value === "" ? 0 : parseInt(value, 10) || 0;
+    const key = `${colorId}-${sizeId}`;
+    setStockMatrix((prev) => ({ ...prev, [key]: num }));
+  };
+
+  const handleColorQuantityChange = (colorId, value) => {
+    const num = value === "" ? 0 : parseInt(value, 10) || 0;
+    setColorQuantities((prev) => ({ ...prev, [colorId]: num }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -157,289 +184,118 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     }));
   };
 
-  const handleColorChange = (index, field, value) => {
-    const updatedColors = [...formData.colors];
-    updatedColors[index] = { ...updatedColors[index], [field]: value };
-    setFormData((prev) => ({ ...prev, colors: updatedColors }));
-  };
-
-  const addColorField = () => {
-    setFormData((prev) => ({
-      ...prev,
-      colors: [...prev.colors, { color_id: "", productimages: [] }], // Consistent: 'productimages'
-    }));
-    // Add slots for new color
-    setMediaPreviews((prev) => [...prev, []]);
-    setExistingMedia((prev) => [
-      ...prev,
-      { color_name: "", productimages: [] },
-    ]);
-    setDeletedMediaIds((prev) => [...prev, []]);
-  };
-
-  const removeColorField = (index) => {
-    setDeletedMediaIds((prev) => {
-      const newDeleted = [...prev];
-      newDeleted[index] = [...(newDeleted[index] || [])];
-      return newDeleted;
-    });
-
-    setFormData((prev) => ({
-      ...prev,
-      colors: prev.colors.filter((_, i) => i !== index),
-    }));
-    setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
-    setExistingMedia((prev) => prev.filter((_, i) => i !== index));
-
-    setDeletedMediaIds((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleFileChange = (colorIndex, e) => {
-    const files = Array.from(e.target.files);
-    const maxImages = 10; // Adjust as needed
-    const currentImages = formData.colors[colorIndex].productimages || []; // FIX: Use 'productimages'
-    const existingImages = existingMedia[colorIndex]?.productimages || [];
-    if (
-      currentImages.length + files.length + existingImages.length >
-      maxImages
-    ) {
-      console.log(
-        `You can upload a maximum of ${maxImages} productimages per color`
-      );
-      return;
-    }
-
-    setFormData((prev) => {
-      const updatedColors = [...prev.colors];
-      updatedColors[colorIndex].productimages = [...currentImages, ...files]; // FIX: Use 'productimages'
-      return { ...prev, colors: updatedColors };
-    });
-
-    setMediaPreviews((prev) => {
-      const newPreviews = [...prev];
-      newPreviews[colorIndex] = [
-        ...(newPreviews[colorIndex] || []),
-        ...files.map((file) => URL.createObjectURL(file)),
-      ];
-      return newPreviews;
-    });
-  };
-
-  const removeMediaPreview = (colorIndex, mediaIndex) => {
-    setFormData((prev) => {
-      const updatedColors = [...prev.colors];
-      // FIX: Now correctly filters from 'productimages' (where files are stored)
-      updatedColors[colorIndex].productimages = updatedColors[
-        colorIndex
-      ].productimages.filter((_, i) => i !== mediaIndex);
-      return { ...prev, colors: updatedColors };
-    });
-
-    setMediaPreviews((prev) => {
-      const newPreviews = [...prev];
-      const revoked = newPreviews[colorIndex]?.[mediaIndex];
-      if (revoked) URL.revokeObjectURL(revoked);
-      newPreviews[colorIndex] = newPreviews[colorIndex].filter(
-        (_, i) => i !== mediaIndex
-      );
-      return newPreviews;
-    });
-  };
-
-  const handleDeleteExistingMedia = (colorIndex, mediaId) => {
-    setExistingMedia((prev) => {
-      const newExistingMedia = [...prev];
-      newExistingMedia[colorIndex].productimages = newExistingMedia[
-        colorIndex
-      ].productimages.filter((media) => media.image_id !== mediaId);
-      return newExistingMedia;
-    });
-
-    setDeletedMediaIds((prev) => {
-      const newDeletedMediaIds = [...prev];
-      newDeletedMediaIds[colorIndex] = [
-        ...(newDeletedMediaIds[colorIndex] || []),
-        mediaId,
-      ];
-      return newDeletedMediaIds;
-    });
-
-    toast.success("Image marked for removal");
-  };
-
-  const handleSizeChange = (index, value) => {
-    const updatedSizes = [...formData.sizes];
-    updatedSizes[index] = { ...updatedSizes[index], size_id: value };
-    setFormData((prev) => ({ ...prev, sizes: updatedSizes }));
-  };
-
-  const addSizeField = () => {
-    setFormData((prev) => ({
-      ...prev,
-      sizes: [...prev.sizes, { size_id: "" }],
-    }));
-  };
-
-  const removeSizeField = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      sizes: prev.sizes.filter((_, i) => i !== index),
-    }));
-    setExistingSizes((prev) => {
-      const newExistingSizes = [...prev];
-      newExistingSizes.splice(index, 1);
-      return newExistingSizes;
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-
-    // Validate required fields (unchanged)
-    if (!formData.name.trim()) {
-      console.log("Product name is required");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!formData.weight.trim()) {
-      console.log("Product weight is required");
-      setIsSubmitting(false);
-      return;
-    }
-    if (!formData.height.trim()) {
-      console.log("Product height is required");
-      setIsSubmitting(false);
-      return;
-    }
-    if (!formData.length.trim()) {
-      console.log("Product length is required");
-      setIsSubmitting(false);
-      return;
-    }
-    if (!formData.width.trim()) {
-      console.log("Product width is required");
-      setIsSubmitting(false);
-      return;
-    }
-    // if (!formData.sc_id) {
-    //   console.log("Sub-Category is required");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-    // if (!formData.f_id) {
-    //   console.log("fabric is required");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
-    // Validate colors
-    // if (formData.colors.some((color) => !color.color_id)) {
-    //   console.log("Please select a color for each color field");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
-    // // Validate sizes
-    // if (formData.sizes.some((size) => !size.size_id)) {
-    //   console.log("Please select a size for each size field");
-    //   setIsSubmitting(false);
-    //   return;
-    // }
 
     const data = new FormData();
     data.append("name", formData.name);
     data.append("cate_id", formData.cate_id);
-
     data.append("sc_id", formData.sc_id);
     data.append("f_id", formData.f_id);
-    data.append("work_id", formData.work_id); // Added
+    data.append("work_id", formData.work_id);
     data.append("occasion_id", formData.occasion_id);
     data.append("style_id", formData.style_id);
-
     data.append("price", formData.price);
-    data.append("original_price", formData.original_price);
+    data.append("original_price", formData.original_price || 0);
     data.append("description", formData.description);
-    data.append("model", formData.model);
-    data.append("fit", formData.fit);
-    data.append("sku", formData.sku);
-    data.append("meta_title", formData.meta_title);
-    data.append("meta_description", formData.meta_description);
-    data.append("keywords", formData.keywords);
-    data.append("is_expert_choice", formData.is_expert_choice ? "1" : "0");
     data.append("weight", formData.weight);
     data.append("length", formData.length);
     data.append("width", formData.width);
     data.append("height", formData.height);
+    data.append("sku", formData.sku);
+    data.append("meta_title", formData.meta_title);
+    data.append("meta_description", formData.meta_description);
+    data.append("keywords", formData.keywords);
+    data.append("is_expert_choice", formData.is_expert_choice);
+
     data.append(
       "colors",
-      JSON.stringify(
-        formData.colors.map((c) => ({
-          color_id: c.color_id,
-        }))
-      )
+      JSON.stringify(formData.colors.map((c) => ({ color_id: c.color_id })))
     );
-
-    // Append sizes JSON
     data.append(
       "sizes",
-      JSON.stringify(
-        formData.sizes.map((s) => ({
-          size_id: s.size_id,
-        }))
-      )
+      JSON.stringify(formData.sizes.map((s) => ({ size_id: s.size_id })))
     );
 
-    // FIX: Append productimages for each color using 'productimages' property
-    formData.colors.forEach((color, colorIndex) => {
-      color.productimages.forEach((image) => {
-        // Changed from 'productimages'
-        data.append(`images_color_${colorIndex}`, image);
-      });
+    formData.colors.forEach((color, i) => {
+      color.images.forEach((img) => data.append(`images_color_${i}`, img));
     });
 
-    if (product) {
-      data.append("p_id", product.p_id);
-      data.append("deleted_media", JSON.stringify(deletedMediaIds));
-    }
+    if (product) data.append("deleted_media", JSON.stringify(deletedMediaIds));
 
-    try {
-      const url = product
-        ? `${ApiURL}/updateproduct/${product.p_id}`
-        : `${ApiURL}/insertproduct`;
-      const method = product ? "post" : "post";
+     try {
+      const url = product ? `${ApiURL}/updateproduct/${product.p_id}` : `${ApiURL}/insertproduct`;
+      const res = await axiosInstance.post(url, data);
 
-      const response = await axiosInstance({
-        method,
-        url,
-        data,
-      });
+      if (res.data.status === 1) {
+        const p_id = product?.p_id || res.data.data.p_id;
 
-      if (response.data.status === 1) {
-        toast.success(
-          product
-            ? "Product updated successfully"
-            : "Product created successfully"
-        );
+        // Fetch fresh product to get pcolor_id & psize_id mappings
+        const fullRes = await axiosInstance.post(`${ApiURL}/getproductbyid/${p_id}`);
+        const fullProduct = fullRes.data.data;
+
+        const pColorMap = {};
+        fullProduct.productcolors.forEach((pc) => (pColorMap[pc.color_id] = pc.pcolor_id));
+
+        const pSizeMap = {};
+        fullProduct.productsizes.forEach((ps) => (pSizeMap[ps.size_id] = ps.psize_id));
+
+        const stockPromises = [];
+
+        const hasSelectedSizes = formData.sizes.some((s) => s.size_id);
+
+        if (hasSelectedSizes) {
+          // Size + Color matrix
+          Object.entries(stockMatrix).forEach(([key, qty]) => {
+            const [color_id, size_id] = key.split("-");
+            const pcolor_id = pColorMap[color_id];
+            const psize_id = pSizeMap[size_id];
+            if (pcolor_id && psize_id && qty >= 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/addstock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id,
+                  qty_to_add: qty,
+                })
+              );
+            }
+          });
+        } else {
+          // Color-only
+          Object.entries(colorQuantities).forEach(([color_id, qty]) => {
+            const pcolor_id = pColorMap[color_id];
+            if (pcolor_id && qty >= 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/addstock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id: null,
+                  qty_to_add: qty,
+                })
+              );
+            }
+          });
+        }
+
+        if (stockPromises.length > 0) await Promise.all(stockPromises);
+
+        toast.success(product ? "Product & stock updated!" : "Product created with stock!");
         refreshProducts();
         onClose();
-      } else {
-        console.log(
-          response.data.description ||
-            (response.data.errors?.media
-              ? "Media upload failed: " + response.data.errors.media
-              : "Failed to save product")
-        );
       }
-    } catch (error) {
-      console.error("Error saving product:", error);
+    } catch (err) {
+      toast.error("Failed: " + (err.response?.data?.description || err.message));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   if (!isOpen) return null;
+  const hasSelectedSizes = formData.sizes.some((s) => s.size_id);
+
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
@@ -450,14 +306,13 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-600 hover:text-gray-900 transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
-            aria-label="Close modal"
+            className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-100"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* All form fields unchanged - grid, inputs, etc. */}
+          {/* All form fields unchanged */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -468,8 +323,8 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all duration-300 bg-white shadow-sm"
-                aria-required="true"
+                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 outline-none"
+                required
               />
             </div>
             <div>
@@ -480,8 +335,8 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 name="cate_id"
                 value={formData.cate_id}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all duration-300 bg-white shadow-sm"
-                aria-required="true"
+                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 outline-none"
+                required
               >
                 <option value="">Select Category</option>
                 {categories?.map((category) => (
@@ -499,10 +354,9 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 name="sc_id"
                 value={formData.sc_id}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all duration-300 bg-white shadow-sm"
-                aria-required="true"
+                className="w-full px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 outline-none"
               >
-                <option value="">Select Category</option>
+                <option value="">Select Collection</option>
                 {subcategories?.map((category) => (
                   <option key={category.sc_id} value={category.sc_id}>
                     {category.name}
@@ -528,8 +382,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 ))}
               </select>
             </div>
-
-            {/* Work */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Work *
@@ -548,8 +400,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 ))}
               </select>
             </div>
-
-            {/* Occasion */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Occasion *
@@ -588,7 +438,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price
+                Price *
               </label>
               <input
                 type="number"
@@ -596,10 +446,9 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 value={formData.price}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
+                required
               />
             </div>
-
-            {/* Original Price */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Original Price
@@ -612,35 +461,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
-
-            {/* Model */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Model
-              </label>
-              <input
-                type="text"
-                name="model"
-                value={formData.model}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
-              />
-            </div>
-
-            {/* Fit */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fit
-              </label>
-              <input
-                type="text"
-                name="fit"
-                value={formData.fit}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
-              />
-            </div>
-            {/* SKU */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 SKU *
@@ -651,11 +471,9 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 value={formData.sku}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
-                placeholder="e.g., DRS-1023-BLK"
+                required
               />
             </div>
-
-            {/* Weight */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Weight
@@ -669,8 +487,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
-
-            {/* Length */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Length
@@ -684,8 +500,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
-
-            {/* Width */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Width
@@ -699,8 +513,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
-
-            {/* Height */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Height
@@ -714,8 +526,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
               />
             </div>
-
-            {/* Meta Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Meta Title
@@ -726,11 +536,8 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 value={formData.meta_title}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
-                placeholder="Short SEO title for product"
               />
             </div>
-
-            {/* Meta Description */}
             <div className="sm:col-span-2 lg:col-span-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Meta Description
@@ -740,11 +547,8 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 value={formData.meta_description}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none min-h-[80px]"
-                placeholder="Short product SEO description (max 160 characters)"
               />
             </div>
-
-            {/* Keywords */}
             <div className="sm:col-span-2 lg:col-span-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Keywords
@@ -755,7 +559,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 value={formData.keywords}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none"
-                placeholder="e.g., silk saree, designer dress, festive wear"
               />
             </div>
           </div>
@@ -785,24 +588,20 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
             </label>
           </div>
 
-          {/* Colors Section - unchanged JSX */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Colors and Images
-            </label>
-            {formData.colors.map((color, colorIndex) => (
-              <div
-                key={colorIndex}
-                className="border border-black rounded p-4 mb-4 bg-gray-50"
-              >
-                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-3">
+          {/* Color section */}
+          <div className="bg-gray-50 p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-4">Colors & Images</h3>
+            {formData.colors.map((color, i) => (
+              <div key={i} className="bg-white p-4 rounded-lg border mb-4">
+                <div className="flex gap-4 items-center">
                   <select
                     value={color.color_id}
-                    onChange={(e) =>
-                      handleColorChange(colorIndex, "color_id", e.target.value)
-                    }
-                    className="w-full sm:w-1/2 px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all duration-300 bg-white shadow-sm"
-                    aria-label={`Select color ${colorIndex + 1}`}
+                    onChange={(e) => {
+                      const updated = [...formData.colors];
+                      updated[i].color_id = e.target.value;
+                      setFormData({ ...formData, colors: updated });
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
                   >
                     <option value="">Select Color</option>
                     {colorsList.map((c) => (
@@ -811,166 +610,253 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                       </option>
                     ))}
                   </select>
-                  <label className="w-full sm:w-1/2 flex items-center justify-center gap-2 px-4 py-2.5 border border-black rounded bg-white shadow-sm cursor-pointer">
-                    <Upload className="w-4 h-4" />
-                    <span>Upload Images/Videos</span>
+                  <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded">
+                    Upload Images
                     <input
                       type="file"
                       multiple
-                      accept="image/*,video/*"
-                      onChange={(e) => handleFileChange(colorIndex, e)}
                       className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        const updated = [...formData.colors];
+                        updated[i].images = [...updated[i].images, ...files];
+                        setFormData({ ...formData, colors: updated });
+                        setMediaPreviews((prev) => {
+                          const newPreviews = [...prev];
+                          newPreviews[i] = [
+                            ...(newPreviews[i] || []),
+                            ...files.map((file) => URL.createObjectURL(file)),
+                          ];
+                          return newPreviews;
+                        });
+                      }}
                     />
                   </label>
                   {formData.colors.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => removeColorField(colorIndex)}
-                      className="text-gray-600 hover:text-red-600 transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
-                      aria-label={`Remove color ${colorIndex + 1}`}
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          colors: prev.colors.filter((_, idx) => idx !== i),
+                        }));
+                      }}
+                      className="text-red-600"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 />
                     </button>
                   )}
                 </div>
-                {existingMedia[colorIndex]?.productimages?.length > 0 && (
-                  <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Existing Images for{" "}
-                      {existingMedia[colorIndex]?.color_name ||
-                        "Selected Color"}
-                    </label>
-                    <div className="flex gap-3 flex-wrap">
-                      {existingMedia[colorIndex].productimages.map((image) => (
-                        <div key={image.image_id} className="relative">
-                          <img
-                            src={`${ApiURL}/assets/Products/${image.image_url}`}
-                            alt={`Existing image ${image.image_id}`}
-                            className="w-24 h-24 object-cover rounded-lg shadow-sm"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleDeleteExistingMedia(
-                                colorIndex,
-                                image.image_id
-                              )
-                            }
-                            className="absolute -top-2 -right-2 bg-gray-900 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition-colors duration-200"
-                            aria-label={`Remove existing image ${image.image_id}`}
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
+                <div className="flex gap-2 mt-3 flex-wrap">
+                  {existingMedia[i]?.images?.map((img) => (
+                    <div key={img.image_id} className="relative">
+                      <img
+                        src={`${ApiURL}/assets/Products/${img.image_url}`}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeletedMediaIds((prev) => [...prev, img.image_id]);
+                          setExistingMedia((prev) => {
+                            const updated = [...prev];
+                            updated[i].images = updated[i].images.filter(
+                              (x) => x.image_id !== img.image_id
+                            );
+                            return updated;
+                          });
+                        }}
+                        className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1"
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
-                  </div>
-                )}
-                {mediaPreviews[colorIndex]?.length > 0 && (
-                  <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      New Image Previews
-                    </label>
-                    <div className="flex gap-3 flex-wrap">
-                      {mediaPreviews[colorIndex].map((preview, mediaIndex) => (
-                        <div key={mediaIndex} className="relative">
-                          <img
-                            src={preview}
-                            alt={`Preview image ${mediaIndex + 1}`}
-                            className="w-24 h-24 object-cover rounded-lg shadow-sm"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              removeMediaPreview(colorIndex, mediaIndex)
-                            }
-                            className="absolute -top-2 -right-2 bg-gray-900 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition-colors duration-200"
-                            aria-label={`Remove preview image ${
-                              mediaIndex + 1
-                            }`}
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={addColorField}
-              className="text-gray-700 hover:text-gray-900 text-sm flex items-center gap-1 transition-colors duration-200"
-              aria-label="Add new color field"
-            >
-              <PlusCircle className="w-4 h-4" />
-              Add Color
-            </button>
-          </div>
-
-          {/* Sizes Section - unchanged */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Sizes
-            </label>
-            {formData.sizes.map((size, sizeIndex) => (
-              <div
-                key={sizeIndex}
-                className="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-3 border border-black rounded p-3 bg-gray-50"
-              >
-                <select
-                  value={size.size_id}
-                  onChange={(e) => handleSizeChange(sizeIndex, e.target.value)}
-                  className="w-full sm:w-3/4 px-4 py-2.5 border border-black rounded focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition-all duration-300 bg-white shadow-sm"
-                  aria-label={`Select size ${sizeIndex + 1}`}
-                >
-                  <option value="">Select Size</option>
-                  {sizesList.map((s) => (
-                    <option key={s.size_id} value={s.size_id}>
-                      {s.size_name}
-                    </option>
                   ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => removeSizeField(sizeIndex)}
-                  className="text-gray-600 hover:text-red-600 transition-colors duration-200 p-2 rounded-full hover:bg-gray-100"
-                  aria-label={`Remove size ${sizeIndex + 1}`}
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                  {mediaPreviews[i]?.map((preview, idx) => (
+                    <div key={idx} className="relative">
+                      <img
+                        src={preview}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => {
+                            const updated = [...prev.colors];
+                            updated[i].images = updated[i].images.filter(
+                              (_, index) => index !== idx
+                            );
+                            return { ...prev, colors: updated };
+                          });
+                          setMediaPreviews((prev) => {
+                            const updated = [...prev];
+                            updated[i] = updated[i].filter(
+                              (_, index) => index !== idx
+                            );
+                            return updated;
+                          });
+                        }}
+                        className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
             <button
               type="button"
-              onClick={addSizeField}
-              className="text-gray-700 hover:text-gray-900 text-sm flex items-center gap-1 transition-colors duration-200"
-              aria-label="Add new size field"
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  colors: [...prev.colors, { color_id: "", images: [] }],
+                }))
+              }
+              className="text-blue-600 flex items-center gap-2"
             >
-              <PlusCircle className="w-4 h-4" />
-              Add Size
+              <PlusCircle /> Add Color
             </button>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          {/* Sizes Section */}
+          {formData.cate_id && sizesList.length > 0 && (
+            <div className="bg-gray-50 p-6 rounded-xl">
+              <h3 className="text-xl font-bold mb-4">Sizes</h3>
+              {formData.sizes.map((size, i) => (
+                <div key={i} className="flex gap-4 mb-3 items-center">
+                  <select
+                    value={size.size_id}
+                    onChange={(e) => {
+                      const updated = [...formData.sizes];
+                      updated[i].size_id = e.target.value;
+                      setFormData({ ...formData, sizes: updated });
+                    }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="">Select Size</option>
+                    {sizesList.map((s) => (
+                      <option key={s.size_id} value={s.size_id}>
+                        {s.size_name}
+                      </option>
+                    ))}
+                  </select>
+                  {formData.sizes.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          sizes: prev.sizes.filter((_, idx) => idx !== i),
+                        }))
+                      }
+                      className="text-red-600"
+                    >
+                      <Trash2 />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    sizes: [...prev.sizes, { size_id: "" }],
+                  }))
+                }
+                className="text-blue-600 flex items-center gap-2"
+              >
+                <PlusCircle /> Add Size
+              </button>
+            </div>
+          )}
+
+          {/* Stock Section */}
+          {formData.colors.some(c => c.color_id) && (
+            <div className="bg-green-50 border-2 border-green-300 rounded-xl p-8">
+              <h3 className="text-2xl font-bold text-green-800 mb-6">Stock Quantity</h3>
+
+              {hasSelectedSizes ? (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-collapse">
+                    <thead>
+                      <tr className="bg-green-100">
+                        <th className="border border-green-400 px-6 py-4 text-left">Size → Color ↓</th>
+                        {formData.colors.filter(c => c.color_id).map((color) => {
+                          const name = colorsList.find(c => c.color_id == color.color_id)?.color_name || "Color";
+                          return <th key={color.color_id} className="border border-green-400 px-6 py-4 text-center">{name}</th>;
+                        })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {formData.sizes.filter(s => s.size_id).map((size) => {
+                        const sizeName = sizesList.find(s => s.size_id == size.size_id)?.size_name || "Size";
+                        return (
+                          <tr key={size.size_id}>
+                            <td className="border border-green-400 px-6 py-4 font-semibold bg-green-100">{sizeName}</td>
+                            {formData.colors.filter(c => c.color_id).map((color) => {
+                              const key = `${color.color_id}-${size.size_id}`;
+                              return (
+                                <td key={key} className="border border-green-400 p-3 text-center">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    className="w-24 px-3 py-2 border rounded text-center font-medium"
+                                    value={stockMatrix[key] ?? 0}
+                                    onChange={(e) => handleStockChange(color.color_id, size.size_id, e.target.value)}
+                                  />
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <p className="text-sm text-green-700 mt-4">Leave blank or 0 = Out of Stock</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {formData.colors.filter(c => c.color_id).map((color) => {
+                    const name = colorsList.find(c => c.color_id == color.color_id)?.color_name || "Color";
+                    return (
+                      <div key={color.color_id} className="flex items-center gap-4">
+                        <label className="w-40 font-medium">{name}</label>
+                        <input
+                          type="number"
+                          min="0"
+                          className="flex-1 px-4 py-2 border rounded-lg text-center"
+                          value={colorQuantities[color.color_id] ?? 0}
+                          onChange={(e) => handleColorQuantityChange(color.color_id, e.target.value)}
+                        />
+                      </div>
+                    );
+                  })}
+                  <p className="text-sm text-green-700">Enter quantity for each color.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-end gap-4 pt-8">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-all duration-200 shadow-sm text-sm font-medium"
-              aria-label="Cancel"
+              className="px-8 py-3 bg-gray-300 rounded-lg"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`px-5 py-2.5 bg-black text-white rounded hover:bg-gray-900 transition-all duration-200 shadow-sm text-sm font-medium ${
-                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              aria-label={product ? "Update product" : "Create product"}
+              className="px-8 py-3 bg-black text-white rounded-lg disabled:opacity-50"
             >
-              {isSubmitting ? "Saving..." : product ? "Update" : "Create"}
+              {isSubmitting
+                ? "Saving..."
+                : product
+                ? "Update Product + Stock"
+                : "Create Product + Stock"}
             </button>
           </div>
         </form>

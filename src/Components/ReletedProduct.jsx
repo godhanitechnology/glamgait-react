@@ -5,6 +5,9 @@ import axiosInstance from "../Axios/axios";
 import { useEffect, useState } from "react";
 
 const ReletedProduct = ({ cate_id, currentProductId }) => {
+
+  console.log(cate_id,currentProductId);
+  
   
   const [relatedProducts, setRelatedProducts] = useState([]);
 
@@ -14,7 +17,9 @@ const ReletedProduct = ({ cate_id, currentProductId }) => {
         `/productbycategory/${cate_id}`,
         { limit: 5 }
       );
-      const filteredProducts = response.data.data.filter(
+      console.log(response.data,'dat');
+      
+      const filteredProducts = response?.data?.data?.products?.filter(
         (item) => item.p_id !== currentProductId
       );
       setRelatedProducts(filteredProducts);
