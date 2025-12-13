@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PlusCircle, Trash2, X } from "lucide-react";
-import { ApiURL, userInfo } from "../../Variable";
+import { ApiURL } from "../../Variable";
 import toast from "react-hot-toast";
 import axiosInstance from "../../Axios/axios";
 
@@ -36,146 +36,285 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
   const [styles, setStyles] = useState([]);
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
+
   const [mediaPreviews, setMediaPreviews] = useState([]);
   const [existingMedia, setExistingMedia] = useState([]);
   const [deletedMediaIds, setDeletedMediaIds] = useState([]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [stockMatrix, setStockMatrix] = useState({}); // color_id-psize_id
-  const [colorQuantities, setColorQuantities] = useState({}); // color_id only for no-size products
+  const [stockMatrix, setStockMatrix] = useState({});
+  const [colorQuantities, setColorQuantities] = useState({});
+  const [originalStock, setOriginalStock] = useState({}); // Track original stock for comparison
+  const [originalColorQuantities, setOriginalColorQuantities] = useState({});
+  const [stockAdjustments, setStockAdjustments] = useState({});
   const [colorIdToPColorId, setColorIdToPColorId] = useState({});
+  const [colorAdjustments, setColorAdjustments] = useState({});
 
+  const hasSelectedSizes = formData.sizes.some((s) => s.size_id);
+  const hasSelectedColors = formData.colors.some((c) => c.color_id);
 
   useEffect(() => {
-    if (product) {
+    if (!product) {
+      // Reset for "Add New"
       setFormData({
-        name: product.name || "",
-        cate_id: product.cate_id || "",
-        sc_id: product.sc_id || "",
-        f_id: product.f_id || "",
-        work_id: product.work_id || "",
-        occasion_id: product.occasion_id || "",
-        style_id: product.style_id || "",
-        price: product.price || "",
-        original_price: product.original_price || "",
-        meta_title: product.meta_title || "",
-        meta_description: product.meta_description || "",
-        keywords: product.keywords || "",
-        is_expert_choice: product.is_expert_choice || false,
-        description: product.description || "",
-        weight: product.weight || "",
-        length: product.length || "",
-        width: product.width || "",
-        height: product.height || "",
-        sku: product.sku || "",
-        colors: product.productcolors?.map((pc) => ({
-          color_id: pc.color_id,
-          images: [],
-        })) || [{ color_id: "", images: [] }],
-        sizes: product.productsizes?.map((ps) => ({
-          size_id: ps.size_id,
-        })) || [{ size_id: "" }],
+        name: "",
+        cate_id: "",
+        sc_id: "",
+        f_id: "",
+        work_id: "",
+        occasion_id: "",
+        style_id: "",
+        price: "",
+        original_price: "",
+        description: "",
+        sku: "",
+        meta_title: "",
+        meta_description: "",
+        keywords: "",
+        is_expert_choice: false,
+        weight: "",
+        length: "",
+        width: "",
+        height: "",
+        colors: [{ color_id: "", images: [] }],
+        sizes: [{ size_id: "" }],
       });
+      setStockMatrix({});
+      setColorQuantities({});
+      setExistingMedia([]);
+      setMediaPreviews([]);
+      setDeletedMediaIds([]);
+      setColorIdToPColorId({});
+      setStockAdjustments({});
+      setColorAdjustments({});
+      setOriginalStock({});
+      setOriginalColorQuantities({});
+      return;
+    }
 
-      // Build pcolor_id mapping
-      const mapping = {};
-      product.productcolors?.forEach((pc) => {
-        mapping[pc.color_id] = pc.pcolor_id;
-      });
-      setColorIdToPColorId(mapping);
-      
-      // Load stock: size-based or color-only
-      if (product.has_sizes && product.productvariants) {
-      const stock = {};
-      product.productvariants.forEach((v) => {
+    // Edit mode
+    setFormData({
+      name: product.name || "",
+      cate_id: product.cate_id || "",
+      sc_id: product.sc_id || "",
+      f_id: product.f_id || "",
+      work_id: product.work_id || "",
+      occasion_id: product.occasion_id || "",
+      style_id: product.style_id || "",
+      price: product.price || "",
+      original_price: product.original_price || "",
+      description: product.description || "",
+      sku: product.sku || "",
+      meta_title: product.meta_title || "",
+      meta_description: product.meta_description || "",
+      keywords: product.keywords || "",
+      is_expert_choice: !!product.is_expert_choice,
+      weight: product.weight || "",
+      length: product.length || "",
+      width: product.width || "",
+      height: product.height || "",
+      colors: product.productcolors?.map((pc) => ({
+        color_id: pc.color_id,
+        images: [],
+      })) || [{ color_id: "", images: [] }],
+      sizes: product.productsizes?.map((ps) => ({
+        size_id: ps.size_id,
+      })) || [{ size_id: "" }],
+    });
+
+    const mapping = {};
+    product.productcolors?.forEach((pc) => {
+      mapping[pc.color_id] = pc.pcolor_id;
+    });
+    setColorIdToPColorId(mapping);
+
+    // Load existing images grouped by pcolor_id
+    const existing = product.productcolors?.map((pc) => ({
+      pcolor_id: pc.pcolor_id,
+      color_name: pc.color?.color_name || "Unknown",
+      images: pc.productimages || [],
+    }));
+    setExistingMedia(existing || []);
+
+    if (
+      product?.productsizes &&
+      product.productvariants &&
+      product.productsizes.length > 0
+    ) {
+      console.log(product.productsizes, product.productvariants, "productss");
+
+      const matrix = {};
+      const adjustments = {};
+
+      product?.productvariants.forEach((v) => {
         if (v.pcolor_id && v.psize_id) {
-          const key = `${v.color_id}-${v.size_id}`;
-          stock[key] = v.remaining_qty || 0;
-        }
-      });
-      // Ensure every cell exists with at least 0
-      product.productcolors?.forEach((pc) => {
-        product.productsizes?.forEach((ps) => {
-          const key = `${pc.color_id}-${ps.size_id}`;
-          if (!(key in stock)) stock[key] = 0;
-        });
-      });
-      setStockMatrix(stock);
-    } else if (product.productvariants) {
-      const qtyMap = {};
-      product.productvariants.forEach((v) => {
-        if (v.pcolor_id && !v.psize_id) {
           const colorId = Object.keys(mapping).find(
             (cid) => mapping[cid] === v.pcolor_id
           );
-          if (colorId) qtyMap[colorId] = v.remaining_qty || 0;
+          const size = product?.productsizes?.find(
+            (ps) => ps.psize_id === v.psize_id
+          );
+          if (colorId && size) {
+            const key = `${colorId}-${size.size_id}`;
+            matrix[key] = v.remaining_qty || 0;
+            adjustments[key] = { add: 0, remove: 0 }; // Initialize adjustments
+          }
         }
       });
-      setColorQuantities(qtyMap);
-    }
 
-      // Existing images
-      setExistingMedia(
-        product.productcolors?.map((pc) => ({
-          pcolor_id: pc.pcolor_id,
-          color_name: pc.color?.color_name,
-          images: pc.productimages || [],
-        })) || []
-      );
+      setOriginalStock(matrix);
+      setStockAdjustments(adjustments);
+    } else if (product?.productvariants) {
+      console.log("enter");
+      const qtyMap = {};
+      const colorAdj = {};
+
+      product.productvariants.forEach((v) => {
+        if (v.pcolor_id) {
+          const colorId = Object.keys(mapping).find(
+            (cid) => mapping[cid] === v.pcolor_id
+          );
+          if (colorId) {
+            qtyMap[colorId] = v.remaining_qty || 0;
+            colorAdj[colorId] = { add: 0, remove: 0 }; // Initialize adjustments
+          }
+        }
+      });
+
+      setOriginalColorQuantities(qtyMap);
+      setColorAdjustments(colorAdj);
     }
   }, [product]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axiosInstance.get(`${ApiURL}/getcategory`);
+    if (!product) return;
+
+    if (hasSelectedSizes) {
+      const newMatrix = {};
+      formData.colors.forEach((c) => {
+        if (!c.color_id) return;
+        formData.sizes.forEach((s) => {
+          if (!s.size_id) return;
+          const key = `${c.color_id}-${s.size_id}`;
+          newMatrix[key] = stockMatrix[key] ?? 0;
+        });
+      });
+      setStockMatrix(newMatrix);
+    } else {
+      const newQty = {};
+      formData.colors.forEach((c) => {
+        if (c.color_id) {
+          newQty[c.color_id] = colorQuantities[c.color_id] ?? 0;
+        }
+      });
+      setColorQuantities(newQty);
+    }
+  }, [formData.colors, formData.sizes, product]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`${ApiURL}/getcategory`)
+      .then((res) => {
         setCategories(res?.data?.data || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCategories();
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
-    if (formData.cate_id) {
-      Promise.all([
-        axiosInstance
-          .get(`${ApiURL}/getcolor`)
-          .then((r) => setColorsList(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getsize/${formData.cate_id}`)
-          .then((r) => setSizesList(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getsubcategory/${formData.cate_id}`)
-          .then((r) => setSubCategories(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getworks/${formData.cate_id}`)
-          .then((r) => setWorks(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getfabrics/${formData.cate_id}`)
-          .then((r) => setFabrics(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getstyles/${formData.cate_id}`)
-          .then((r) => setStyles(r.data.data || [])),
-        axiosInstance
-          .get(`${ApiURL}/getoccasions/${formData.cate_id}`)
-          .then((r) => setOccasions(r.data.data || [])),
-      ]).catch((err) => console.error(err));
+    if (!formData.cate_id) {
+      setSubCategories([]);
+      setFabrics([]);
+      setWorks([]);
+      setOccasions([]);
+      setStyles([]);
+      setSizesList([]);
+      setColorsList([]);
+      return;
     }
+
+    Promise.all([
+      axiosInstance
+        .get(`${ApiURL}/getcolor`)
+        .then((r) => setColorsList(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getsize/${formData.cate_id}`)
+        .then((r) => setSizesList(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getsubcategory/${formData.cate_id}`)
+        .then((r) => setSubCategories(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getworks/${formData.cate_id}`)
+        .then((r) => setWorks(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getfabrics/${formData.cate_id}`)
+        .then((r) => setFabrics(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getstyles/${formData.cate_id}`)
+        .then((r) => setStyles(r.data.data || [])),
+      axiosInstance
+        .get(`${ApiURL}/getoccasions/${formData.cate_id}`)
+        .then((r) => setOccasions(r.data.data || [])),
+    ]).catch(console.error);
   }, [formData.cate_id]);
 
-  const handleStockChange = (colorId, sizeId, value) => {
+  const handleAddChange = (colorId, sizeId, value) => {
     const num = value === "" ? 0 : parseInt(value, 10) || 0;
     const key = `${colorId}-${sizeId}`;
-    setStockMatrix((prev) => ({ ...prev, [key]: num }));
+    setStockAdjustments((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        add: num,
+        remove: prev[key]?.remove || 0,
+      },
+    }));
   };
 
-  const handleColorQuantityChange = (colorId, value) => {
+  const handleRemoveChange = (colorId, sizeId, value) => {
     const num = value === "" ? 0 : parseInt(value, 10) || 0;
-    setColorQuantities((prev) => ({ ...prev, [colorId]: num }));
+    const key = `${colorId}-${sizeId}`;
+    const currentStock = originalStock[key] || 0;
+    const currentAdd = stockAdjustments[key]?.add || 0;
+    const maxAllowed = currentStock + currentAdd;
+    const safeValue = Math.min(num, maxAllowed);
+
+    setStockAdjustments((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        remove: safeValue,
+      },
+    }));
   };
 
+  const handleColorAddChange = (colorId, value) => {
+    const num = value === "" ? 0 : parseInt(value, 10) || 0;
+    setColorAdjustments((prev) => ({
+      ...prev,
+      [colorId]: {
+        ...prev[colorId],
+        add: num,
+        remove: prev[colorId]?.remove || 0,
+      },
+    }));
+  };
+
+  const handleColorRemoveChange = (colorId, value) => {
+    const num = value === "" ? 0 : parseInt(value, 10) || 0;
+    const currentStock = originalColorQuantities[colorId] || 0;
+    const currentAdd = colorAdjustments[colorId]?.add || 0;
+    const maxAllowed = currentStock + currentAdd;
+    const safeValue = Math.min(num, maxAllowed);
+
+    setColorAdjustments((prev) => ({
+      ...prev,
+      [colorId]: {
+        ...prev[colorId],
+        remove: safeValue,
+      },
+    }));
+  };
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -189,26 +328,25 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
+    // Validation: no duplicate colors
+    const colorIds = formData.colors.map((c) => c.color_id).filter(Boolean);
+    if (new Set(colorIds).size !== colorIds.length) {
+      toast.error("Duplicate colors not allowed!");
+      setIsSubmitting(false);
+      return;
+    }
+
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("cate_id", formData.cate_id);
-    data.append("sc_id", formData.sc_id);
-    data.append("f_id", formData.f_id);
-    data.append("work_id", formData.work_id);
-    data.append("occasion_id", formData.occasion_id);
-    data.append("style_id", formData.style_id);
-    data.append("price", formData.price);
-    data.append("original_price", formData.original_price || 0);
-    data.append("description", formData.description);
-    data.append("weight", formData.weight);
-    data.append("length", formData.length);
-    data.append("width", formData.width);
-    data.append("height", formData.height);
-    data.append("sku", formData.sku);
-    data.append("meta_title", formData.meta_title);
-    data.append("meta_description", formData.meta_description);
-    data.append("keywords", formData.keywords);
-    data.append("is_expert_choice", formData.is_expert_choice);
+    // Append all basic fields
+    Object.keys(formData).forEach((key) => {
+      if (!["colors", "sizes"].includes(key)) {
+        if (key === "is_expert_choice") {
+          data.append(key, formData[key] === true ? 1 : 0);
+        } else {
+          data.append(key, formData[key]);
+        }
+      }
+    });
 
     data.append(
       "colors",
@@ -219,40 +357,121 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       JSON.stringify(formData.sizes.map((s) => ({ size_id: s.size_id })))
     );
 
+    // Append new images
     formData.colors.forEach((color, i) => {
-      color.images.forEach((img) => data.append(`images_color_${i}`, img));
+      color.images.forEach((file) => data.append(`images_color_${i}`, file));
     });
 
     if (product) data.append("deleted_media", JSON.stringify(deletedMediaIds));
 
-     try {
-      const url = product ? `${ApiURL}/updateproduct/${product.p_id}` : `${ApiURL}/insertproduct`;
+    try {
+      const url = product
+        ? `${ApiURL}/updateproduct/${product.p_id}`
+        : `${ApiURL}/insertproduct`;
+
       const res = await axiosInstance.post(url, data);
+      if (res.data.status !== 1)
+        throw new Error(res.data.description || "Failed");
 
-      if (res.data.status === 1) {
-        const p_id = product?.p_id || res.data.data.p_id;
+      const p_id = product?.p_id || res.data.data.p_id;
 
-        // Fetch fresh product to get pcolor_id & psize_id mappings
-        const fullRes = await axiosInstance.post(`${ApiURL}/getproductbyid/${p_id}`);
-        const fullProduct = fullRes.data.data;
+      // Refetch full product to get pcolor_id & psize_id
+      const fullRes = await axiosInstance.post(
+        `${ApiURL}/getproductbyid/${p_id}`
+      );
+      const fullProduct = fullRes.data.data;
 
-        const pColorMap = {};
-        fullProduct.productcolors.forEach((pc) => (pColorMap[pc.color_id] = pc.pcolor_id));
+      const pColorMap = {};
+      fullProduct.productcolors.forEach((pc) => {
+        pColorMap[pc.color_id] = pc.pcolor_id;
+      });
 
-        const pSizeMap = {};
-        fullProduct.productsizes.forEach((ps) => (pSizeMap[ps.size_id] = ps.psize_id));
+      const pSizeMap = {};
+      fullProduct.productsizes.forEach((ps) => {
+        pSizeMap[ps.size_id] = ps.psize_id;
+      });
 
-        const stockPromises = [];
+      // Update stock - using the new updateStock helper function
+      const stockPromises = [];
 
-        const hasSelectedSizes = formData.sizes.some((s) => s.size_id);
+      if (hasSelectedSizes) {
+        // For products with sizes
+        Object.entries(stockAdjustments).forEach(([key, adjustment]) => {
+          const [color_id, size_id] = key.split("-");
+          const pcolor_id = pColorMap[color_id];
+          const psize_id = pSizeMap[size_id];
 
-        if (hasSelectedSizes) {
-          // Size + Color matrix
-          Object.entries(stockMatrix).forEach(([key, qty]) => {
+          if (
+            pcolor_id &&
+            psize_id &&
+            (adjustment.add > 0 || adjustment.remove > 0)
+          ) {
+            // Add stock if needed
+            if (adjustment.add > 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/addstock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id,
+                  qty_to_add: adjustment.add,
+                })
+              );
+            }
+
+            // Remove stock if needed
+            if (adjustment.remove > 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/removestock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id,
+                  qty_to_remove: adjustment.remove,
+                })
+              );
+            }
+          }
+        });
+      } else {
+        // For products without sizes
+        Object.entries(colorAdjustments).forEach(([color_id, adjustment]) => {
+          const pcolor_id = pColorMap[color_id];
+
+          if (pcolor_id && (adjustment.add > 0 || adjustment.remove > 0)) {
+            // Add stock if needed
+            if (adjustment.add > 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/addstock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id: null,
+                  qty_to_add: adjustment.add,
+                })
+              );
+            }
+
+            // Remove stock if needed
+            if (adjustment.remove > 0) {
+              stockPromises.push(
+                axiosInstance.post(`${ApiURL}/removestock`, {
+                  p_id,
+                  pcolor_id,
+                  psize_id: null,
+                  qty_to_remove: adjustment.remove,
+                })
+              );
+            }
+          }
+        });
+      }
+
+      if (!product && hasSelectedSizes) {
+        Object.entries(originalStock).forEach(([key, qty]) => {
+          if (qty > 0) {
             const [color_id, size_id] = key.split("-");
             const pcolor_id = pColorMap[color_id];
             const psize_id = pSizeMap[size_id];
-            if (pcolor_id && psize_id && qty >= 0) {
+
+            if (pcolor_id && psize_id) {
               stockPromises.push(
                 axiosInstance.post(`${ApiURL}/addstock`, {
                   p_id,
@@ -262,12 +481,13 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 })
               );
             }
-          });
-        } else {
-          // Color-only
-          Object.entries(colorQuantities).forEach(([color_id, qty]) => {
+          }
+        });
+      } else if (!product) {
+        Object.entries(originalColorQuantities).forEach(([color_id, qty]) => {
+          if (qty > 0) {
             const pcolor_id = pColorMap[color_id];
-            if (pcolor_id && qty >= 0) {
+            if (pcolor_id) {
               stockPromises.push(
                 axiosInstance.post(`${ApiURL}/addstock`, {
                   p_id,
@@ -277,25 +497,27 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                 })
               );
             }
-          });
-        }
-
-        if (stockPromises.length > 0) await Promise.all(stockPromises);
-
-        toast.success(product ? "Product & stock updated!" : "Product created with stock!");
-        refreshProducts();
-        onClose();
+          }
+        });
       }
+
+      if (stockPromises.length > 0) {
+        await Promise.all(stockPromises);
+      }
+
+      toast.success(
+        product ? "Product & stock updated!" : "Product created with stock!"
+      );
+      refreshProducts();
+      onClose();
     } catch (err) {
-      toast.error("Failed: " + (err.response?.data?.description || err.message));
+      toast.error("Error: " + (err.response?.data?.description || err.message));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   if (!isOpen) return null;
-  const hasSelectedSizes = formData.sizes.some((s) => s.size_id);
-
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
@@ -772,68 +994,195 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
             </div>
           )}
 
-          {/* Stock Section */}
-          {formData.colors.some(c => c.color_id) && (
+          {formData.colors.some((c) => c.color_id) && (
             <div className="bg-green-50 border-2 border-green-300 rounded-xl p-8">
-              <h3 className="text-2xl font-bold text-green-800 mb-6">Stock Quantity</h3>
+              <h3 className="text-2xl font-bold text-green-800 mb-6">
+                Stock Adjustment
+              </h3>
 
               {hasSelectedSizes ? (
                 <div className="overflow-x-auto">
                   <table className="min-w-full border-collapse">
                     <thead>
                       <tr className="bg-green-100">
-                        <th className="border border-green-400 px-6 py-4 text-left">Size → Color ↓</th>
-                        {formData.colors.filter(c => c.color_id).map((color) => {
-                          const name = colorsList.find(c => c.color_id == color.color_id)?.color_name || "Color";
-                          return <th key={color.color_id} className="border border-green-400 px-6 py-4 text-center">{name}</th>;
-                        })}
+                        <th className="border border-green-400 px-6 py-4 text-left">
+                          Size → Color ↓
+                        </th>
+                        <th className="border border-green-400 px-6 py-4 text-center">
+                          Current Stock
+                        </th>
+                        <th className="border border-green-400 px-6 py-4 text-center">
+                          Add Stock
+                        </th>
+                        <th className="border border-green-400 px-6 py-4 text-center">
+                          Remove Stock
+                        </th>
+                        <th className="border border-green-400 px-6 py-4 text-center">
+                          New Total
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {formData.sizes.filter(s => s.size_id).map((size) => {
-                        const sizeName = sizesList.find(s => s.size_id == size.size_id)?.size_name || "Size";
-                        return (
-                          <tr key={size.size_id}>
-                            <td className="border border-green-400 px-6 py-4 font-semibold bg-green-100">{sizeName}</td>
-                            {formData.colors.filter(c => c.color_id).map((color) => {
+                      {formData.sizes
+                        .filter((s) => s.size_id)
+                        .map((size) => {
+                          const sizeName =
+                            sizesList.find((s) => s.size_id == size.size_id)
+                              ?.size_name || "Size";
+
+                          return formData.colors
+                            .filter((c) => c.color_id)
+                            .map((color) => {
+                              const colorName =
+                                colorsList.find(
+                                  (c) => c.color_id == color.color_id
+                                )?.color_name || "Color";
                               const key = `${color.color_id}-${size.size_id}`;
+                              const currentStock = originalStock[key] || 0;
+                              const adjustment = stockAdjustments[key] || {
+                                add: 0,
+                                remove: 0,
+                              };
+                              const newTotal =
+                                currentStock +
+                                adjustment.add -
+                                adjustment.remove;
+
                               return (
-                                <td key={key} className="border border-green-400 p-3 text-center">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    className="w-24 px-3 py-2 border rounded text-center font-medium"
-                                    value={stockMatrix[key] ?? 0}
-                                    onChange={(e) => handleStockChange(color.color_id, size.size_id, e.target.value)}
-                                  />
-                                </td>
+                                <tr key={key}>
+                                  <td className="border border-green-400 px-6 py-4">
+                                    {colorName} - {sizeName}
+                                  </td>
+                                  <td className="border border-green-400 px-6 py-4 text-center">
+                                    {currentStock}
+                                  </td>
+                                  <td className="border border-green-400 p-3 text-center">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      placeholder="Add"
+                                      className="w-24 px-3 py-2 border rounded text-center"
+                                      value={adjustment.add || 0}
+                                      onChange={(e) =>
+                                        handleAddChange(
+                                          color.color_id,
+                                          size.size_id,
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </td>
+                                  <td className="border border-green-400 p-3 text-center">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max={currentStock + adjustment.add}
+                                      placeholder="Remove"
+                                      className="w-24 px-3 py-2 border rounded text-center"
+                                      value={adjustment.remove || 0}
+                                      onChange={(e) =>
+                                        handleRemoveChange(
+                                          color.color_id,
+                                          size.size_id,
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </td>
+                                  <td className="border border-green-400 px-6 py-4 text-center font-bold">
+                                    {newTotal}
+                                  </td>
+                                </tr>
                               );
-                            })}
-                          </tr>
-                        );
-                      })}
+                            });
+                        })}
                     </tbody>
                   </table>
-                  <p className="text-sm text-green-700 mt-4">Leave blank or 0 = Out of Stock</p>
+                  <p className="text-sm text-green-700 mt-4">
+                    Enter amounts to add or remove from current stock. Remove
+                    cannot exceed current + added stock.
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {formData.colors.filter(c => c.color_id).map((color) => {
-                    const name = colorsList.find(c => c.color_id == color.color_id)?.color_name || "Color";
-                    return (
-                      <div key={color.color_id} className="flex items-center gap-4">
-                        <label className="w-40 font-medium">{name}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          className="flex-1 px-4 py-2 border rounded-lg text-center"
-                          value={colorQuantities[color.color_id] ?? 0}
-                          onChange={(e) => handleColorQuantityChange(color.color_id, e.target.value)}
-                        />
-                      </div>
-                    );
-                  })}
-                  <p className="text-sm text-green-700">Enter quantity for each color.</p>
+                <div>
+                  {/* Headings for Color-Only */}
+                  <div className="grid grid-cols-5 gap-4 mb-4 px-4 font-bold text-green-800">
+                    <div className="col-span-1">Color</div>
+                    <div className="text-center">Current Stock</div>
+                    <div className="text-center">Add Stock</div>
+                    <div className="text-center">Remove Stock</div>
+                    <div className="text-center">New Total</div>
+                  </div>
+
+                  {/* Color Rows */}
+                  <div className="space-y-4">
+                    {formData.colors
+                      .filter((c) => c.color_id)
+                      .map((color) => {
+                        const colorName =
+                          colorsList.find((c) => c.color_id == color.color_id)
+                            ?.color_name || "Color";
+                        const currentStock =
+                          originalColorQuantities[color.color_id] || 0;
+                        const adjustment = colorAdjustments[color.color_id] || {
+                          add: 0,
+                          remove: 0,
+                        };
+                        const newTotal =
+                          currentStock + adjustment.add - adjustment.remove;
+
+                        return (
+                          <div
+                            key={color.color_id}
+                            className="grid grid-cols-5 gap-4 items-center bg-white p-4 rounded-lg border border-green-200"
+                          >
+                            <div className="font-medium">{colorName}</div>
+                            <div className="text-center font-bold">
+                              {currentStock}
+                            </div>
+                            <div className="text-center">
+                              <input
+                                type="number"
+                                min="0"
+                                placeholder="Add"
+                                className="w-full max-w-24 px-3 py-2 border rounded text-center"
+                                value={adjustment.add || 0}
+                                onChange={(e) =>
+                                  handleColorAddChange(
+                                    color.color_id,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="text-center">
+                              <input
+                                type="number"
+                                min="0"
+                                max={currentStock + adjustment.add}
+                                placeholder="Remove"
+                                className="w-full max-w-24 px-3 py-2 border rounded text-center"
+                                value={adjustment.remove || 0}
+                                onChange={(e) =>
+                                  handleColorRemoveChange(
+                                    color.color_id,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="text-center font-bold text-green-700">
+                              {newTotal}
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  <p className="text-sm text-green-700 mt-4">
+                    Enter amounts to add or remove. Remove cannot exceed current
+                    + added stock.
+                  </p>
                 </div>
               )}
             </div>

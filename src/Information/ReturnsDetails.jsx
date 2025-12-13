@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import img1 from "../assets/Group1702127085.png";
+import img2 from "../assets/Group1702127084.png";
 
 const ReturnsDetails = ({ onClose }) => {
   return (
@@ -16,22 +18,22 @@ const ReturnsDetails = ({ onClose }) => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
           <div className="flex flex-col items-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/7269/7269873.png"
+              src={img1}
               alt="Return"
               className="w-12 h-12"
             />
             <p className="text-center text-sm font-medium mt-2">
-              Return within 5 days
+              Return within 7 days
             </p>
           </div>
           <div className="flex flex-col items-center">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/7269/7269873.png"
+              src={img2}
               alt="Exchange"
               className="w-12 h-12 grayscale"
             />
             <p className="text-center text-sm font-medium mt-2 text-gray-500 line-through">
-              Exchange within 5 days
+              Exchange within 7 days
             </p>
           </div>
         </div>

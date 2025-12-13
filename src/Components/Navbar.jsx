@@ -14,6 +14,7 @@ import {
 import logo from "../assets/logo.svg";
 import axiosInstance from "../Axios/axios";
 import { userInfo } from "../Variable";
+import { getAnnouncements, getCategories } from "../utils/dataCache";
 
 const Navbar = () => {
   const location = useLocation();
@@ -35,28 +36,63 @@ const Navbar = () => {
   const [mobileExpanded, setMobileExpanded] = useState({});
   const [megaMenuCache, setMegaMenuCache] = useState({});
 
+  const desktopSearchRef = useRef(null); // ← ADD THIS
   const searchParams = new URLSearchParams(location.search);
   const currentCateId = searchParams.get("cate_id");
   const navRef = useRef(null);
 
+  // Close search when clicking outside (desktop only)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        desktopSearchRef.current &&
+        !desktopSearchRef.current.contains(event.target)
+      ) {
+        setSearchQuery(""); // Clear input
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Fetch Data
-  const getAnnouncements = async () => {
+  // const getAnnouncements = async () => {
+  //   try {
+  //     const res = await axiosInstance.get("/getannouncements");
+  //     if (res?.data?.status === 1) setAnnouncements(res.data.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  // const getCategories = async () => {
+  //   try {
+  //     const res = await axiosInstance.get("/getcategory");
+  //     if (res?.data?.status === 1) setCategories(res.data.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  useEffect(() => {
+  const loadData = async () => {
     try {
-      const res = await axiosInstance.get("/getannouncements");
-      if (res?.data?.status === 1) setAnnouncements(res.data.data);
+      const [cats, anns] = await Promise.all([
+        getCategories(axiosInstance),
+        getAnnouncements(axiosInstance),
+      ]);
+      setCategories(cats);
+      setAnnouncements(anns);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load navbar data", err);
     }
   };
 
-  const getCategories = async () => {
-    try {
-      const res = await axiosInstance.get("/getcategory");
-      if (res?.data?.status === 1) setCategories(res.data.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  loadData();
+}, []);
 
   const fetchCategoryFilters = async (cate_id) => {
     if (!cate_id) return;
@@ -156,9 +192,9 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(""); // optional: clear input
-      setIsMobileSearchOpen(false);
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(""); // Clear input
+      setIsMobileSearchOpen(false); // Close mobile search
     }
   };
   const toggleMobileSection = (cate_id, section) => {
@@ -170,13 +206,21 @@ const Navbar = () => {
 
   const menuItems = [
     { to: "/", label: "Home" },
-    ...categories.map((cat) => ({
-      to: `/shop?cate_id=${cat.cate_id}&category=${encodeURIComponent(
-        cat.cate_name
-      )}`,
-      label: cat.cate_name,
-      cate_id: cat.cate_id,
-    })),
+    ...categories.map((cat) => {
+      // Create clean slug from category name
+      const cate_name = cat.cate_name
+        .trim()
+        .replace(/[^a-zA-Z0-9\s-]/g, "") // allow both cases
+        .replace(/\s+/g, "-") // spaces → dashes
+        .replace(/-+/g, "-") // multiple dashes → one
+        .replace(/^-+|-+$/g, ""); // trim dashes
+
+      return {
+        to: `/collections/${cate_name}`,
+        label: cat.cate_name,
+        cate_id: cat.cate_id, // still keep if needed internally
+      };
+    }),
     { to: "/contact", label: "Contact Us" },
   ];
 
@@ -188,9 +232,9 @@ const Navbar = () => {
           <div className="transition-opacity duration-500">
             <span key={announcements[currentAnnouncement]?.ann_id}>
               {announcements[currentAnnouncement]?.text}{" "}
-              <Link to="/shop" className="underline hover:no-underline">
+              {/* <Link to="/collections" className="underline hover:no-underline">
                 Shop Now
-              </Link>
+              </Link> */}
             </span>
           </div>
         </div>
@@ -296,7 +340,7 @@ const Navbar = () => {
                       {megaMenuData?.Collection?.map((it, i) => (
                         <li key={i}>
                           <Link
-                            to={`/shop?cate_id=${
+                            to={`/collections?cate_id=${
                               hoveredCategory.cate_id
                             }&collection=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
@@ -319,7 +363,7 @@ const Navbar = () => {
                       {megaMenuData.Fabric.map((it, i) => (
                         <li key={i}>
                           <Link
-                            to={`/shop?cate_id=${
+                            to={`/collections?cate_id=${
                               hoveredCategory.cate_id
                             }&fabric=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
@@ -342,7 +386,7 @@ const Navbar = () => {
                       {megaMenuData.Occasion.map((it, i) => (
                         <li key={i}>
                           <Link
-                            to={`/shop?cate_id=${
+                            to={`/collections?cate_id=${
                               hoveredCategory.cate_id
                             }&occasion=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
@@ -365,7 +409,7 @@ const Navbar = () => {
                       {megaMenuData.Work.map((it, i) => (
                         <li key={i}>
                           <Link
-                            to={`/shop?cate_id=${
+                            to={`/collections?cate_id=${
                               hoveredCategory.cate_id
                             }&work=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
@@ -388,7 +432,7 @@ const Navbar = () => {
                       {megaMenuData.Style.map((it, i) => (
                         <li key={i}>
                           <Link
-                            to={`/shop?cate_id=${
+                            to={`/collections?cate_id=${
                               hoveredCategory.cate_id
                             }&style=${encodeURIComponent(it.name)}`}
                             className="block text-sm text-gray-600 hover:text-black transition"
@@ -413,6 +457,7 @@ const Navbar = () => {
           className={`fixed ${
             isAtBottom ? "bottom-0" : ""
           } w-full bg-white shadow-md px-4 py-3 flex items-center justify-center z-60`}
+          ref={desktopSearchRef}
         >
           <form
             onSubmit={handleSearch}
@@ -535,7 +580,9 @@ const Navbar = () => {
                                     {data.map((it, i) => (
                                       <li key={i}>
                                         <Link
-                                          to={`/shop?cate_id=${item.cate_id}&${
+                                          to={`/collections?cate_id=${
+                                            item.cate_id
+                                          }&${
                                             key === "Collection"
                                               ? "collection"
                                               : key.toLowerCase()

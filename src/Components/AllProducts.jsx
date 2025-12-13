@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Heart, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import ProductCard from "./ProductCard";
 import HomePageBanner from "../Components/HomePageBanner";
 import singlebanner from "../assets/singlebanner.jpg";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axiosInstance from "../Axios/axios";
 import { reviewsData } from "../data/reviews";
 import ReviewCard from "./ReviewCard";
 import CategoryReviewSlider from "./CategoryReviewSlider";
 import ScrollToTop from "./ScrollToTop";
+import { userInfo } from "../Variable";
+import { getGuestId } from "../utils/guest";
 
 const Allproducts = () => {
   ScrollToTop();
@@ -26,21 +28,25 @@ const Allproducts = () => {
   const [selectedOccasions, setSelectedOccasions] = useState([]);
   const [selectedStyles, setSelectedStyles] = useState([]);
   const [searchParams] = useSearchParams();
-  const cate_id = searchParams.get("cate_id");
-  const categoryName = searchParams.get("category") || "";
 
+  const { cate_name } = useParams();
+  const [wishlistMap, setWishlistMap] = useState({});
+  const [reviewsSummary, setReviewsSummary] = useState({}); // ← Add this state
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [sortBy, setSortBy] = useState("a-z");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [categoryReviews, setCategoryReviews] = useState([]);
+  const [cateId, setCateId] = useState(null);
+  const [categoryDisplayName, setCategoryDisplayName] = useState("");
   const [page, setPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const limit = 6;
+  const navigate = useNavigate();
+  const prevProductsRef = useRef([]);
 
   useEffect(() => {
-    const cate_id = searchParams.get("cate_id");
     const collection = searchParams.get("collection");
     const fabric = searchParams.get("fabric");
     const occasion = searchParams.get("occasion");
@@ -96,27 +102,54 @@ const Allproducts = () => {
   }, [searchParams, filters]);
 
   useEffect(() => {
-    if (categoryName) {
+    if (cate_name) {
       const filtered = reviewsData.filter(
-        (review) => review.category.toLowerCase() === categoryName.toLowerCase()
+        (review) => review.category.toLowerCase() === cate_name.toLowerCase()
       );
       setCategoryReviews(filtered);
     }
-  }, [categoryName]);
+  }, [cate_name]);
+
+  useEffect(() => {
+    if (!cate_name) {
+      // If no category slug → show all products or redirect
+      setCateId(null);
+      setCategoryDisplayName("All Products");
+      return;
+    }
+
+    const fetchCategoryId = async () => {
+      try {
+        // Call backend to get cate9_id from name/slug
+        const res = await axiosInstance.get(`/getcategorybyname/${cate_name}`);
+
+        if (res.data.status === 1 && res.data.data) {
+          setCateId(res.data.data.cate_id);
+          setCategoryDisplayName(res.data.data.cate_name || cate_name);
+        } else {
+          console.log("cate_not found");
+        }
+      } catch (err) {
+        console.error("Category not found:", err);
+      }
+    };
+
+    fetchCategoryId();
+  }, [cate_name, navigate]);
 
   useEffect(() => {
     const fetchCategoryFilters = async () => {
-      if (!cate_id) return;
+      if (!cateId) return;
 
       try {
         const [subRes, fabricRes, workRes, occRes, styleRes, sizeRes] =
           await Promise.all([
-            axiosInstance.get(`/getsubcategory/${cate_id}`),
-            axiosInstance.get(`/getfabrics/${cate_id}`),
-            axiosInstance.get(`/getworks/${cate_id}`),
-            axiosInstance.get(`/getoccasions/${cate_id}`),
-            axiosInstance.get(`/getstyles/${cate_id}`),
-            axiosInstance.get(`/getsize/${cate_id}`),
+            axiosInstance.get(`/getsubcategory/${cateId}`),
+            axiosInstance.get(`/getfabrics/${cateId}`),
+            axiosInstance.get(`/getworks/${cateId}`),
+            axiosInstance.get(`/getoccasions/${cateId}`),
+            axiosInstance.get(`/getstyles/${cateId}`),
+            axiosInstance.get(`/getsize/${cateId}`),
           ]);
 
         setFilters({
@@ -133,12 +166,13 @@ const Allproducts = () => {
     };
 
     fetchCategoryFilters();
-  }, [cate_id]);
+  }, [cateId]);
 
   const fetchProducts = async () => {
     try {
       const payload = {
-        cate_id,
+        cate_id: cateId,
+        cate_name,
         subcategories: selectedSubcategories,
         fabrics: selectedFabrics,
         works: selectedWorks,
@@ -160,11 +194,9 @@ const Allproducts = () => {
       };
 
       const response = await axiosInstance.post(
-        `/productbycategory/${cate_id}`,
+        `/productbycategory/${cate_name}`,
         payload
       );
-
-      console.log(products, "products");
 
       if (response.data.status === 1) {
         setProducts(response.data.data.products);
@@ -180,9 +212,9 @@ const Allproducts = () => {
 
   // Call on filter/sort/page change
   useEffect(() => {
-    if (cate_id) fetchProducts();
+    if (cate_name) fetchProducts();
   }, [
-    cate_id,
+    cate_name,
     selectedSubcategories,
     selectedFabrics,
     selectedWorks,
@@ -235,6 +267,109 @@ const Allproducts = () => {
     setPriceRange([0, 100000]);
   };
 
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      const user = userInfo();
+      const identifier = user?.u_id || getGuestId();
+
+      try {
+        const query = user?.u_id
+          ? `u_id=${identifier}`
+          : `guest_id=${identifier}`;
+
+        const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+        if (res.data.status === 1) {
+          const items = res.data.data || [];
+
+          // Create fast lookup map: "p_id-pcolor_id" → true
+          const map = {};
+          items.forEach((item) => {
+            const key = `${item.p_id}-${item.pcolor_id}`;
+            map[key] = {
+              wished: true,
+              w_id: item.w_id, // optional: for remove
+            };
+          });
+
+          setWishlistMap(map);
+        }
+      } catch (err) {
+        console.error("Wishlist fetch failed", err);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const refreshWishlist = async () => {
+    const user = userInfo();
+    const identifier = user?.u_id || getGuestId();
+    try {
+      const query = user?.u_id
+        ? `u_id=${identifier}`
+        : `guest_id=${identifier}`;
+
+      const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+      if (res.data.status === 1) {
+        const items = res.data.data || [];
+        const map = {};
+        items.forEach((item) => {
+          const key = `${item.p_id}-${item.pcolor_id}`;
+          map[key] = {
+            wished: true,
+            w_id: item.w_id,
+          };
+        });
+        setWishlistMap(map); // ← Yeh update karega sab ProductCards ko
+      }
+    } catch (err) {
+      console.error("Wishlist refresh failed", err);
+    }
+  };
+
+  const fetchAllReviewsSummary = async () => {
+    if (products.length === 0) return;
+
+    const productIds = products.map((p) => p.p_id);
+
+    try {
+      const res = await axiosInstance.post("/getreviewsformultiple", {
+        p_ids: productIds,
+      });
+
+      if (res.data.status === 1) {
+        const data = res.data.data || {};
+        const summary = {};
+
+        Object.keys(data).forEach((p_id) => {
+          const item = data[p_id];
+          summary[p_id] = {
+            rating: item.average_rating,
+            count: item.total_reviews,
+          };
+        });
+
+        setReviewsSummary(summary);
+      }
+    } catch (err) {
+      console.error("Reviews fetch failed", err);
+    }
+  };
+
+  useEffect(() => {
+    const prev = prevProductsRef.current;
+    const hasProductsNow = products.length > 0;
+    const hadNoProductsBefore = prev.length === 0;
+
+    if (hasProductsNow && hadNoProductsBefore) {
+      fetchAllReviewsSummary();
+    }
+
+    prevProductsRef.current = products;
+  }, [products]);
+
   return (
     <div className="min-h-screen bg-[#f3f0ed] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 sm:py-8 py-4">
@@ -248,7 +383,7 @@ const Allproducts = () => {
             <span className="font-medium">Filters</span>
           </button>
 
-          {/* 🔘 Sidebar Filters */}
+          {/* Sidebar Filters */}
           <aside
             className={`${
               mobileFilterOpen ? "block" : "hidden"
@@ -462,7 +597,7 @@ const Allproducts = () => {
           {/* Product Grid */}
           <main className="flex-1">
             <h2 className="text-[28px] md:text-[34px] font-bold text-gray-800 mb-2">
-              {categoryName ? `${categoryName} - Collection` : "All Products"}
+              {cate_name ? `${cate_name} - Collection` : "All Products"}
             </h2>
 
             <div className="flex justify-between items-center mb-6">
@@ -488,7 +623,13 @@ const Allproducts = () => {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 ">
                 {products?.map((product) => (
                   <div className="flex sm:w-[240px] md:w-[225px] lg:w-[260px] xl:w-[280px]">
-                    <ProductCard key={product.p_id} product={product} />
+                    <ProductCard
+                      key={product.p_id}
+                      product={product}
+                      wishlistMap={wishlistMap}
+                      onWishlistChange={refreshWishlist}
+                      reviewsSummary={reviewsSummary}
+                    />
                   </div>
                 ))}
               </div>

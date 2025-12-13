@@ -95,9 +95,12 @@ function App() {
             }
           >
             <Route path="/" element={<HomePage />} />
-            <Route path="/product" element={<SingleProductPage />} />
+            <Route path="/product/:slug" element={<SingleProductPage />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/shop" element={<AllProductPage />} />
+            <Route
+              path="/collections/:cate_name"
+              element={<AllProductPage />}
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cart" element={<Cart />} />

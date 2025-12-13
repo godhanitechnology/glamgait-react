@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import axiosInstance from "../Axios/axios";
-import { ApiURL } from "../Variable";
+import { ApiURL, userInfo } from "../Variable";
+import { getGuestId } from "../utils/guest";
 
 const NewArrivels = () => {
   const [activeTab, setActiveTab] = useState("newArrivals");
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
+  const [wishlistMap, setWishlistMap] = useState({});
+  const [reviewsSummary, setReviewsSummary] = useState({}); // ← Add this state
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,9 +28,103 @@ const NewArrivels = () => {
     fetchProducts();
   }, []);
 
-
   const currentProducts =
     activeTab === "newArrivals" ? newArrivals : bestSeller;
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      const user = userInfo();
+      const identifier = user?.u_id || getGuestId();
+
+      try {
+        const query = user?.u_id
+          ? `u_id=${identifier}`
+          : `guest_id=${identifier}`;
+
+        const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+        if (res.data.status === 1) {
+          const items = res.data.data || [];
+
+          // Create fast lookup map: "p_id-pcolor_id" → true
+          const map = {};
+          items.forEach((item) => {
+            const key = `${item.p_id}-${item.pcolor_id}`;
+            map[key] = {
+              wished: true,
+              w_id: item.w_id, // optional: for remove
+            };
+          });
+
+          setWishlistMap(map);
+        }
+      } catch (err) {
+        console.error("Wishlist fetch failed", err);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const refreshWishlist = async () => {
+    const user = userInfo();
+    const identifier = user?.u_id || getGuestId();
+    try {
+      const query = user?.u_id
+        ? `u_id=${identifier}`
+        : `guest_id=${identifier}`;
+
+      const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+      if (res.data.status === 1) {
+        const items = res.data.data || [];
+        const map = {};
+        items.forEach((item) => {
+          const key = `${item.p_id}-${item.pcolor_id}`;
+          map[key] = {
+            wished: true,
+            w_id: item.w_id,
+          };
+        });
+        setWishlistMap(map); // ← Yeh update karega sab ProductCards ko
+      }
+    } catch (err) {
+      console.error("Wishlist refresh failed", err);
+    }
+  };
+
+ const fetchAllReviewsSummary = async () => {
+  if (currentProducts.length === 0) return;
+
+  const productIds = currentProducts.map(p => p.p_id);
+
+  try {
+    const res = await axiosInstance.post("/getreviewsformultiple", {
+      p_ids: productIds
+    });
+
+    if (res.data.status === 1) {
+      const data = res.data.data || {};
+      const summary = {};
+
+      Object.keys(data).forEach(p_id => {
+        const item = data[p_id];
+        summary[p_id] = {
+          rating: item.average_rating,
+          count: item.total_reviews
+        };
+      });
+
+      setReviewsSummary(summary);
+    }
+  } catch (err) {
+    console.error("Reviews fetch failed", err);
+  }
+};
+
+useEffect(() => {
+  fetchAllReviewsSummary();
+}, [currentProducts]);
 
   return (
     <section className="relative sm:pt-0 md:pt-16 md:px-4 bg-[#F3F0ED] overflow-hidden">
@@ -73,7 +170,12 @@ const NewArrivels = () => {
               key={product.p_id}
               className="flex-shrink-0 w-[220px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"
             >
-              <ProductCard product={product} />
+              <ProductCard
+                product={product}
+                wishlistMap={wishlistMap}
+                onWishlistChange={refreshWishlist}
+                reviewsSummary={reviewsSummary}
+              />
             </div>
           ))}
         </div>

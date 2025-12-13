@@ -1,47 +1,14 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../Axios/axios";
-
-const RatingBadge = ({ p_id }) => {
-  const [rating, setRating] = useState(null);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const fetchRating = async () => {
-      if (!p_id) return;
-
-      try {
-        const res = await axiosInstance.post("/getuserreviews", { p_id });
-
-        if (res.data.status === 1 && res.data.data.length > 0) {
-          const reviews = res.data.data;
-          const total = reviews.reduce((sum, r) => sum + r.rating, 0);
-          const avg = (total / reviews.length).toFixed(1);
-
-          setRating(avg);
-          setCount(reviews.length);
-        } else {
-          setRating(null);
-          setCount(0);
-        }
-      } catch (err) {
-        console.log(err);
-        setRating(null);
-        setCount(0);
-      }
-    };
-
-    fetchRating();
-  }, [p_id]);
-
-  // If no reviews → show nothing or subtle "Be first"
-  if (count === 0) {
+const RatingBadge = ({ p_id, reviewsSummary }) => {
+const data = reviewsSummary?.[p_id];
+ if (!data || data.count === 0) {
     return (
       <div className="flex items-center gap-1 mt-1">
         <span className="text-xs text-gray-500">No reviews yet</span>
       </div>
     );
   }
-
+  const { rating, count } = data;
+  
   return (
     <div className="flex items-center gap-2 mt-1">
       {/* Stars */}

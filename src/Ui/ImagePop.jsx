@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-import c1 from "../assets/c1.jpg";
 import { ApiURL } from "../Variable";
 
 const ImagePop = ({ onClose ,image}) => {

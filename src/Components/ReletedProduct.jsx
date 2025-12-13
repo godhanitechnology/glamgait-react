@@ -3,22 +3,21 @@ import HomePageBanner from "../Components/HomePageBanner";
 import singlebanner from "../assets/singlebanner.jpg";
 import axiosInstance from "../Axios/axios";
 import { useEffect, useState } from "react";
+import { userInfo } from "../Variable";
+import { getGuestId } from "../utils/guest";
 
-const ReletedProduct = ({ cate_id, currentProductId }) => {
-
-  console.log(cate_id,currentProductId);
-  
-  
+const ReletedProduct = ({ cate_name, currentProductId }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [wishlistMap, setWishlistMap] = useState({});
+    const [reviewsSummary, setReviewsSummary] = useState({}); 
+    
 
   const fetchProducts = async () => {
     try {
       const response = await axiosInstance.post(
-        `/productbycategory/${cate_id}`,
+        `/productbycategory/${cate_name}`,
         { limit: 5 }
       );
-      console.log(response.data,'dat');
-      
       const filteredProducts = response?.data?.data?.products?.filter(
         (item) => item.p_id !== currentProductId
       );
@@ -30,7 +29,103 @@ const ReletedProduct = ({ cate_id, currentProductId }) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [cate_id]);
+  }, [cate_name]);
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      const user = userInfo();
+      const identifier = user?.u_id || getGuestId();
+
+      try {
+        const query = user?.u_id
+          ? `u_id=${identifier}`
+          : `guest_id=${identifier}`;
+
+        const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+        if (res.data.status === 1) {
+          const items = res.data.data || [];
+
+          // Create fast lookup map: "p_id-pcolor_id" → true
+          const map = {};
+          items.forEach((item) => {
+            const key = `${item.p_id}-${item.pcolor_id}`;
+            map[key] = {
+              wished: true,
+              w_id: item.w_id, // optional: for remove
+            };
+          });
+
+          setWishlistMap(map);
+        }
+      } catch (err) {
+        console.error("Wishlist fetch failed", err);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const refreshWishlist = async () => {
+    const user = userInfo();
+    const identifier = user?.u_id || getGuestId();
+    try {
+      const query = user?.u_id
+        ? `u_id=${identifier}`
+        : `guest_id=${identifier}`;
+
+      const res = await axiosInstance.get(`/getwishlist?${query}`);
+
+      if (res.data.status === 1) {
+        const items = res.data.data || [];
+        const map = {};
+        items.forEach((item) => {
+          const key = `${item.p_id}-${item.pcolor_id}`;
+          map[key] = {
+            wished: true,
+            w_id: item.w_id,
+          };
+        });
+        setWishlistMap(map); // ← Yeh update karega sab ProductCards ko
+      }
+    } catch (err) {
+      console.error("Wishlist refresh failed", err);
+    }
+  }; 
+  
+ const fetchAllReviewsSummary = async () => {
+  if (relatedProducts.length === 0) return;
+
+  const productIds = relatedProducts.map(p => p.p_id);
+
+  try {
+    const res = await axiosInstance.post("/getreviewsformultiple", {
+      p_ids: productIds
+    });
+
+    if (res.data.status === 1) {
+      const data = res.data.data || {};
+      const summary = {};
+
+      Object.keys(data).forEach(p_id => {
+        const item = data[p_id];
+        summary[p_id] = {
+          rating: item.average_rating,
+          count: item.total_reviews
+        };
+      });
+
+      setReviewsSummary(summary);
+    }
+  } catch (err) {
+    console.error("Reviews fetch failed", err);
+  }
+};
+
+useEffect(() => {
+  fetchAllReviewsSummary();
+}, [relatedProducts]);
+
   return (
     <section className="pt-12 px-4 bg-[#F3F0ED]">
       {/* Section Title */}
@@ -51,7 +146,12 @@ const ReletedProduct = ({ cate_id, currentProductId }) => {
               key={product.p_id}
               className="flex-shrink-0 w-[250px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"
             >
-              <ProductCard product={product} />
+              <ProductCard
+                product={product}
+                wishlistMap={wishlistMap}
+                onWishlistChange={refreshWishlist}
+                reviewsSummary={reviewsSummary}
+              />
             </div>
           ))}
         </div>

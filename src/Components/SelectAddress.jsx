@@ -542,8 +542,9 @@ const SelectAddress = () => {
 
   return (
     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10">
-      <h2 className="text-2xl font-semibold mb-6">Select Delivery Address</h2>
-
+      <h2 className="text-2xl font-semibold mb-6 max-w-6xl mx-auto">
+        Select Delivery Address
+      </h2>
       <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
         {/* LEFT: Addresses */}
         <div className="flex-1 space-y-4">
@@ -644,7 +645,7 @@ const SelectAddress = () => {
           </div>
 
           {/* Payment Method */}
-          {/* <div className="mt-6">
+          <div className="mt-6">
             <h4 className="font-semibold mb-3">Payment Method</h4>
             <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer">
@@ -658,7 +659,7 @@ const SelectAddress = () => {
                 />
                 <span>Cash on Delivery</span>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer">
+              {/* <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="radio"
                   name="payment"
@@ -668,7 +669,7 @@ const SelectAddress = () => {
                   className="w-5 h-5 accent-[#063d32]"
                 />
                 <span>Online Payment (Razorpay)</span>
-              </label>
+              </label> */}
             </div>
           </div>
 
@@ -678,7 +679,7 @@ const SelectAddress = () => {
             className="w-full mt-8 bg-[#063d32] text-white py-4 rounded-xl font-bold hover:bg-[#052d25] transition disabled:opacity-50"
           >
             {paymentMethod === "online" ? "PAY NOW" : "PLACE ORDER"}
-          </button> */}
+          </button>
         </div>
       </div>
 

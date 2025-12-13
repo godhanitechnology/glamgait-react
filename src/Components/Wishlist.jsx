@@ -191,6 +191,7 @@ const Wishlist = () => {
       const query = user?.u_id
         ? `u_id=${identifier}`
         : `guest_id=${identifier}`;
+        
       const res = await axiosInstance.get(`${ApiURL}/getwishlist?${query}`);
 
       if (res.data.status === 1) {

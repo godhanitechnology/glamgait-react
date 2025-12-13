@@ -2,6 +2,7 @@
 import pattern from "../assets/pattern.png";
 import quoteLeft from "../assets/quoteLeft.png";
 import rightlight from "../assets/rightlight.png";
+import user from "../assets/images.png";
 
 const ReviewCard = ({ name, review }) => {
   return (
@@ -33,7 +34,7 @@ const ReviewCard = ({ name, review }) => {
       <div className="relative justify-items-center z-20 p-8">
         <div className="flex items-center gap-3 mb-2">
           <img
-            src={rightlight}
+            src={user}
             alt={name}
             className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-20 2xl:h-20 rounded-full object-cover border-2 border-gray-200"
           />

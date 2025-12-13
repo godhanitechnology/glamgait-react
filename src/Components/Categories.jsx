@@ -76,13 +76,17 @@ const Categories = () => {
           <div className="flex space-x-4 w-max xl:w-auto xl:grid xl:grid-cols-5 xl:gap-5 xl:space-x-0">
             {categories?.map((category) => {
               const image = category.cate_image;
+              const cate_name = category.cate_name
+                .trim()
+                .replace(/[^a-zA-Z0-9\s-]/g, "") // allow both cases
+                .replace(/\s+/g, "-") // spaces → dashes
+                .replace(/-+/g, "-") // multiple dashes → one
+                .replace(/^-+|-+$/g, "");
               return (
                 <div className="hover:scale-105 transition-all duration-300">
                   <NavLink
                     key={category.cate_id}
-                    to={`/shop?cate_id=${
-                      category.cate_id
-                    }&category=${encodeURIComponent(category.cate_name)}`}
+                    to={`/collections/${cate_name}`}
                     className="rounded-lg overflow-hidden cursor-pointer flex-shrink-0 xl:flex-shrink xl:min-w-0 xl:basis-1/5"
                   >
                     <div className="relative pt-[120%] w-42 h-60 md:w-60 md:h-87 z-30">

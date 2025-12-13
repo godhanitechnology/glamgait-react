@@ -8,7 +8,6 @@ const SingleProductPage = () => {
   return (
     <div>
       <SingleProduct />
-      <Review />
       <ReletedProduct/>
       <StayInLoop />
     </div>

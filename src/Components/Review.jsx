@@ -3,7 +3,6 @@ import imgicon from "../assets/imgicon.svg";
 import axiosInstance from "../Axios/axios";
 import { ApiURL, userInfo } from "../Variable";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
 
 const StarIcon = ({ filled, onClick }) => (
   <svg
@@ -19,8 +18,7 @@ const StarIcon = ({ filled, onClick }) => (
   </svg>
 );
 
-const Review = () => {
-  const { p_id } = useParams();
+const Review = ({ p_id }) => {
   const [selectedStars, setSelectedStars] = useState(5);
   const [reviewTitle, setReviewTitle] = useState("");
   const [reviewContent, setReviewContent] = useState("");
@@ -44,7 +42,7 @@ const Review = () => {
   };
 
   useEffect(() => {
-    fetchReviews();
+    if (p_id) fetchReviews();
   }, [p_id]);
 
   const handleStarClick = (star) => setSelectedStars(star);
@@ -140,7 +138,7 @@ const Review = () => {
           <div key={index} className="mb-6 border-b pb-4">
             <div className="md:flex items-start gap-10">
               <div className="flex flex-col mr-4">
-                <span className="font-bold">{review?.user?.first_name}</span>
+                <span className="font-bold">{review?.reviewer_name}</span>
               </div>
               <div className="flex-grow">
                 <div className="flex items-center mb-1">
@@ -201,7 +199,7 @@ const Review = () => {
           </label>
           <textarea
             type="text"
-            value={reviewTitle}
+            value={reviewContent}
             onChange={(e) => setReviewContent(e.target.value)}
             className="w-full p-2 rounded mb-4 bg-white"
             required
