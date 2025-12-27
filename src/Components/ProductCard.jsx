@@ -27,18 +27,35 @@ const ProductCard = ({
   const wishlistId =
     wishlistKey && wishlistMap ? wishlistMap[wishlistKey]?.w_id || null : null;
 
+  // const handleCardClick = useCallback(() => {
+  //   const name = product?.name || "product";
+
+  //   let slug = name
+  //     .toLowerCase()
+  //     .trim()
+  //     .replace(/[^a-z0-9\s-&'()]/g, "") // Allow &, ', (, )
+  //     .replace(/\s+/g, "-") // spaces → dashes
+  //     .replace(/-+/g, "-") // multiple dashes → one
+  //     .replace(/^-+|-+$/g, ""); // trim dashes
+
+  //   // URL-encode the slug to safely handle & and other special chars
+  //   const encodedSlug = encodeURIComponent(slug);
+
+  //   navigate(`/product/${encodedSlug}`);
+  // }, [navigate, product?.name]);
+
   const handleCardClick = useCallback(() => {
     const name = product?.name || "product";
 
-    const slug = name
+    let slug = name
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
+      .replace(/[^a-z0-9\s-&'()]/g, "") // Allow &, ', (, )
+      .replace(/\s+/g, "-") // spaces → dashes
+      .replace(/-+/g, "-") // multiple dashes → one
+      .replace(/^-+|-+$/g, ""); // trim dashes
 
-    // Final clean URL
+    // No need for encodeURIComponent—use slug directly
     navigate(`/product/${slug}`);
   }, [navigate, product?.name]);
 
@@ -121,15 +138,58 @@ const ProductCard = ({
       </button>
 
       {/* Product Image */}
-      <div onClick={handleCardClick}>
-        <img
-          src={`${ApiURL}/assets/Products/${selectedColor?.productimages[0]?.image_url}`}
-          alt={product?.name}
-          className="w-full h-[300px] md:h-[350px] object-cover"
-          onError={(e) => {
-            e.target.src = "https://via.placeholder.com/300x350?text=No+Image";
-          }}
-        />
+      {/* Product Media (Image or Video) */}
+      <div onClick={handleCardClick} className="relative">
+        {(() => {
+          const firstMedia = selectedColor?.productimages?.[0];
+          if (!firstMedia) {
+            return (
+              <div className="w-full h-[300px] md:h-[350px] bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                No Media
+              </div>
+            );
+          }
+
+          const mediaUrl = `${ApiURL}/assets/Products/${firstMedia.image_url}`;
+          const isVideo = /\.(mp4|webm|mov|avi)$/i.test(firstMedia.image_url);
+
+          return isVideo ? (
+            <div className="relative w-full h-[300px] md:h-[350px] overflow-hidden bg-black">
+              <video
+                src={mediaUrl}
+                className="w-full h-full object-cover"
+                muted
+                loop
+                autoPlay
+                playsInline
+              >
+                <source src={mediaUrl} />
+              </video>
+              {/* Play Icon Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/90 rounded-full p-4 shadow-xl">
+                  <svg
+                    className="w-10 h-10 text-black"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <img
+              src={mediaUrl}
+              alt={product?.name}
+              className="w-full h-[300px] md:h-[350px] object-cover"
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/300x350?text=No+Image";
+              }}
+            />
+          );
+        })()}
       </div>
 
       {/* Product Info */}
@@ -137,7 +197,7 @@ const ProductCard = ({
         className="px-3 pt-2 pb-4 bg-[#F3F0ED] h-[150px]"
         onClick={handleCardClick}
       >
-        <div className="flex flex-col items-start mb-1 space-y-1">
+        <div className="flex flex-col items-start mb-1">
           <div>
             <h3 className="text-[16px] font-medium text-gray-800 leading-4 line-clamp-1">
               {product?.name}
@@ -146,15 +206,15 @@ const ProductCard = ({
               {selectedColor?.color?.color_name || "Color"}
             </p>
           </div>
-          <div className="text-left">
-            {product?.original_price > product?.price && (
-              <span className="text-gray-400 line-through text-[11px] block">
-                ₹{product?.original_price}
-              </span>
-            )}
+          <div className="flex items-center justify-center gap-2">
             <span className="text-[14px] font-semibold text-gray-800">
               ₹{product?.price}
             </span>
+            {product?.original_price > product?.price && (
+              <span className="text-gray-400 line-through text-[12px] block">
+                ₹{product?.original_price}
+              </span>
+            )}
           </div>
           <RatingBadge p_id={product.p_id} reviewsSummary={reviewsSummary} />
         </div>

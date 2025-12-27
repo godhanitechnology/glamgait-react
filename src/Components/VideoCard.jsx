@@ -100,9 +100,20 @@ const VideoCard = ({ product }) => {
     }
   };
 
+  let slug = product?.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-&'()]/g, "") // Allow &, ', (, )
+    .replace(/\s+/g, "-") // spaces → dashes
+    .replace(/-+/g, "-") // multiple dashes → one
+    .replace(/^-+|-+$/g, ""); // trim dashes
+
+  // URL-encode the slug to safely handle & and other special chars
+  const encodedSlug = encodeURIComponent(slug);
+
   return (
     <Link
-      to={`/product/${product?.p_id}`}
+      to={`/product/${encodedSlug}`}
       className="relative overflow-hidden cursor-pointer w-full max-w-[300px] mx-auto"
       onClick={handleCardClick}
     >

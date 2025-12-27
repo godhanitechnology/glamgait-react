@@ -6,7 +6,7 @@ import user from "../assets/images.png";
 
 const ReviewCard = ({ name, review }) => {
   return (
-    <div className="relative w-[300px] h-50 sm:w-[350px] md:w-[400px] 2xl:w-[700px] 2xl:h-[400px] rounded-xl bg-white overflow-hidden flex items-center justify-items-center">
+    <div className="relative w-[300px] h-50 sm:w-[350px] md:w-[400px] 2xl:w-[700px] 2xl:h-[400px] rounded-xl bg-white overflow-hidden flex items-center justify-center">
       {/* Pattern (Left Side) */}
       <img
         src={pattern}

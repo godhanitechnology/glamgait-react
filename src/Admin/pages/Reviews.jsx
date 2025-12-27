@@ -98,7 +98,7 @@ const Reviews = () => {
   const confirmDelete = async () => {
     try {
       await axiosInstance.delete(
-        `${ApiURL}/deletereview/${deleteModal.reviewId}`
+        `${ApiURL}/deleteuserreview/${deleteModal.reviewId}`
       );
       toast.success("Review deleted");
       fetchReviews(currentPage);
@@ -133,7 +133,9 @@ const Reviews = () => {
         comment: review.message || "",
         name: review.reviewer_name || "",
         image: null,
-        preview: review.image_url ? `${ApiURL}/${review.image_url}` : null,
+        preview: review.image_url
+          ? `${ApiURL}/assets/UserReviews/${review.image_url}`
+          : null,
       });
       setModal({ open: true, editMode: true, reviewId: review.r_id });
     } else {
@@ -352,7 +354,7 @@ const Reviews = () => {
                       )}
                     </td>
                     <td className="px-6 py-3 font-medium">
-                      {r.reviewer_name || "User"}
+                      {r?.reviewer_name}
                     </td>
                     <td className="px-6 py-3">{r.product_name || "N/A"}</td>
                     <td className="px-6 py-3 flex items-center gap-1">

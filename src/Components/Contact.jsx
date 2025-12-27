@@ -82,6 +82,8 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left - Form */}
           <div className="flex items-center justify-center">
+
+            
             <div className="bg-white w-full">
               <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
                 Leave us a message
@@ -133,7 +135,7 @@ const Contact = () => {
               </div>
               <div className="flex items-center gap-3">
                 <div className="h-5 w-5"><img src={phone} alt="Phone" /></div>
-                <a href="tel:+23408112364568" className="text-gray-700">+234 081-1236-4568</a>
+                <a href="tel:+23408112364568" className="text-gray-700">+91 84019 70022</a>
               </div>
               <div className="flex items-center gap-3">
                 <div className="h-5 w-5"><img src={mail} alt="Email" /></div>

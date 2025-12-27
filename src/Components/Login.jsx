@@ -8,7 +8,7 @@ import leftlight from "../assets/leftlight.png";
 import loginmain from "../assets/loginmain.jpg";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../Axios/axios";
-import { ApiURL } from "../Variable";
+import { ApiURL, showToaster } from "../Variable";
 import toast from "react-hot-toast";
 
 const Login = () => {
@@ -64,6 +64,7 @@ const Login = () => {
         setPassword("");
       } else {
         console.log(response.data.description || "Login failed");
+        toast.error(response?.data?.description);
       }
     } catch (err) {
       console.log(err);
@@ -152,12 +153,12 @@ const Login = () => {
           </div>
 
           {/* OR Divider */}
-          <div className="flex items-center justify-center mt-3">
+          {/* <div className="flex items-center justify-center mt-3">
             <span className="text-gray-400 text-sm">Or</span>
-          </div>
+          </div> */}
 
           {/* Social Login */}
-          <div className="flex justify-center gap-6 mt-2">
+          {/* <div className="flex justify-center gap-6 mt-2">
             <img
               src={apple}
               alt="Apple"
@@ -173,7 +174,7 @@ const Login = () => {
               alt="Facebook"
               className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
             />
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

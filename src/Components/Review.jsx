@@ -58,6 +58,7 @@ const Review = ({ p_id }) => {
       console.log("Please login to submit a review");
       return;
     }
+    
 
     try {
       const formData = new FormData();
@@ -65,6 +66,8 @@ const Review = ({ p_id }) => {
       formData.append("p_id", p_id);
       formData.append("rating", selectedStars);
       formData.append("message", reviewContent);
+
+      formData.append("reviewer_name", user.first_name || user.name || "Anonymous");
 
       uploadedImages.forEach((file) => {
         if (file instanceof File) formData.append("userReviewImage", file);
@@ -135,31 +138,57 @@ const Review = ({ p_id }) => {
 
         {/* Reviews */}
         {reviews?.slice(0, visibleCount).map((review, index) => (
-          <div key={index} className="mb-6 border-b pb-4">
+          <div key={index} className="mb-6 border-b pb-4 last:border-b-0">
             <div className="md:flex items-start gap-10">
-              <div className="flex flex-col mr-4">
-                <span className="font-bold">{review?.reviewer_name}</span>
+              <div className="flex flex-col mr-4 min-w-[120px]">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">
+                    {review?.reviewer_name}
+                  </span>
+
+                  {/* Verified Badge - shown for ALL reviews (you can make it conditional later) */}
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-black text-white rounded-full shadow-sm">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      strokeWidth="3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Verified
+                  </span>
+                </div>
               </div>
+
               <div className="flex-grow">
-                <div className="flex items-center mb-1">
+                <div className="flex items-center mb-2">
                   {Array(5)
                     .fill(0)
                     .map((_, i) => (
                       <StarIcon key={i} filled={i < review?.rating} />
                     ))}
                 </div>
-                <p className="text-sm text-gray-600 mb-2">
+
+                <p className="text-sm text-gray-600 mb-3">
                   {review?.createdAt?.split("T")[0]}
                 </p>
-                <p className="mb-2">{review?.message}</p>
-                {console.log(review.image_url, "review")}
+
+                <p className="mb-3 text-gray-800 leading-relaxed">
+                  {review?.message}
+                </p>
 
                 {review?.image_url && (
-                  <div className="flex items-center gap-2">
+                  <div className="mt-3">
                     <img
                       src={`${ApiURL}/assets/UserReviews/${review?.image_url}`}
-                      alt="review"
-                      className="w-20 h-20 object-cover rounded"
+                      alt="Customer review photo"
+                      className="max-w-[180px] sm:max-w-[220px] h-auto object-cover rounded-lg shadow-sm border border-gray-200"
                     />
                   </div>
                 )}

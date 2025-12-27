@@ -78,6 +78,7 @@ const Categories = () => {
               const image = category.cate_image;
               const cate_name = category.cate_name
                 .trim()
+                .toLowerCase()
                 .replace(/[^a-zA-Z0-9\s-]/g, "") // allow both cases
                 .replace(/\s+/g, "-") // spaces → dashes
                 .replace(/-+/g, "-") // multiple dashes → one

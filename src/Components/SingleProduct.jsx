@@ -23,8 +23,8 @@ import Review from "./Review";
 function SingleProduct() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null); // for lightbox
-  const [mainIndex, setMainIndex] = useState(0); // mobile big image
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [mainIndex, setMainIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -192,7 +192,7 @@ function SingleProduct() {
     fetchProduct();
   }, [slug]);
 
-  // Update stock when color/size changes
+  //Update stock when color/size changes
   useEffect(() => {
     if (selectedColor && selectedSize) {
       setAvailableStock(selectedSize.remaining_qty || 0);
@@ -208,7 +208,7 @@ function SingleProduct() {
     }
   }, [product]);
 
-  // 1. Ek function bana do — sab logic yahan
+  //Ek function bana do — sab logic yahan
   const handleColorChange = (color) => {
     setSelectedColor(color);
 
@@ -216,6 +216,7 @@ function SingleProduct() {
     const images = color.productimages?.map((img) => img.image_url) || [];
     const imageFiles = images.filter((f) => !/\.(mp4|mov|webm)$/i.test(f));
     const videos = images.filter((f) => /\.(mp4|mov|webm)$/i.test(f));
+    console.log(videos, "videos");
 
     setSelectedColorImages(imageFiles);
     setVideoFiles(videos);
@@ -790,11 +791,11 @@ function SingleProduct() {
               </div>
 
               <div className="border-t border-b border-gray-200 py-4 space-y-3">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center space-x-2 text-sm">
                   <span className="text-gray-600">SKU:</span>
                   <span className="font-medium">{product?.sku}</span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center space-x-2 text-sm">
                   <span className="text-gray-600">Delivery by:</span>
                   <div className="text-right">
                     <div className="font-medium">{getDeliveryDate()}</div>
@@ -849,23 +850,12 @@ function SingleProduct() {
 
               <div className="pt-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">
-                  Part shirt, part jacket, all style.
+                  Product Description
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {product?.description}
                 </p>
               </div>
-
-              {/* <div className="border-t border-gray-200 pt-6 space-y-3">
-                <div className="flex justify-between text-sm border-b border-[#DDDBDC]">
-                  <span className="font-semibold text-gray-900">Model</span>
-                  <span className="text-gray-600">{product?.model}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="font-semibold text-gray-900">Fit</span>
-                  <span className="text-gray-600">{product?.fit}</span>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -885,7 +875,11 @@ function SingleProduct() {
             image={product?.category?.cate_chart}
           />
         )}
-        <ReletedProduct cate_name={slug} currentProductId={product.p_id} />
+        <ReletedProduct
+          cate_name={product?.category?.cate_name}
+          currentProductId={product.p_id}
+          cate_id={product?.category?.cate_id}
+        />
       </div>
       <Review p_id={product.p_id} />
     </>

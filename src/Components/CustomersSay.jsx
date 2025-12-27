@@ -66,7 +66,6 @@ const CustomersSay = ({ direction = "left", speed = "fast" }) => {
     );
   }
 
-  console.log(reviews, "reviews");
 
   return (
     <section className="relative bg-[#F3F0ED] py-16 overflow-hidden">

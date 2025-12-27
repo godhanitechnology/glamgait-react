@@ -7,10 +7,14 @@ const CategoryReviewSlider = ({
   reviews = [],
   direction = "left",
   speed = "normal",
+  cate_name
 }) => {
   const containerRef = useRef(null);
   const scrollerRef = useRef(null);
   const [start, setStart] = useState(false);
+
+  console.log(reviews,'reviews');
+  
 
   useEffect(() => {
     if (reviews.length === 0) return;
@@ -61,7 +65,7 @@ const CategoryReviewSlider = ({
       <div className="text-center max-w-2xl mx-auto mb-10 relative z-10 px-4">
         <h2 className="text-[30px] md:text-[34px] xl:text-[34px] font-bold text-gray-800 mb-2">
           What Customers Say About{" "}
-          <span className="text-[#046A4D]">{reviews[0]?.category}</span>
+          <span className="text-[#046A4D]">{cate_name}</span>
         </h2>
         <p className="text-[12px] md:text-[16px] text-gray-600">
           Real reviews from real buyers
@@ -82,10 +86,9 @@ const CategoryReviewSlider = ({
           {reviews.map((review, idx) => (
             <li key={idx} className="shrink-0">
               <CategoryReviewCard
-                name={review.user_name}
-                comment={review.comment}
+                name={review.reviewer_name}
+                comment={review.message}
                 rating={review.rating}
-                verified={review.verified}
               />
             </li>
           ))}

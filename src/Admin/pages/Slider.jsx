@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { ApiURL, showToaster } from "../../Variable";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const Sliders = () => {
   const { reset } = useForm();

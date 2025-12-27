@@ -156,12 +156,12 @@ const Register = () => {
           {/* Divider */}
           <div className="flex items-center my-4">
             <div className="flex-grow h-px bg-gray-300"></div>
-            <span className="mx-3 text-sm text-gray-500">Or</span>
+            {/* <span className="mx-3 text-sm text-gray-500">Or</span> */}
             <div className="flex-grow h-px bg-gray-300"></div>
           </div>
 
           {/* Social Icons */}
-          <div className="flex justify-center gap-4">
+          {/* <div className="flex justify-center gap-4">
             <button className="bg-gray-100 p-3 rounded-full hover:bg-gray-200 transition">
               <img
                 src={apple}
@@ -183,7 +183,7 @@ const Register = () => {
                 className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
               />{" "}
             </button>
-          </div>
+          </div> */}
 
           {/* Terms */}
           <p className="text-xs text-center text-gray-500 mt-4">

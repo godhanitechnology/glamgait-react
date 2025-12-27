@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Heart, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import ProductCard from "./ProductCard";
 import HomePageBanner from "../Components/HomePageBanner";
 import singlebanner from "../assets/singlebanner.jpg";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../Axios/axios";
-import { reviewsData } from "../data/reviews";
-import ReviewCard from "./ReviewCard";
 import CategoryReviewSlider from "./CategoryReviewSlider";
 import ScrollToTop from "./ScrollToTop";
 import { userInfo } from "../Variable";
 import { getGuestId } from "../utils/guest";
-
 const Allproducts = () => {
   ScrollToTop();
   const [filters, setFilters] = useState({
@@ -27,11 +24,11 @@ const Allproducts = () => {
   const [selectedWorks, setSelectedWorks] = useState([]);
   const [selectedOccasions, setSelectedOccasions] = useState([]);
   const [selectedStyles, setSelectedStyles] = useState([]);
-  const [searchParams] = useSearchParams();
-
-  const { cate_name } = useParams();
+  const [allColors, setAllColors] = useState([]); // ← global colors
+  const [selectedColors, setSelectedColors] = useState([]);
+  const { cate_name, filterValue } = useParams();
   const [wishlistMap, setWishlistMap] = useState({});
-  const [reviewsSummary, setReviewsSummary] = useState({}); // ← Add this state
+  const [reviewsSummary, setReviewsSummary] = useState({});
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -40,75 +37,90 @@ const Allproducts = () => {
   const [categoryReviews, setCategoryReviews] = useState([]);
   const [cateId, setCateId] = useState(null);
   const [categoryDisplayName, setCategoryDisplayName] = useState("");
-  const [page, setPage] = useState(1);
+  const [activeFilterName, setActiveFilterName] = useState("");
+  const [limit] = useState(18);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
-  const limit = 6;
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
   const prevProductsRef = useRef([]);
 
-  useEffect(() => {
-    const collection = searchParams.get("collection");
-    const fabric = searchParams.get("fabric");
-    const occasion = searchParams.get("occasion");
-    const work = searchParams.get("work");
-    const style = searchParams.get("style");
-    const highlight = searchParams.get("highlight");
+  const createSlug = (name) =>
+    name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  // Set selected filters from URL filterValue (infer type by matching in filters)
 
-    // Set selected filters from URL
-    if (collection) {
-      const matched = filters.subcategories.find(
-        (s) => s.name === decodeURIComponent(collection)
-      );
-      if (matched) setSelectedSubcategories([matched.sc_id]);
-    } else {
+  useEffect(() => {
+    if (!filterValue || Object.keys(filters).length === 0) {
       setSelectedSubcategories([]);
-    }
-
-    if (fabric) {
-      const matched = filters.fabrics.find(
-        (f) => f.name === decodeURIComponent(fabric)
-      );
-      if (matched) setSelectedFabrics([matched.f_id]);
-    } else {
       setSelectedFabrics([]);
-    }
-
-    if (occasion) {
-      const matched = filters.occasions.find(
-        (o) => o.name === decodeURIComponent(occasion)
-      );
-      if (matched) setSelectedOccasions([matched.occasion_id]);
-    } else {
-      setSelectedOccasions([]);
-    }
-
-    if (work) {
-      const matched = filters.works.find(
-        (w) => w.name === decodeURIComponent(work)
-      );
-      if (matched) setSelectedWorks([matched.work_id]);
-    } else {
       setSelectedWorks([]);
-    }
-
-    if (style) {
-      const matched = filters.styles.find(
-        (s) => s.name === decodeURIComponent(style)
-      );
-      if (matched) setSelectedStyles([matched.style_id]);
-    } else {
+      setSelectedOccasions([]);
       setSelectedStyles([]);
+      setActiveFilterName("");
+      return;
     }
-  }, [searchParams, filters]);
-
-  useEffect(() => {
-    if (cate_name) {
-      const filtered = reviewsData.filter(
-        (review) => review.category.toLowerCase() === cate_name.toLowerCase()
+    let matched = null;
+    let type = null;
+    // Check each filter list for matching slug
+    matched = filters.subcategories.find(
+      (item) => createSlug(item.name) === filterValue
+    );
+    if (matched) {
+      type = "collection";
+      setSelectedSubcategories([matched.sc_id]);
+      setActiveFilterName(matched.name);
+    } else {
+      matched = filters.fabrics.find(
+        (item) => createSlug(item.name) === filterValue
       );
-      setCategoryReviews(filtered);
+      if (matched) {
+        type = "fabric";
+        setSelectedFabrics([matched.f_id]);
+        setActiveFilterName(matched.name);
+      } else {
+        matched = filters.works.find(
+          (item) => createSlug(item.name) === filterValue
+        );
+        if (matched) {
+          type = "work";
+          setSelectedWorks([matched.work_id]);
+          setActiveFilterName(matched.name);
+        } else {
+          matched = filters.occasions.find(
+            (item) => createSlug(item.name) === filterValue
+          );
+          if (matched) {
+            type = "occasion";
+            setSelectedOccasions([matched.occasion_id]);
+            setActiveFilterName(matched.name);
+          } else {
+            matched = filters.styles.find(
+              (item) => createSlug(item.name) === filterValue
+            );
+            if (matched) {
+              type = "style";
+              setSelectedStyles([matched.style_id]);
+              setActiveFilterName(matched.name);
+            }
+          }
+        }
+      }
     }
-  }, [cate_name]);
+    // Clear other filters if a match found
+    if (matched && type) {
+      setSelectedSubcategories(type === "collection" ? [matched.sc_id] : []);
+      setSelectedFabrics(type === "fabric" ? [matched.f_id] : []);
+      setSelectedWorks(type === "work" ? [matched.work_id] : []);
+      setSelectedOccasions(type === "occasion" ? [matched.occasion_id] : []);
+      setSelectedStyles(type === "style" ? [matched.style_id] : []);
+    }
+  }, [filterValue, filters]);
 
   useEffect(() => {
     if (!cate_name) {
@@ -117,12 +129,10 @@ const Allproducts = () => {
       setCategoryDisplayName("All Products");
       return;
     }
-
     const fetchCategoryId = async () => {
       try {
-        // Call backend to get cate9_id from name/slug
+        // Call backend to get cate_id from name/slug
         const res = await axiosInstance.get(`/getcategorybyname/${cate_name}`);
-
         if (res.data.status === 1 && res.data.data) {
           setCateId(res.data.data.cate_id);
           setCategoryDisplayName(res.data.data.cate_name || cate_name);
@@ -133,14 +143,12 @@ const Allproducts = () => {
         console.error("Category not found:", err);
       }
     };
-
     fetchCategoryId();
   }, [cate_name, navigate]);
 
   useEffect(() => {
     const fetchCategoryFilters = async () => {
       if (!cateId) return;
-
       try {
         const [subRes, fabricRes, workRes, occRes, styleRes, sizeRes] =
           await Promise.all([
@@ -151,7 +159,6 @@ const Allproducts = () => {
             axiosInstance.get(`/getstyles/${cateId}`),
             axiosInstance.get(`/getsize/${cateId}`),
           ]);
-
         setFilters({
           subcategories: subRes.data.data || [],
           fabrics: fabricRes.data.data || [],
@@ -164,9 +171,23 @@ const Allproducts = () => {
         console.error("Error fetching category filters:", error);
       }
     };
-
     fetchCategoryFilters();
   }, [cateId]);
+
+  useEffect(() => {
+    const fetchAllColors = async () => {
+      try {
+        const res = await axiosInstance.get("/getcolor");
+        if (res.data.status === 1) {
+          setAllColors(res.data.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching global colors:", error);
+      }
+    };
+
+    fetchAllColors();
+  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -178,6 +199,7 @@ const Allproducts = () => {
         works: selectedWorks,
         occasions: selectedOccasions,
         styles: selectedStyles,
+        colors: selectedColors,
         sizes: selectedSizes,
         price_min: priceRange[0],
         price_max: priceRange[1],
@@ -189,28 +211,32 @@ const Allproducts = () => {
             : sortBy === "low-high"
             ? "price_asc"
             : "price_desc",
-        page,
-        limit,
+        page: currentPage,
+        limit: limit,
       };
-
       const response = await axiosInstance.post(
         `/productbycategory/${cate_name}`,
         payload
       );
-
       if (response.data.status === 1) {
-        setProducts(response.data.data.products);
-        setTotalProducts(response.data.total_count);
+        const { products, pagination } = response.data.data;
+        setProducts(products || []);
+        setTotalProducts(pagination.totalCount || 0);
+        setTotalPages(pagination.totalPages || 0);
+        // Optional: sync page if backend returned different page
+        if (pagination.page !== currentPage) {
+          setCurrentPage(pagination.page);
+        }
       } else {
         setProducts([]);
         setTotalProducts(0);
+        setTotalPages(0);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  // Call on filter/sort/page change
   useEffect(() => {
     if (cate_name) fetchProducts();
   }, [
@@ -221,11 +247,11 @@ const Allproducts = () => {
     selectedOccasions,
     selectedStyles,
     selectedSizes,
+    selectedColors,
     priceRange,
     sortBy,
-    page,
+    currentPage,
   ]);
-
   const toggleSubcategory = (val) => {
     setSelectedSubcategories((prev) =>
       prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
@@ -257,6 +283,14 @@ const Allproducts = () => {
     );
   };
 
+  const toggleColor = (colorId) => {
+    setSelectedColors(
+      (prev) =>
+        prev.includes(colorId)
+          ? prev.filter((id) => id !== colorId) // remove if already selected
+          : [...prev, colorId] // add if not selected
+    );
+  };
   const clearAllFilters = () => {
     setSelectedSubcategories([]);
     setSelectedFabrics([]);
@@ -264,6 +298,7 @@ const Allproducts = () => {
     setSelectedOccasions([]);
     setSelectedStyles([]);
     setSelectedSizes([]);
+    setSelectedColors([]);
     setPriceRange([0, 100000]);
   };
 
@@ -271,17 +306,13 @@ const Allproducts = () => {
     const fetchWishlist = async () => {
       const user = userInfo();
       const identifier = user?.u_id || getGuestId();
-
       try {
         const query = user?.u_id
           ? `u_id=${identifier}`
           : `guest_id=${identifier}`;
-
         const res = await axiosInstance.get(`/getwishlist?${query}`);
-
         if (res.data.status === 1) {
           const items = res.data.data || [];
-
           // Create fast lookup map: "p_id-pcolor_id" → true
           const map = {};
           items.forEach((item) => {
@@ -291,17 +322,14 @@ const Allproducts = () => {
               w_id: item.w_id, // optional: for remove
             };
           });
-
           setWishlistMap(map);
         }
       } catch (err) {
         console.error("Wishlist fetch failed", err);
       }
     };
-
     fetchWishlist();
   }, []);
-
   const refreshWishlist = async () => {
     const user = userInfo();
     const identifier = user?.u_id || getGuestId();
@@ -309,9 +337,7 @@ const Allproducts = () => {
       const query = user?.u_id
         ? `u_id=${identifier}`
         : `guest_id=${identifier}`;
-
       const res = await axiosInstance.get(`/getwishlist?${query}`);
-
       if (res.data.status === 1) {
         const items = res.data.data || [];
         const map = {};
@@ -328,21 +354,16 @@ const Allproducts = () => {
       console.error("Wishlist refresh failed", err);
     }
   };
-
   const fetchAllReviewsSummary = async () => {
     if (products.length === 0) return;
-
     const productIds = products.map((p) => p.p_id);
-
     try {
       const res = await axiosInstance.post("/getreviewsformultiple", {
         p_ids: productIds,
       });
-
       if (res.data.status === 1) {
         const data = res.data.data || {};
         const summary = {};
-
         Object.keys(data).forEach((p_id) => {
           const item = data[p_id];
           summary[p_id] = {
@@ -350,25 +371,59 @@ const Allproducts = () => {
             count: item.total_reviews,
           };
         });
-
         setReviewsSummary(summary);
       }
     } catch (err) {
       console.error("Reviews fetch failed", err);
     }
   };
-
   useEffect(() => {
     const prev = prevProductsRef.current;
     const hasProductsNow = products.length > 0;
     const hadNoProductsBefore = prev.length === 0;
-
     if (hasProductsNow && hadNoProductsBefore) {
       fetchAllReviewsSummary();
     }
-
     prevProductsRef.current = products;
   }, [products]);
+
+  // In your React component
+  const fetchCategoryReviews = async () => {
+    if (!cate_name) return;
+
+    try {
+      const response = await axiosInstance.post("/getReviewsByCategory", {
+        cate_name: cate_name,
+        page: 1,
+        perPage: 30,
+      });
+
+      if (response.data.status === 1) {
+        const fetchedReviews = response.data.data.reviews || [];
+        console.log("Fetched category reviews:", fetchedReviews);
+
+        // Optional: Format dates or add any client-side processing
+        const formatted = fetchedReviews.map((review) => ({
+          ...review,
+          createdAt: review.createdAt
+            ? new Date(review.createdAt).toLocaleDateString()
+            : "",
+        }));
+
+        setCategoryReviews(formatted);
+      } else {
+        console.log("No reviews found for category:", cate_name);
+        setCategoryReviews([]);
+      }
+    } catch (error) {
+      console.error("Error fetching category reviews:", error);
+      setCategoryReviews([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoryReviews();
+  }, [cate_name]);
 
   return (
     <div className="min-h-screen bg-[#f3f0ed] relative">
@@ -382,7 +437,6 @@ const Allproducts = () => {
             <SlidersHorizontal className="w-5 h-5" />
             <span className="font-medium">Filters</span>
           </button>
-
           {/* Sidebar Filters */}
           <aside
             className={`${
@@ -402,7 +456,6 @@ const Allproducts = () => {
                   </button>
                 </div>
               </div>
-
               {/* Filters Sidebar */}
               <div className="divide-y divide-gray-200 max-h-[calc(100vh-12rem)] overflow-y-auto">
                 {/* Subcategory */}
@@ -431,7 +484,6 @@ const Allproducts = () => {
                     </div>
                   </div>
                 )}
-
                 {/* Fabric */}
                 {filters?.fabrics?.length > 0 && (
                   <div className="p-4">
@@ -456,7 +508,6 @@ const Allproducts = () => {
                     </div>
                   </div>
                 )}
-
                 {/* Work */}
                 {filters.works.length > 0 && (
                   <div className="p-4">
@@ -481,7 +532,6 @@ const Allproducts = () => {
                     </div>
                   </div>
                 )}
-
                 {/* Occasion */}
                 {filters.occasions.length > 0 && (
                   <div className="p-4">
@@ -508,7 +558,6 @@ const Allproducts = () => {
                     </div>
                   </div>
                 )}
-
                 {/* Style */}
                 {filters.styles.length > 0 && (
                   <div className="p-4">
@@ -533,7 +582,6 @@ const Allproducts = () => {
                     </div>
                   </div>
                 )}
-
                 {/* Size */}
                 {filters.sizes.length > 0 && (
                   <div className="p-4">
@@ -553,6 +601,61 @@ const Allproducts = () => {
                           <span className="text-sm text-gray-700">
                             {val?.size_name}
                           </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Color - Global */}
+                {allColors?.length > 0 && (
+                  <div className="p-4">
+                    <span className="font-medium text-gray-900">Color</span>
+                    <div className="mt-3 grid grid-cols-4 sm:grid-cols-5 gap-3">
+                      {allColors?.map((color) => (
+                        <label
+                          key={color.color_id}
+                          className="flex flex-col items-center cursor-pointer group"
+                        >
+                          <div className="relative">
+                            <div
+                              className={`w-10 h-10 rounded-full border-2 transition-all ${
+                                selectedColors.includes(color.color_id)
+                                  ? "border-black scale-110 shadow-md"
+                                  : "border-gray-300 hover:border-gray-500"
+                              }`}
+                              style={{
+                                backgroundColor: color.color_code || "#ffffff",
+                              }}
+                            />
+                            {selectedColors.includes(color.color_id) && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                                  <svg
+                                    className="w-3 h-3 text-black"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="3"
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <span className="mt-1 text-xs text-gray-700 text-center truncate w-full">
+                            {color.color_name}
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={selectedColors.includes(color.color_id)}
+                            onChange={() => toggleColor(color.color_id)}
+                            className="hidden"
+                          />
                         </label>
                       ))}
                     </div>
@@ -593,20 +696,23 @@ const Allproducts = () => {
               </div>
             </div>
           </aside>
-
           {/* Product Grid */}
           <main className="flex-1">
             <h2 className="text-[28px] md:text-[34px] font-bold text-gray-800 mb-2">
-              {cate_name ? `${cate_name} - Collection` : "All Products"}
+              {activeFilterName
+                ? `${activeFilterName} - ${categoryDisplayName} Collection`
+                : `${categoryDisplayName} Collection`}
             </h2>
-
             <div className="flex justify-between items-center mb-6">
               <p className="text-sm text-gray-600">
-                Showing <span className="font-semibold">{products.length}</span>{" "}
-                of <span className="font-semibold">{products.length}</span>{" "}
+                Showing{" "}
+                <span className="font-semibold">
+                  {totalProducts === 0 ? 0 : (currentPage - 1) * limit + 1} -{" "}
+                  {Math.min(currentPage * limit, totalProducts)}
+                </span>{" "}
+                of <span className="font-semibold">{totalProducts}</span>{" "}
                 products
               </p>
-
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -618,7 +724,6 @@ const Allproducts = () => {
                 <option value="high-low">Price: High - Low</option>
               </select>
             </div>
-
             {products?.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6 ">
                 {products?.map((product) => (
@@ -646,19 +751,66 @@ const Allproducts = () => {
             )}
           </main>
         </div>
-        <div className="flex justify-center mt-6 gap-3">
-          {Array.from({ length: Math.ceil(totalProducts / limit) }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                page === i + 1 ? "bg-black text-white" : "bg-gray-200"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
+        {/* Pagination Controls */}
+        {totalProducts > 0 && totalPages > 1 && (
+          <div className="flex flex-col items-center mt-10 mb-8">
+            {/* Pagination Buttons */}
+            <div className="flex items-center gap-2">
+              {/* Previous */}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={`px-5 py-2.5 rounded-lg font-medium border transition-all ${
+                  currentPage === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-300"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                Previous
+              </button>
+              {/* Page Numbers - Smart limited display */}
+              {(() => {
+                const pages = [];
+                const maxVisible = 5;
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                if (endPage - startPage < maxVisible - 1) {
+                  startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i)}
+                      className={`w-11 h-11 rounded-lg font-medium transition-all ${
+                        currentPage === i
+                          ? "bg-black text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+                return pages;
+              })()}
+              {/* Next */}
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-5 py-2.5 rounded-lg font-medium border transition-all ${
+                  currentPage === totalPages
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-300"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
         {/* AUTO-SCROLLING REVIEW SLIDER */}
       </div>
       {categoryReviews.length > 0 && (
@@ -666,6 +818,7 @@ const Allproducts = () => {
           reviews={categoryReviews}
           direction="left"
           speed="slow"
+          cate_name={cate_name}
         />
       )}
       <HomePageBanner
@@ -675,5 +828,4 @@ const Allproducts = () => {
     </div>
   );
 };
-
 export default Allproducts;

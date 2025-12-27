@@ -134,7 +134,7 @@ const ProductDetail = () => {
         toast.success("Product deleted");
         navigate("/admin/product");
       } catch (error) {
-        toast.error("Failed to delete");
+        console.log("Failed to delete", error);
       }
     }
   };
@@ -185,48 +185,102 @@ const ProductDetail = () => {
         {/* Left: Media + Color Selector */}
         <div className="space-y-6">
           {/* Main Media */}
+          {/* Main Media */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
             {mainMedia ? (
-              mainMedia.endsWith(".mp4") ? (
-                <video
-                  src={mainMedia}
-                  controls
-                  className="w-full aspect-[3/4] object-cover"
-                />
-              ) : (
-                <img
-                  src={mainMedia}
-                  alt="Main"
-                  className="w-full aspect-[3/4] object-cover"
-                />
-              )
+              (() => {
+                const isVideo = /\.(mp4|webm|mov|avi)$/i.test(mainMedia);
+
+                return isVideo ? (
+                  <div className="relative">
+                    <video
+                      src={mainMedia}
+                      controls
+                      className="w-full aspect-[3/4] object-cover"
+                      poster={
+                        selectedColor?.productimages?.[0]?.image_url
+                          ? `${ApiURL}/assets/Products/${selectedColor.productimages[0].image_url}`
+                          : undefined
+                      }
+                    >
+                      <source src={mainMedia} type="video/mp4" />
+                      <source src={mainMedia} type="video/webm" />
+                      Your browser does not support the video tag.
+                    </video>
+                    {/* Play icon overlay (optional, for consistency) */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="bg-white/80 rounded-full p-4 shadow-lg">
+                        <svg
+                          className="w-12 h-12 text-black"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <img
+                    src={mainMedia}
+                    alt="Main"
+                    className="w-full aspect-[3/4] object-cover"
+                  />
+                );
+              })()
             ) : (
               <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full aspect-[3/4] flex items-center justify-center text-gray-500">
-                No Image
+                No Media
               </div>
             )}
           </div>
 
           {/* Thumbnails */}
+          {/* Thumbnails */}
           {selectedColor?.productimages?.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {selectedColor.productimages.map((img) => (
-                <button
-                  key={img.image_id}
-                  onClick={() => handleThumbnailClick(img.image_url)}
-                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${
-                    mainMedia.includes(img.image_url)
-                      ? "border-black"
-                      : "border-gray-300"
-                  }`}
-                >
-                  <img
-                    src={`${ApiURL}/assets/Products/${img.image_url}`}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
+              {selectedColor.productimages.map((img) => {
+                const mediaUrl = `${ApiURL}/assets/Products/${img.image_url}`;
+                const isVideo = /\.(mp4|webm|mov|avi)$/i.test(img.image_url);
+
+                return (
+                  <button
+                    key={img.image_id}
+                    onClick={() => handleThumbnailClick(img.image_url)}
+                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all relative ${
+                      mainMedia === mediaUrl
+                        ? "border-black"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {isVideo ? (
+                      <div className="relative w-full h-full">
+                        <video
+                          src={mediaUrl}
+                          className="w-full h-full object-cover"
+                          muted
+                        />
+                        {/* Play icon on thumbnail */}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg
+                            className="w-6 h-6 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <img
+                        src={mediaUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           )}
 
@@ -327,7 +381,7 @@ const ProductDetail = () => {
                           }`}
                         >
                           <div className="text-lg">
-                            {size.size?.size_name || "One Size"}
+                            {size.size?.size_name || "One Color"}
                           </div>
                           <div className="text-xs mt-1">
                             {qty > 0

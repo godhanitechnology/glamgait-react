@@ -67,7 +67,7 @@
 //       }
 //     } catch (error) {
 //       console.log(error);
-      
+
 //     }
 //   };
 
@@ -256,7 +256,6 @@
 
 // export default Cart;
 
-
 import React, { useState, useEffect } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
@@ -276,7 +275,9 @@ const Cart = () => {
   const fetchCart = async () => {
     try {
       const identifier = user?.u_id || getGuestId();
-      const query = user?.u_id ? `u_id=${identifier}` : `guest_id=${identifier}`;
+      const query = user?.u_id
+        ? `u_id=${identifier}`
+        : `guest_id=${identifier}`;
       const res = await axiosInstance.get(`${ApiURL}/getcart?${query}`);
 
       if (res.data.status === 1) {
@@ -317,7 +318,7 @@ const Cart = () => {
     try {
       const res = await axiosInstance.post(`${ApiURL}/removecart`, { cart_id });
       if (res.data.status === 1) {
-        setCartItems(prev => prev.filter(item => item.cart_id !== cart_id));
+        setCartItems((prev) => prev.filter((item) => item.cart_id !== cart_id));
         toast.success("Removed from cart");
       }
     } catch (error) {
@@ -352,7 +353,10 @@ const Cart = () => {
     navigate("/selectaddress", { state: { cartItems } });
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
   const taxes = 25;
   const delivery = 0;
   const grandTotal = subtotal + taxes + delivery;
@@ -378,7 +382,8 @@ const Cart = () => {
           </div>
           <h1 className="text-2xl font-bold mt-5">Your Cart Is Empty.</h1>
           <p className="text-gray-500 text-sm mt-2">
-            You don’t have any products in your cart yet. Start exploring our Shop page!
+            You don’t have any products in your cart yet. Start exploring our
+            Shop page!
           </p>
           <div className="mt-5">
             <Link
@@ -424,7 +429,8 @@ const Cart = () => {
                     alt={item.product_name}
                     className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg md:ml-6"
                     onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/300?text=No+Image";
+                      e.target.src =
+                        "https://via.placeholder.com/300?text=No+Image";
                     }}
                   />
                 </div>
@@ -463,7 +469,9 @@ const Cart = () => {
                       <span className="text-sm">Qty:</span>
                       <div className="flex items-center border border-gray-300 rounded-md">
                         <button
-                          onClick={() => decreaseQty(item.cart_id, item.quantity)}
+                          onClick={() =>
+                            decreaseQty(item.cart_id, item.quantity)
+                          }
                           className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
                           disabled={item.quantity <= 1}
                         >
@@ -473,7 +481,13 @@ const Cart = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => increaseQty(item.cart_id, item.quantity, availableStock)}
+                          onClick={() =>
+                            increaseQty(
+                              item.cart_id,
+                              item.quantity,
+                              availableStock
+                            )
+                          }
                           className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
                           disabled={!inStock || item.quantity >= availableStock}
                         >

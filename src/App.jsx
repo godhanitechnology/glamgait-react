@@ -101,6 +101,14 @@ function App() {
               path="/collections/:cate_name"
               element={<AllProductPage />}
             />
+            <Route
+              path="/collections/:cate_name/:filterValue"
+              element={<AllProductPage />}
+            />
+            <Route
+              path="/collections/:filterValue"
+              element={<AllProductPage />}
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cart" element={<Cart />} />

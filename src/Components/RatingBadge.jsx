@@ -1,6 +1,6 @@
 const RatingBadge = ({ p_id, reviewsSummary }) => {
-const data = reviewsSummary?.[p_id];
- if (!data || data.count === 0) {
+  const data = reviewsSummary?.[p_id];
+  if (!data || data.count === 0) {
     return (
       <div className="flex items-center gap-1 mt-1">
         <span className="text-xs text-gray-500">No reviews yet</span>
@@ -8,7 +8,7 @@ const data = reviewsSummary?.[p_id];
     );
   }
   const { rating, count } = data;
-  
+
   return (
     <div className="flex items-center gap-2 mt-1">
       {/* Stars */}
@@ -26,7 +26,7 @@ const data = reviewsSummary?.[p_id];
       </div>
 
       {/* Rating + Count */}
-      <span className="font-bold text-gray-900 text-sm">{rating}</span>
+      {/* <span className="font-bold text-gray-900 text-sm">{rating}</span> */}
       <span className="text-xs text-gray-600">
         ({count} review{count > 1 ? "s" : ""})
       </span>
