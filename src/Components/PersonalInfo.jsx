@@ -4,6 +4,7 @@ import AddAddress from "./AddAddress";
 import axiosInstance from "../Axios/axios";
 import { ApiURL, userInfo } from "../Variable";
 import toast from "react-hot-toast";
+import { getGuestId } from "../utils/guest";
 
 const PersonalInfo = () => {
   const [userData, setUserData] = useState(null);
@@ -15,10 +16,11 @@ const PersonalInfo = () => {
   const [addresses, setAddresses] = useState([]);
   const user = userInfo();
   const u_id = user?.u_id;
-
+  const guestId = getGuestId(); // ← Guest ID from localStorage (same as cart)
+  const isLoggedIn = !!u_id;
   // Fetch user data and addresses
   const fetchUser = async () => {
-    if (!u_id) return;
+    if (!isLoggedIn) return;
     try {
       const res = await axiosInstance.get(`${ApiURL}/user/${u_id}`);
       if (res.data.status === 1) setUserData(res.data.data);
@@ -28,26 +30,39 @@ const PersonalInfo = () => {
   };
 
   const fetchAddress = async () => {
-    if (!u_id) return;
     try {
-      const res = await axiosInstance.post(`${ApiURL}/getaddress`, { u_id });
-      if (res.data.status === 1) setAddresses(res.data.data);
+      const payload = isLoggedIn ? { u_id } : { guest_id: guestId };
+      const res = await axiosInstance.post(`${ApiURL}/getaddress`, payload);
+
+      if (res.data.status === 1) {
+        setAddresses(res.data.data || []);
+      } else {
+        setAddresses([]);
+      }
     } catch (err) {
       console.error("Error fetching addresses:", err);
+      toast.error("Failed to load addresses");
+      setAddresses([]);
     }
   };
 
   useEffect(() => {
     fetchUser();
     fetchAddress();
-  }, [u_id]);
+  }, [u_id, guestId, isLoggedIn]);
 
   // Edit & Save user info
   const handleEdit = (field) => {
+    if (!isLoggedIn) {
+      toast.error("Please login to edit profile");
+      return;
+    }
     setEditingField(field);
     setInputValue(userData[field] || "");
   };
+
   const handleSave = async () => {
+    if (!isLoggedIn) return;
     try {
       const res = await axiosInstance.put(`${ApiURL}/user/${u_id}`, {
         [editingField]: inputValue,
@@ -55,9 +70,12 @@ const PersonalInfo = () => {
       if (res.data.status === 1) {
         setUserData((prev) => ({ ...prev, [editingField]: inputValue }));
         setEditingField("");
-        toast.success("User info updated!");
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error(res.data.description || "Failed to update");
       }
     } catch (err) {
+      toast.error("Something went wrong");
       console.error(err);
     }
   };
@@ -86,8 +104,6 @@ const PersonalInfo = () => {
     setIsModalOpen(true);
   };
 
-  if (!userData) return <div>Loading...</div>;
-
   return (
     <div className="flex flex-col md:flex-row bg-[#f3f0ed] min-h-screen font-inter">
       {/* Left Sidebar */}
@@ -98,64 +114,77 @@ const PersonalInfo = () => {
       {/* Right Content */}
       <div className="flex-1 bg-[#f3f0ed] p-6 sm:p-10 md:pl-16">
         <h1 className="text-2xl font-semibold text-gray-900 mb-8">My Info</h1>
+        {/* Contact Details - Only show for logged-in users */}
+        {isLoggedIn && (
+          <div className="mb-12">
+            <h2 className="text-lg font-medium text-gray-900 mb-6">
+              Contact Details
+            </h2>
 
-        {/* Contact Details */}
-        <div className="space-y-6">
-          <h2 className="text-lg font-medium text-gray-900">Contact Details</h2>
-          {["first_name", "email", "password"].map((field) => (
-            <div
-              key={field}
-              className="flex justify-between items-center border-b border-gray-300 pb-2"
-            >
-              <div>
-                <p className="text-sm text-gray-500">
-                  {field === "first_name"
-                    ? "Your Name"
-                    : field === "password"
-                    ? "Password"
-                    : "Email Address"}
-                </p>
-                {editingField === field ? (
-                  <input
-                    type={field === "password" ? "password" : "text"}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="border border-gray-300 rounded px-2 py-1 mt-1"
-                  />
-                ) : (
-                  <p className="font-medium text-gray-800">
-                    {field === "password"
-                      ? "••••••••"
-                      : userData[field] || "N/A"}
-                  </p>
-                )}
+            {userData ? (
+              <div className="bg-white rounded-xl p-6 shadow-sm space-y-6">
+                {["first_name", "email", "password"].map((field) => (
+                  <div
+                    key={field}
+                    className="flex justify-between items-center border-b border-gray-300 pb-2"
+                  >
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        {field === "first_name"
+                          ? "Your Name"
+                          : field === "password"
+                          ? "Password"
+                          : "Email Address"}
+                      </p>
+                      {editingField === field ? (
+                        <input
+                          type={field === "password" ? "password" : "text"}
+                          value={inputValue}
+                          onChange={(e) => setInputValue(e.target.value)}
+                          className="border border-gray-300 rounded px-2 py-1 mt-1 w-full max-w-xs"
+                        />
+                      ) : (
+                        <p className="font-medium text-gray-800">
+                          {field === "password"
+                            ? "••••••••"
+                            : userData[field] || "N/A"}
+                        </p>
+                      )}
+                    </div>
+
+                    {editingField === field ? (
+                      <div className="flex gap-2">
+                        <button
+                          className="text-sm font-medium text-green-600 hover:text-green-800"
+                          onClick={handleSave}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="text-sm font-medium text-red-600 hover:text-red-800"
+                          onClick={() => setEditingField("")}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                        onClick={() => handleEdit(field)}
+                      >
+                        Change
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
-              {editingField === field ? (
-                <div className="flex gap-2">
-                  <button
-                    className="text-sm font-medium text-green-600 hover:text-green-800"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="text-sm font-medium text-red-600 hover:text-red-800"
-                    onClick={() => setEditingField("")}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900"
-                  onClick={() => handleEdit(field)}
-                >
-                  Change
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+            ) : (
+              <div className="text-center py-6 text-gray-500">
+                Loading profile info...
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Address Section */}
         <div className="mt-12">

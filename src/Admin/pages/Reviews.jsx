@@ -19,6 +19,7 @@ const Reviews = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [reviewsPerPage] = useState(10);
+  const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   // Modal
   const [modal, setModal] = useState({
@@ -136,6 +137,7 @@ const Reviews = () => {
         preview: review.image_url
           ? `${ApiURL}/assets/UserReviews/${review.image_url}`
           : null,
+        customCreatedAt: review.custom_created_at || null, // already 'YYYY-MM-DD' or null
       });
       setModal({ open: true, editMode: true, reviewId: review.r_id });
     } else {
@@ -170,7 +172,9 @@ const Reviews = () => {
       formData.append("is_published", 1);
       if (form.name) formData.append("user_name", form.name);
       if (form.image) formData.append("userReviewImage", form.image);
-
+      if (form.customCreatedAt) {
+        formData.append("custom_created_at", form.customCreatedAt); // already 'YYYY-MM-DD'
+      }
       if (modal.editMode) {
         formData.append("r_id", modal.reviewId);
         await axiosInstance.post(`${ApiURL}/updateuserreview`, formData);
@@ -435,121 +439,286 @@ const Reviews = () => {
 
       {/* Add/Edit Modal */}
       {modal.open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
-            <button
-              onClick={() => setModal({ open: false, editMode: false })}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <XMarkIcon className="w-6 h-6" />
-            </button>
-
-            <h2 className="text-xl font-bold text-gray-800 mb-5">
-              {modal.editMode ? "Edit Review" : "Add New Review"}
-            </h2>
-
-            {/* Product */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Product <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={form.product}
-                onChange={(e) => setForm({ ...form, product: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black text-sm"
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto">
+            {/* Header */}
+            <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
+                {modal.editMode ? "Edit Review" : "Add New Review"}
+              </h2>
+              <button
+                onClick={() =>
+                  setModal({ open: false, editMode: false, reviewId: null })
+                }
+                className="p-2 -mr-2 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <option value="">Select Product</option>
-                {products.map((p) => (
-                  <option key={p.p_id} value={p.p_id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-gray-700" />
+              </button>
             </div>
 
-            {/* Rating */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Rating <span className="text-red-500">*</span>
-              </label>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
+            {/* Body */}
+            <div className="p-5 sm:p-6 space-y-6 max-h-[70vh] sm:max-h-[75vh] overflow-y-auto">
+              {/* Product Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Product <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
                   <button
-                    key={star}
                     type="button"
-                    onClick={() => setForm({ ...form, rating: star })}
-                    className={`p-1 ${
-                      star <= form.rating ? "text-yellow-500" : "text-gray-300"
-                    }`}
+                    onClick={() => setProductDropdownOpen(!productDropdownOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3.5 border border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:border-black focus:ring-2 focus:ring-black/20 transition text-left text-sm sm:text-base"
                   >
-                    <StarIcon className="w-6 h-6" />
+                    {form.product ? (
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {form.productImage && (
+                          <img
+                            src={`${ApiURL}/assets/Products/${form.productImage}`}
+                            alt=""
+                            className="w-10 h-10 sm:w-11 sm:h-11 object-cover rounded-lg border border-gray-200 flex-shrink-0"
+                          />
+                        )}
+                        <span className="font-medium text-gray-900 truncate">
+                          {products.find((p) => p.p_id == form.product)?.name}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">Select product</span>
+                    )}
+                    <span
+                      className={`text-gray-500 transition-transform ml-2 ${
+                        productDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    >
+                      ▾
+                    </span>
                   </button>
-                ))}
+
+                  {/* Dropdown - important mobile fix */}
+                  {productDropdownOpen && (
+                    <div className="absolute z-50 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-2xl max-h-[45vh] sm:max-h-72 overflow-y-auto">
+                      {products.length === 0 ? (
+                        <div className="px-5 py-8 text-center text-gray-500 text-sm">
+                          No products available
+                        </div>
+                      ) : (
+                        products.map((p) => (
+                          <div
+                            key={p.p_id}
+                            onClick={() => {
+                              setForm({
+                                ...form,
+                                product: p.p_id,
+                                productImage:
+                                  p.productcolors?.[0]?.productimages?.[0]
+                                    ?.image_url ||
+                                  p.image ||
+                                  "",
+                              });
+                              setProductDropdownOpen(false);
+                            }}
+                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
+                          >
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                              {p.productcolors?.[0]?.productimages?.[0]
+                                ?.image_url ? (
+                                <img
+                                  src={`${ApiURL}/assets/Products/${p.productcolors[0].productimages[0].image_url}`}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                  No img
+                                </div>
+                              )}
+                            </div>
+                            <span className="text-sm font-medium text-gray-900 truncate">
+                              {p.name}
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Comment */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Comment <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                rows={3}
-                value={form.comment}
-                onChange={(e) => setForm({ ...form, comment: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black text-sm"
-              />
-            </div>
+              {/* Rating - smaller on mobile */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Rating <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-1.5 sm:gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setForm({ ...form, rating: star })}
+                      className={`p-1.5 transition-transform active:scale-95 sm:hover:scale-110 ${
+                        star <= form.rating
+                          ? "text-yellow-500"
+                          : "text-gray-200"
+                      }`}
+                    >
+                      <StarIcon className="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-sm" />
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            {/* Name / Email */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <input
-                type="text"
-                placeholder="Name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
-              />
-            </div>
+              {/* Comment */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Review Comment <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={form.comment}
+                  onChange={(e) =>
+                    setForm({ ...form, comment: e.target.value })
+                  }
+                  placeholder="Write your honest review here..."
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black resize-none placeholder-gray-400"
+                />
+              </div>
 
-            {/* Image Upload */}
-            <div className="mb-5">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Upload Image
-              </label>
-              <div className="flex items-center gap-3">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Reviewer Name (optional)
+                </label>
                 <input
-                  type="file"
-                  accept="image/*"
+                  type="text"
+                  placeholder="John Doe"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black placeholder-gray-400"
+                />
+              </div>
+
+              {/* In your Add/Edit Review Modal - after Reviewer Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Display Date{" "}
+                  {modal.editMode && form.is_fake ? "(custom)" : ""}
+                </label>
+                <input
+                  type="date"
+                  value={form.customCreatedAt || ""} // Expecting 'YYYY-MM-DD'
                   onChange={(e) =>
                     setForm({
                       ...form,
-                      image: e.target.files[0],
-                      preview: URL.createObjectURL(e.target.files[0]),
+                      customCreatedAt: e.target.value || null,
                     })
                   }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black"
                 />
-                {form.preview && (
-                  <img
-                    src={form.preview}
-                    alt="preview"
-                    className="w-14 h-14 object-cover rounded-lg border"
-                  />
-                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  {modal.editMode && !form.is_fake
+                    ? "Only fake reviews can have custom display dates"
+                    : "Leave empty to use today's date"}
+                </p>
+              </div>
+
+              {/* Image Upload - better mobile layout */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Customer Photo (optional)
+                </label>
+
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 mt-2">
+                  <label className="cursor-pointer inline-block">
+                    <div className="w-full max-w-[140px] sm:w-32 h-32 sm:h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 active:bg-gray-100 transition-colors overflow-hidden">
+                      {form.preview ? (
+                        <img
+                          src={form.preview}
+                          alt="preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          <svg
+                            className="w-10 h-10 text-gray-400 mb-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <span className="text-xs text-gray-500 text-center px-3">
+                            Tap to upload
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          setForm({
+                            ...form,
+                            image: e.target.files[0],
+                            preview: URL.createObjectURL(e.target.files[0]),
+                          });
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {form.preview && (
+                    <div className="text-sm text-gray-600 sm:mt-2">
+                      <p className="font-medium">Image selected</p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm({ ...form, image: null, preview: null })
+                        }
+                        className="text-red-600 hover:text-red-800 underline text-sm mt-1"
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            <button
-              disabled={submitting}
-              onClick={handleSubmit}
-              className="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition"
-            >
-              {submitting
-                ? "Saving..."
-                : modal.editMode
-                ? "Update Review"
-                : "Add Review"}
-            </button>
+            {/* Footer - better stacking on mobile */}
+            <div className="px-5 py-5 sm:px-6 sm:py-5 border-t border-gray-100 flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
+              <button
+                type="button"
+                onClick={() =>
+                  setModal({ open: false, editMode: false, reviewId: null })
+                }
+                className="flex-1 py-3.5 px-6 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 active:bg-gray-200 transition-colors order-2 sm:order-1"
+              >
+                Cancel
+              </button>
+
+              <button
+                disabled={submitting}
+                onClick={handleSubmit}
+                className={`flex-1 py-3.5 px-6 rounded-xl font-medium text-white transition-colors order-1 sm:order-2 ${
+                  submitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-black hover:bg-gray-900 active:bg-gray-900"
+                }`}
+              >
+                {submitting
+                  ? "Saving..."
+                  : modal.editMode
+                  ? "Update Review"
+                  : "Add Review"}
+              </button>
+            </div>
           </div>
         </div>
       )}

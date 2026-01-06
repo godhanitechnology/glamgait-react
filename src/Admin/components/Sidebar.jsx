@@ -23,7 +23,17 @@ const Sidebar = ({ onClose }) => {
       icon: LayoutDashboard,
       end: true,
     },
-    { name: "Announcements", path: "/admin/announcements", icon: MegaphoneIcon },
+    {
+      name: "Announcements",
+      path: "/admin/announcements",
+      icon: MegaphoneIcon,
+    },
+    {
+      name: "Offers & Coupons",
+      path: "/admin/offer-coupon",
+      icon: MegaphoneIcon,
+    },
+
     { name: "Categories", path: "/admin/categories", icon: Grid2X2 },
     { name: "Subcategory", path: "/admin/subcategories", icon: Grid },
     { name: "Attributes", path: "/admin/product-attributes", icon: Palette },

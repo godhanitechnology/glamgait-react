@@ -13,12 +13,15 @@ import VideoPopUp from "../Ui/VideoPopUp";
 import ImagePop from "../Ui/ImagePop";
 import ReturnsDetails from "../Information/ReturnsDetails";
 import { ApiURL, userInfo } from "../Variable";
+
 import axiosInstance from "../Axios/axios";
 import ReletedProduct from "../Components/ReletedProduct";
 import { getGuestId } from "../utils/guest";
 import toast from "react-hot-toast";
-import { Helmet } from "react-helmet";
 import Review from "./Review";
+import OfferList from "./OfferList";
+import CouponList from "./CouponList";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 function SingleProduct() {
   const { slug } = useParams();
@@ -34,6 +37,9 @@ function SingleProduct() {
   const [videoFiles, setVideoFiles] = useState([]);
   const [availableStock, setAvailableStock] = useState(0);
   const [reviewsSummary, setReviewsSummary] = useState({});
+  const [offers, setOffers] = useState([]);
+  const [coupons, setCoupons] = useState([]);
+
   const navigate = useNavigate();
   const user = userInfo();
 
@@ -327,6 +333,40 @@ function SingleProduct() {
     return date.toLocaleDateString("en-India", options);
   };
 
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const res = await axiosInstance.post(`${ApiURL}/getoffers`);
+        if (res?.data?.status === 1) {
+          // show only active offers
+          const activeOffers = res.data.data.filter((o) => o.is_active);
+          setOffers(activeOffers);
+        }
+      } catch (err) {
+        console.error("Failed to load offers");
+      }
+    };
+
+    fetchOffers();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      try {
+        const res = await axiosInstance.post(`${ApiURL}/getcoupons`);
+        if (res?.data?.status === 1) {
+          // show only active offers
+          const activeOffers = res.data.data.filter((o) => o.is_active);
+          setCoupons(activeOffers);
+        }
+      } catch (err) {
+        console.error("Failed to load offers");
+      }
+    };
+
+    fetchCoupons();
+  }, []);
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -605,7 +645,18 @@ function SingleProduct() {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   {product.name}
                 </h1>
-                <div className="flex items-center gap-2 mb-3">
+                <div
+                  className="flex items-center gap-2 mb-3"
+                  onClick={() => {
+                    const reviewSection = document.getElementById("reviews");
+                    if (reviewSection) {
+                      reviewSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }
+                  }}
+                >
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => {
                       const rating = reviewsSummary.average_rating || 0;
@@ -619,20 +670,20 @@ function SingleProduct() {
 
                           {/* Full star */}
                           {filled && (
-                            <Star className="w-4 h-4 fill-gray-900 text-gray-900 absolute top-0 left-0" />
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 absolute top-0 left-0" />
                           )}
 
                           {/* Half star */}
                           {half && (
                             <div className="absolute top-0 left-0 overflow-hidden w-1/2">
-                              <Star className="w-4 h-4 fill-gray-900 text-gray-900" />
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             </div>
                           )}
                         </div>
                       );
                     })}
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 cursor-default">
                     {reviewsSummary.average_rating?.toFixed(1) || "0.0"} (
                     {reviewsSummary.total_reviews || 0} reviews)
                   </span>
@@ -652,6 +703,7 @@ function SingleProduct() {
                     </span>
                   )}
                 </div>
+
                 <div>
                   <span className="text-[#02382A] font-bold">
                     inclusive of all taxes
@@ -801,6 +853,8 @@ function SingleProduct() {
                     <div className="font-medium">{getDeliveryDate()}</div>
                   </div>
                 </div>
+                <OfferList offers={offers} />
+                <CouponList coupons={coupons} />
               </div>
 
               <div className="space-y-4">

@@ -1128,11 +1128,13 @@ import {
 import logo from "../assets/logo.svg";
 import axiosInstance from "../Axios/axios";
 import { userInfo } from "../Variable";
+import { getGuestId } from "../utils/guest";
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = userInfo();
   const u_id = user?.u_id;
+  const guestId=getGuestId()
   const token = user?.auth_token;
   const [isOpen, setIsOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
@@ -1370,7 +1372,7 @@ const Navbar = () => {
             <CircleUser
               className="cursor-pointer hover:text-black"
               onClick={() =>
-                u_id && token ? navigate("/myorders") : navigate("/login")
+                u_id && token ||guestId ? navigate("/myorders") : navigate("/login")
               }
             />
             <button className="lg:hidden" onClick={toggleMenu}>

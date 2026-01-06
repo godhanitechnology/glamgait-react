@@ -47,6 +47,7 @@ import OrderConfirmation from "./Components/OrderConfirmation";
 import Announcement from "./Admin/pages/Announcements";
 import SmartScrollManager from "./Components/SmartScrollManager";
 import SearchResults from "./Components/SearchResults";
+import PromotionsManagement from "./Admin/pages/PromotionsManagement";
 
 function App() {
   return (
@@ -152,6 +153,7 @@ function App() {
             <Route path="instagram" element={<InstagramSection />} />
             <Route path="reviews" element={<Reviews />} />
             <Route path="sliders" element={<Sliders />} />
+            <Route path="offer-coupon" element={<PromotionsManagement />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -58,7 +58,6 @@ const Review = ({ p_id }) => {
       console.log("Please login to submit a review");
       return;
     }
-    
 
     try {
       const formData = new FormData();
@@ -67,7 +66,10 @@ const Review = ({ p_id }) => {
       formData.append("rating", selectedStars);
       formData.append("message", reviewContent);
 
-      formData.append("reviewer_name", user.first_name || user.name || "Anonymous");
+      formData.append(
+        "reviewer_name",
+        user.first_name || user.name || "Anonymous"
+      );
 
       uploadedImages.forEach((file) => {
         if (file instanceof File) formData.append("userReviewImage", file);
@@ -100,8 +102,22 @@ const Review = ({ p_id }) => {
     else setVisibleCount(3); // show first 3
   };
 
+  const displayDate = (review) => {
+    if (!review.createdAt) return "—";
+
+    // Use custom date if available (for fake reviews)
+    const dateStr = review.custom_created_at || review.createdAt;
+
+    // Format nicely (you can use date-fns, luxon, or native)
+    return new Date(dateStr).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
-    <div className="p-4 bg-[#F3F0ED] rounded-lg">
+    <div id="reviews" className="p-4 bg-[#F3F0ED] rounded-lg">
       <div className="max-w-6xl mx-auto">
         {/* Overall Rating */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-6">
@@ -176,7 +192,7 @@ const Review = ({ p_id }) => {
                 </div>
 
                 <p className="text-sm text-gray-600 mb-3">
-                  {review?.createdAt?.split("T")[0]}
+                  {displayDate(review)}
                 </p>
 
                 <p className="mb-3 text-gray-800 leading-relaxed">

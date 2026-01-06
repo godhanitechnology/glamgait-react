@@ -207,6 +207,7 @@ import { ApiURL, userInfo } from "../Variable";
 import axiosInstance from "../Axios/axios";
 import toast from "react-hot-toast";
 import ConfirmDeleteModal from "../Admin/pages/ConfirmDeleteModal";
+import { getGuestId } from "../utils/guest";
 
 const Profileorder = () => {
   const statusMap = {
@@ -226,44 +227,57 @@ const Profileorder = () => {
   const tabs = ["Active", "Cancelled", "Completed"];
   const user = userInfo();
   const u_id = user?.u_id;
+  const guestId = getGuestId();
 
-  useEffect(() => {
+  const isLoggedIn = !!u_id;
+
+ useEffect(() => {
     const fetchOrders = async () => {
       try {
-        if (!u_id) return;
-        const res = await axiosInstance.get(`${ApiURL}/getorder/${u_id}`);
-        console.log(res.data.data);
+        let url = `${ApiURL}/getorder?`;
+        if (isLoggedIn) {
+          url += `u_id=${u_id}`;
+        } else {
+          url += `guest_id=${guestId}`;
+        }
+
+        const res = await axiosInstance.get(url);
 
         if (res.data.status === 1) {
-          setOrders(res.data.data);
+          setOrders(res.data.data || []);
         } else {
           setOrders([]);
         }
       } catch (err) {
         console.error("Error fetching orders:", err);
         setOrders([]);
-      }
+        toast.error("Failed to load orders");
+      }   
     };
-    fetchOrders();
-  }, [u_id]);
 
-  const handleCancelOrder = async () => {
+    fetchOrders();
+  }, [u_id, isLoggedIn, guestId]);
+
+ const handleCancelOrder = async () => {
     try {
       const res = await axiosInstance.put(`${ApiURL}/cancelorder`, {
         order_id: selectedOrderId,
+        // Optional: guest_id bhej sakte ho if needed
+        ...( !isLoggedIn && { guest_id: guestId } ),
       });
+
       if (res.data.status === 1) {
         toast.success("Order cancelled successfully!");
-        // Update local UI instantly
         setOrders((prev) =>
           prev.map((o) =>
             o.orderId === selectedOrderId ? { ...o, status: 6 } : o
           )
         );
       } else {
-        console.log(res.data.message || "Failed to cancel order.");
+        toast.error(res.data.message || "Failed to cancel");
       }
     } catch (err) {
+      toast.error("Something went wrong");
       console.error(err);
     } finally {
       setShowCancelModal(false);
