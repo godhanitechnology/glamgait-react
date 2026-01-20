@@ -27,22 +27,6 @@ const ProductCard = ({
   const wishlistId =
     wishlistKey && wishlistMap ? wishlistMap[wishlistKey]?.w_id || null : null;
 
-  // const handleCardClick = useCallback(() => {
-  //   const name = product?.name || "product";
-
-  //   let slug = name
-  //     .toLowerCase()
-  //     .trim()
-  //     .replace(/[^a-z0-9\s-&'()]/g, "") // Allow &, ', (, )
-  //     .replace(/\s+/g, "-") // spaces → dashes
-  //     .replace(/-+/g, "-") // multiple dashes → one
-  //     .replace(/^-+|-+$/g, ""); // trim dashes
-
-  //   // URL-encode the slug to safely handle & and other special chars
-  //   const encodedSlug = encodeURIComponent(slug);
-
-  //   navigate(`/product/${encodedSlug}`);
-  // }, [navigate, product?.name]);
 
   const handleCardClick = useCallback(() => {
     const name = product?.name || "product";

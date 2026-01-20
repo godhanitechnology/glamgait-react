@@ -231,7 +231,7 @@ const Profileorder = () => {
 
   const isLoggedIn = !!u_id;
 
- useEffect(() => {
+  useEffect(() => {
     const fetchOrders = async () => {
       try {
         let url = `${ApiURL}/getorder?`;
@@ -252,18 +252,18 @@ const Profileorder = () => {
         console.error("Error fetching orders:", err);
         setOrders([]);
         toast.error("Failed to load orders");
-      }   
+      }
     };
 
     fetchOrders();
   }, [u_id, isLoggedIn, guestId]);
 
- const handleCancelOrder = async () => {
+  const handleCancelOrder = async () => {
     try {
       const res = await axiosInstance.put(`${ApiURL}/cancelorder`, {
         order_id: selectedOrderId,
         // Optional: guest_id bhej sakte ho if needed
-        ...( !isLoggedIn && { guest_id: guestId } ),
+        ...(!isLoggedIn && { guest_id: guestId }),
       });
 
       if (res.data.status === 1) {
@@ -292,165 +292,171 @@ const Profileorder = () => {
   });
 
   return (
-    <div className="bg-[#f3f0ed] min-h-screen flex flex-col md:flex-row font-inter">
-      {/* Sidebar */}
-      <div className="w-full md:w-1/4">
-        <SideBar />
-      </div>
-
-      {/* Main content */}
-      <div className="flex-1 p-4 sm:p-6 md:p-10 bg-[#f3f0ed]">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-gray-800">
-          My Orders
-        </h2>
-
-        {/* Tabs */}
-        <div className="flex justify-between border-b border-gray-300 mb-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`relative pb-3 w-1/3 text-sm sm:text-lg font-medium transition-all duration-300 text-center rounded-t-md ${
-                activeTab === tab
-                  ? "text-gray-900 bg-[#f6f6f6] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-black"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+    <div className="bg-[#f3f0ed]">
+      <div className="min-h-screen flex flex-col md:flex-row font-inter max-w-7xl mx-auto">
+        {/* Sidebar */}
+        <div className="w-full md:w-1/4">
+          <SideBar />
         </div>
 
-        {/* Orders List */}
-        <div className="space-y-6">
-          {filteredOrders?.map((order) => (
-            <div
-              key={order.orderId}
-              className="bg-[#f6f6f6] rounded-xl p-5 sm:p-6 shadow-sm border border-gray-100"
-            >
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-600 mb-4">
-                <div>
-                  <p>
-                    <span className="font-medium text-gray-800">Order no:</span>{" "}
-                    {order.orderId}
-                  </p>
-                  <p className="font-light">Customer: {order.address.name} </p>
-                  <p className="font-light">
-                    Address: {order.address.fullAddress},
-                  </p>
-                </div>
+        {/* Main content */}
+        <div className="flex-1 p-4 sm:p-6 md:p-4 bg-[#f3f0ed]">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-gray-800">
+            My Orders
+          </h2>
 
-                <div className="mt-3 sm:mt-0 text-left sm:text-right font-light text-gray-500">
-                  <p>
-                    <span className="font-light text-gray-500">
-                      Order Status:
-                    </span>{" "}
-                    <span className="text-black">
-                      {statusMap[order.status] || "Unknown"}
-                    </span>
-                  </p>
-                  <p>
-                    <span className="font-light text-gray-500">
-                      Payment Method:
-                    </span>{" "}
-                    {order.paymentStatus}
-                  </p>
-                </div>
-              </div>
+          {/* Tabs */}
+          <div className="flex justify-between border-b border-gray-300 mb-8">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative pb-3 w-1/3 text-sm sm:text-lg font-medium transition-all duration-300 text-center rounded-t-md ${
+                  activeTab === tab
+                    ? "text-gray-900 bg-[#f6f6f6] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-black"
+                    : "text-gray-500 hover:text-gray-800"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
 
-              <hr className="my-3" />
-
-              {/* Product Info */}
-              <div className="space-y-4">
-                {order.orderItems.map((item) => (
-                  <div
-                    key={item.orderItemId}
-                    className="flex items-center gap-4 bg-[#f6f6f6] p-4 rounded-md"
-                  >
-                    <img
-                      src={`${ApiURL}/assets/Products/${item.imageUrl}`}
-                      alt={item.productName}
-                      className="w-20 h-20 rounded-md object-cover"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-800">
-                        {item.productName}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Subcategory: {item.subCategoryName}
-                      </p>
-                      {item.size && (
-                        <p className="text-sm text-gray-600">
-                          Size: {item.size}
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-600">
-                        Color: {item.color_name || "N/A"}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Qty: {item.quantity}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Price: ₹{item.price.toFixed(2)}
-                      </p>
-                      <p className="text-sm text-gray-600 font-semibold">
-                        Total: ₹{item.totalAmount.toFixed(2)}
-                      </p>
-                    </div>
+          {/* Orders List */}
+          <div className="space-y-6">
+            {filteredOrders?.map((order) => (
+              <div
+                key={order.orderId}
+                className="bg-[#f6f6f6] rounded-xl p-5 sm:p-6 shadow-sm border border-gray-100"
+              >
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-600 mb-4">
+                  <div>
+                    <p>
+                      <span className="font-medium text-gray-800">
+                        Order no:
+                      </span>{" "}
+                      {order.orderId}
+                    </p>
+                    <p className="font-light">
+                      Customer: {order.address.name}{" "}
+                    </p>
+                    <p className="font-light">
+                      Address: {order.address.fullAddress},
+                    </p>
                   </div>
-                ))}
-              </div>
 
-              {/* Order Summary */}
-              <div className="mt-4 border-t pt-3 text-right space-y-1">
-                <p>Subtotal: ₹{order.totalPrice.toFixed(2)}</p>
-                <p>Shipping: ₹{order.shippingCharge.toFixed(2)}</p>
-                {/* <p>Tax: ₹{order.tax.toFixed(2)}</p> */}
-                <p className="font-semibold">
-                  Grand Total: ₹{order.grandTotal.toFixed(2)}
-                </p>
-              </div>
+                  <div className="mt-3 sm:mt-0 text-left sm:text-right font-light text-gray-500">
+                    <p>
+                      <span className="font-light text-gray-500">
+                        Order Status:
+                      </span>{" "}
+                      <span className="text-black">
+                        {statusMap[order.status] || "Unknown"}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-light text-gray-500">
+                        Payment Method:
+                      </span>{" "}
+                      {order.paymentStatus}
+                    </p>
+                  </div>
+                </div>
 
-              {/* Action Button */}
-              {/* Action Buttons */}
-              <div className="mt-4 flex justify-end gap-3">
-                {order.status === 1 && (
+                <hr className="my-3" />
+
+                {/* Product Info */}
+                <div className="space-y-4">
+                  {order.orderItems.map((item) => (
+                    <div
+                      key={item.orderItemId}
+                      className="flex items-center gap-4 bg-[#f6f6f6] p-4 rounded-md"
+                    >
+                      <img
+                        src={`${ApiURL}/assets/Products/${item.imageUrl}`}
+                        alt={item.productName}
+                        className="w-20 h-20 rounded-md object-cover"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">
+                          {item.productName}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Subcategory: {item.subCategoryName}
+                        </p>
+                        {item.size && (
+                          <p className="text-sm text-gray-600">
+                            Size: {item.size}
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600">
+                          Color: {item.color_name || "N/A"}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Qty: {item.quantity}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Price: ₹{item.price.toFixed(2)}
+                        </p>
+                        <p className="text-sm text-gray-600 font-semibold">
+                          Total: ₹{item.totalAmount.toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Order Summary */}
+                <div className="mt-4 border-t pt-3 text-right space-y-1">
+                  <p>Subtotal: ₹{order.totalPrice.toFixed(2)}</p>
+                  <p>Shipping: ₹{order.shippingCharge.toFixed(2)}</p>
+                  {/* <p>Tax: ₹{order.tax.toFixed(2)}</p> */}
+                  <p className="font-semibold">
+                    Grand Total: ₹{order.grandTotal.toFixed(2)}
+                  </p>
+                </div>
+
+                {/* Action Button */}
+                {/* Action Buttons */}
+                <div className="mt-4 flex justify-end gap-3">
+                  {order.status === 1 && (
+                    <button
+                      onClick={() => {
+                        setSelectedOrderId(order.orderId);
+                        setShowCancelModal(true);
+                      }}
+                      className="bg-red-100 text-red-700 px-5 py-2 rounded-md text-sm sm:text-base hover:bg-red-200 transition"
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+
                   <button
-                    onClick={() => {
-                      setSelectedOrderId(order.orderId);
-                      setShowCancelModal(true);
-                    }}
-                    className="bg-red-100 text-red-700 px-5 py-2 rounded-md text-sm sm:text-base hover:bg-red-200 transition"
+                    onClick={() => navigate(`/orderdetails/${order.orderId}`)}
+                    className="bg-[#002e25] text-white px-5 py-2 rounded-md hover:bg-[#004534] transition text-sm sm:text-base"
                   >
-                    Cancel Order
+                    View Details
                   </button>
-                )}
-
-                <button
-                  onClick={() => navigate(`/orderdetails/${order.orderId}`)}
-                  className="bg-[#002e25] text-white px-5 py-2 rounded-md hover:bg-[#004534] transition text-sm sm:text-base"
-                >
-                  View Details
-                </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {filteredOrders.length === 0 && (
-            <div className="text-center text-gray-500 text-sm py-10">
-              No {activeTab.toLowerCase()} orders found.
-            </div>
-          )}
+            {filteredOrders.length === 0 && (
+              <div className="text-center text-gray-500 text-sm py-10">
+                No {activeTab.toLowerCase()} orders found.
+              </div>
+            )}
+          </div>
         </div>
+        <ConfirmDeleteModal
+          isOpen={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          onConfirm={handleCancelOrder}
+          itemType="order"
+          itemName={`#${selectedOrderId}`}
+        />
       </div>
-      <ConfirmDeleteModal
-        isOpen={showCancelModal}
-        onClose={() => setShowCancelModal(false)}
-        onConfirm={handleCancelOrder}
-        itemType="order"
-        itemName={`#${selectedOrderId}`}
-      />
     </div>
   );
 };

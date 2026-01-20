@@ -52,7 +52,7 @@ const SideBar = ({ onMenuChange = () => {} }) => {
       <div
         className={`${
           isOpen ? "block" : "hidden"
-        } md:block bg-[#f3f0ed] md:min-h-screen w-full md:w-96 p-6 sm:p-8 font-sans md:pl-20 sticky top-0 z-40 transition-all duration-300`}
+        } md:block bg-[#f3f0ed] md:min-h-screen w-full  p-6 md:p-4 font-sans sticky top-0 z-40 transition-all duration-300`}
       >
         {/* Breadcrumb */}
         <div className="mb-6 text-sm text-gray-600">

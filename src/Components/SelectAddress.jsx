@@ -881,7 +881,7 @@ useEffect(() => {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                placeholder="Street Address *"
+                placeholder="flat, house no, floor, building*"
                 required
                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#063d32]"
               />
@@ -890,7 +890,7 @@ useEffect(() => {
                 name="apartment"
                 value={formData.apartment}
                 onChange={handleChange}
-                placeholder="Apartment, Suite, etc. (Optional)"
+                placeholder="area ,street, sector, village"
                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#063d32]"
               />
 
@@ -917,14 +917,15 @@ useEffect(() => {
                   value={formData.state}
                   readOnly
                   placeholder="State"
-                  className="w-1/2 px-4 py-3 border bg-gray-50 cursor-not-allowed"
+                  className="w-1/2 px-4 py-3 border bg-gray-50 cursor-not-allowed rounded-lg"
                 />
                 <input
+                
                   name="city"
                   value={formData.city}
                   readOnly
                   placeholder="City"
-                  className="w-1/2 px-4 py-3 border bg-gray-50 cursor-not-allowed"
+                  className="w-1/2 px-4 py-3 border bg-gray-50 cursor-not-allowed rounded-lg"
                 />
               </div>
 

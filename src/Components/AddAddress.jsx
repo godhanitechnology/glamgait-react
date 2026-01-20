@@ -187,7 +187,7 @@ const AddAddress = ({
             name="address"
             value={formData.address}
             onChange={handleChange}
-            placeholder="Street Address"
+            placeholder="flat,house no,floor,building"
             required
             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#063d32]"
           />
@@ -197,7 +197,7 @@ const AddAddress = ({
             name="apartment"
             value={formData.apartment}
             onChange={handleChange}
-            placeholder="Apartment, Suite, etc. (Optional)"
+            placeholder="area ,street, sector, village"
             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#063d32]"
           />
 

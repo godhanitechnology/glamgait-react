@@ -145,116 +145,121 @@ const Cart = () => {
 
   return (
     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10">
-      <h2 className="text-2xl font-semibold mb-6">My Cart</h2>
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Section - Cart Items */}
-        <div className="flex-1">
-          {cartItems?.map((item) => {
-            const availableStock = item.available_stock || 0;
-            const inStock = availableStock > 0;
-            const lowStock = availableStock > 0 && availableStock <= 5;
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-6">My Cart</h2>
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left Section - Cart Items */}
+          <div className="flex-1">
+            {cartItems?.map((item) => {
+              const availableStock = item.available_stock || 0;
+              const inStock = availableStock > 0;
+              const lowStock = availableStock > 0 && availableStock <= 5;
 
-            return (
-              <div
-                key={item.cart_id}
-                className="bg-white rounded-2xl flex flex-col md:flex-row gap-4 p-4 mb-4 shadow-sm relative"
-              >
-                {/* Remove Button */}
-                <button
-                  onClick={() => handleRemove(item.cart_id)}
-                  className="absolute top-3 right-3 text-gray-600 hover:text-black cursor-pointer"
+              return (
+                <div
+                  key={item.cart_id}
+                  className="bg-white rounded-2xl flex flex-col md:flex-row gap-4 p-4 mb-4 shadow-sm relative"
                 >
-                  <X size={18} />
-                </button>
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => handleRemove(item.cart_id)}
+                    className="absolute top-3 right-3 text-gray-600 hover:text-black cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
 
-                {/* Image */}
-                <div className="flex justify-center md:block">
-                  <img
-                    src={`${ApiURL}/assets/Products/${item.image_url}`}
-                    alt={item.product_name}
-                    className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg md:ml-6"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/300?text=No+Image";
-                    }}
-                  />
-                </div>
+                  {/* Image */}
+                  <div className="flex justify-center md:block">
+                    <img
+                      src={`${ApiURL}/assets/Products/${item.image_url}`}
+                      alt={item.product_name}
+                      className="w-40 h-60 md:w-28 md:h-40 object-cover rounded-lg md:ml-6"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://via.placeholder.com/300?text=No+Image";
+                      }}
+                    />
+                  </div>
 
-                {/* Info */}
-                <div className="flex flex-col flex-1 justify-center">
-                  <div>
-                    <h3 className="text-md font-medium">{item.product_name}</h3>
-                    <p className="text-sm text-gray-500">
-                      ₹{item.price.toFixed(2)}{" "}
-                      {item.original_price > item.price && (
-                        <span className="line-through text-gray-400 text-sm">
-                          ₹{item.original_price.toFixed(2)}
-                        </span>
+                  {/* Info */}
+                  <div className="flex flex-col flex-1 justify-center">
+                    <div>
+                      <h3 className="text-md font-medium">
+                        {item.product_name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        ₹{item.price.toFixed(2)}{" "}
+                        {item.original_price > item.price && (
+                          <span className="line-through text-gray-400 text-sm">
+                            ₹{item.original_price.toFixed(2)}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Color: {item.color_name}
+                        {item.size_name && ` • Size: ${item.size_name}`}
+                      </p>
+
+                      {/* Stock Status */}
+                      {lowStock && (
+                        <p className="text-orange-600 text-xs font-bold mt-1">
+                          Only {availableStock} left!
+                        </p>
                       )}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Color: {item.color_name}
-                      {item.size_name && ` • Size: ${item.size_name}`}
-                    </p>
+                      {!inStock && (
+                        <p className="text-red-600 text-xs font-bold mt-1">
+                          Out of Stock
+                        </p>
+                      )}
 
-                    {/* Stock Status */}
-                    {lowStock && (
-                      <p className="text-orange-600 text-xs font-bold mt-1">
-                        Only {availableStock} left!
-                      </p>
-                    )}
-                    {!inStock && (
-                      <p className="text-red-600 text-xs font-bold mt-1">
-                        Out of Stock
-                      </p>
-                    )}
-
-                    {/* Quantity */}
-                    <div className="flex items-center gap-2 mt-3">
-                      <span className="text-sm">Qty:</span>
-                      <div className="flex items-center border border-gray-300 rounded-md">
-                        <button
-                          onClick={() =>
-                            decreaseQty(item.cart_id, item.quantity)
-                          }
-                          className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
-                          disabled={item.quantity <= 1}
-                        >
-                          <Minus size={14} />
-                        </button>
-                        <span className="px-3 text-sm font-medium">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            increaseQty(
-                              item.cart_id,
-                              item.quantity,
-                              availableStock
-                            )
-                          }
-                          className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
-                          disabled={!inStock || item.quantity >= availableStock}
-                        >
-                          <Plus size={14} />
-                        </button>
+                      {/* Quantity */}
+                      <div className="flex items-center gap-2 mt-3">
+                        <span className="text-sm">Qty:</span>
+                        <div className="flex items-center border border-gray-300 rounded-md">
+                          <button
+                            onClick={() =>
+                              decreaseQty(item.cart_id, item.quantity)
+                            }
+                            className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
+                            disabled={item.quantity <= 1}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="px-3 text-sm font-medium">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() =>
+                              increaseQty(
+                                item.cart_id,
+                                item.quantity,
+                                availableStock
+                              )
+                            }
+                            className="px-2 py-1 text-gray-600 hover:text-black cursor-pointer"
+                            disabled={
+                              !inStock || item.quantity >= availableStock
+                            }
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Right Section - Summary */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm w-full lg:w-1/3 h-fit">
-          <div className="flex justify-between mb-4">
-            <span>Subtotal</span>
-            <span>₹{subtotal.toFixed(2)}</span>
+              );
+            })}
           </div>
 
-          {/* <div className="mb-4">
+          {/* Right Section - Summary */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm w-full lg:w-1/3 h-fit">
+            <div className="flex justify-between mb-4">
+              <span>Subtotal</span>
+              <span>₹{subtotal.toFixed(2)}</span>
+            </div>
+
+            {/* <div className="mb-4">
             <p className="text-sm mb-2">Enter Discount Code</p>
             <div className="flex gap-2">
               <input
@@ -268,29 +273,30 @@ const Cart = () => {
             </div>
           </div> */}
 
-          {/* <div className="flex justify-between mt-4">
+            {/* <div className="flex justify-between mt-4">
             <span>Taxes</span>
             <span>₹{taxes.toFixed(2)}</span>
           </div> */}
 
-          <div className="flex justify-between mt-2">
-            <span>Delivery Fee</span>
-            <span className="text-green-600 font-medium">FREE</span>
+            <div className="flex justify-between mt-2">
+              <span>Delivery Fee</span>
+              <span className="text-green-600 font-medium">FREE</span>
+            </div>
+
+            <hr className="my-4" />
+
+            <div className="flex justify-between font-semibold">
+              <span>Grand Total</span>
+              <span>₹{grandTotal.toFixed(2)}</span>
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-white hover:text-[#02382A] border border-[#02382A] cursor-pointer font-medium"
+            >
+              CHECKOUT
+            </button>
           </div>
-
-          <hr className="my-4" />
-
-          <div className="flex justify-between font-semibold">
-            <span>Grand Total</span>
-            <span>₹{grandTotal.toFixed(2)}</span>
-          </div>
-
-          <button
-            onClick={handleCheckout}
-            className="w-full mt-6 bg-[#063d32] text-white py-3 rounded-md hover:bg-white hover:text-[#02382A] border border-[#02382A] cursor-pointer font-medium"
-          >
-            CHECKOUT
-          </button>
         </div>
       </div>
     </div>

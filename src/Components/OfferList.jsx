@@ -1,6 +1,4 @@
 const OfferList = ({ offers }) => {
-  if (!offers?.length) return null;
-
   return (
     <div className="mt-3 space-y-2">
       <div className="flex items-center gap-2">

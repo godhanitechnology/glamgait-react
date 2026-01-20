@@ -403,6 +403,61 @@ function SingleProduct() {
         <title>{product.meta_title}</title>
         <meta name="description" content={product.meta_description} />
         <meta name="keywords" content={product.meta_keywords} />
+        <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "${product.name}${
+          selectedSize ? " - " + selectedSize.size.size_name : ""
+        }${selectedColor ? " in " + selectedColor.color.color_name : ""}",
+      "image": [
+        "${ApiURL}/assets/Products/${imageFiles[0] || ""}",
+        ${imageFiles
+          .slice(1)
+          .slice(0, 5)
+          .map((img) => `"${ApiURL}/assets/Products/${img}"`)
+          .join(",")}
+      ],
+      "description": "${(product.description || "")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, " ")}",
+      "sku": "${product.sku || product.p_id || ""}",
+      "mpn": "${
+        product.mpn || ""
+      }",  // add if you have manufacturer part number
+      "brand": {
+        "@type": "Brand",
+        "name": "${product.brand || "Glamgait"}"  // Use your actual brand name
+      },
+      "color": "${selectedColor?.color?.color_name || ""}",
+      "size": "${selectedSize?.size?.size_name || "Free Size"}",
+      "offers": {
+        "@type": "Offer",
+        "url": "${window.location.href}",
+        "priceCurrency": "INR",
+        "price": "${product.price}",
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "${
+          availableStock > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock"
+        }",
+        "seller": {
+          "@type": "Organization",
+          "name": "Glamgait"
+        }
+      },
+      "aggregateRating": ${
+        reviewsSummary.average_rating
+          ? `{
+        "@type": "AggregateRating",
+        "ratingValue": "${reviewsSummary.average_rating.toFixed(1)}",
+        "reviewCount": "${reviewsSummary.total_reviews || 0}"
+      }`
+          : "null"
+      }
+    }
+  `}</script>
       </Helmet>
       <div className="min-h-screen bg-[#F3F0ED]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -105,14 +105,15 @@ const PersonalInfo = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-[#f3f0ed] min-h-screen font-inter">
+    <div className="bg-[#f3f0ed]">
+    <div className="max-w-7xl mx-auto flex flex-col md:flex-row  min-h-screen font-inter">
       {/* Left Sidebar */}
       <div className="md:w-1/3 lg:w-1/4">
         <SideBar />
       </div>
 
       {/* Right Content */}
-      <div className="flex-1 bg-[#f3f0ed] p-6 sm:p-10 md:pl-16">
+      <div className="flex-1 bg-[#f3f0ed] p-6 md:p-4 ">
         <h1 className="text-2xl font-semibold text-gray-900 mb-8">My Info</h1>
         {/* Contact Details - Only show for logged-in users */}
         {isLoggedIn && (
@@ -253,6 +254,7 @@ const PersonalInfo = () => {
           editingAddress={editingAddress}
         />
       )}
+    </div>
     </div>
   );
 };
