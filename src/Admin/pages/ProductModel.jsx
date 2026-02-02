@@ -1409,10 +1409,10 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       product?.productvariants.forEach((v) => {
         if (v.pcolor_id && v.psize_id) {
           const colorId = Object.keys(mapping).find(
-            (cid) => mapping[cid] === v.pcolor_id
+            (cid) => mapping[cid] === v.pcolor_id,
           );
           const size = product?.productsizes?.find(
-            (ps) => ps.psize_id === v.psize_id
+            (ps) => ps.psize_id === v.psize_id,
           );
           if (colorId && size) {
             const key = `${colorId}-${size.size_id}`;
@@ -1432,7 +1432,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       product.productvariants.forEach((v) => {
         if (v.pcolor_id) {
           const colorId = Object.keys(mapping).find(
-            (cid) => mapping[cid] === v.pcolor_id
+            (cid) => mapping[cid] === v.pcolor_id,
           );
           if (colorId) {
             qtyMap[colorId] = v.remaining_qty || 0;
@@ -1609,11 +1609,11 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
 
     data.append(
       "colors",
-      JSON.stringify(formData.colors.map((c) => ({ color_id: c.color_id })))
+      JSON.stringify(formData.colors.map((c) => ({ color_id: c.color_id }))),
     );
     data.append(
       "sizes",
-      JSON.stringify(formData.sizes.map((s) => ({ size_id: s.size_id })))
+      JSON.stringify(formData.sizes.map((s) => ({ size_id: s.size_id }))),
     );
 
     // Append new images
@@ -1636,7 +1636,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
 
       // Refetch full product to get pcolor_id & psize_id
       const fullRes = await axiosInstance.post(
-        `${ApiURL}/getproductbyid/${p_id}`
+        `${ApiURL}/getproductbyid/${p_id}`,
       );
       const fullProduct = fullRes.data.data;
 
@@ -1673,7 +1673,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id,
                   qty_to_add: adjustment.add,
-                })
+                }),
               );
             }
 
@@ -1685,7 +1685,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id,
                   qty_to_remove: adjustment.remove,
-                })
+                }),
               );
             }
           }
@@ -1704,7 +1704,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id: null,
                   qty_to_add: adjustment.add,
-                })
+                }),
               );
             }
 
@@ -1716,7 +1716,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id: null,
                   qty_to_remove: adjustment.remove,
-                })
+                }),
               );
             }
           }
@@ -1737,7 +1737,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id,
                   qty_to_add: qty,
-                })
+                }),
               );
             }
           }
@@ -1753,7 +1753,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   pcolor_id,
                   psize_id: null,
                   qty_to_add: qty,
-                })
+                }),
               );
             }
           }
@@ -1765,7 +1765,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       }
 
       toast.success(
-        product ? "Product & stock updated!" : "Product created with stock!"
+        product ? "Product & stock updated!" : "Product created with stock!",
       );
       refreshProducts();
       onClose();
@@ -1775,19 +1775,6 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
       setIsSubmitting(false);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      // Revoke all object URLs when modal closes
-      formData.colors.forEach((color) => {
-        color.images?.forEach((file) => {
-          if (file instanceof File) {
-            URL.revokeObjectURL(URL.createObjectURL(file));
-          }
-        });
-      });
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -2151,7 +2138,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                   {(existingMedia[i]?.images || []).map((img) => {
                     const mediaUrl = `${ApiURL}/assets/Products/${img.image_url}`;
                     const isVideo = /\.(mp4|webm|mov|avi|quicktime)$/i.test(
-                      img.image_url
+                      img.image_url,
                     );
                     <div key={img.image_id} className="relative group">
                       {isVideo ? (
@@ -2174,7 +2161,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                           setExistingMedia((prev) => {
                             const updated = [...prev];
                             updated[i].images = updated[i].images.filter(
-                              (x) => x.image_id !== img.image_id
+                              (x) => x.image_id !== img.image_id,
                             );
                             return updated;
                           });
@@ -2202,13 +2189,13 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                             onDragStart={(e) => {
                               e.dataTransfer.setData(
                                 "dragIndex",
-                                idx.toString()
+                                idx.toString(),
                               );
                             }}
                             onDrop={(e) => {
                               e.preventDefault();
                               const fromIndex = parseInt(
-                                e.dataTransfer.getData("dragIndex")
+                                e.dataTransfer.getData("dragIndex"),
                               );
                               const toIndex = idx;
 
@@ -2264,7 +2251,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                                 setFormData((prev) => {
                                   const updated = [...prev.colors];
                                   updated[i].images = updated[i].images.filter(
-                                    (_, index) => index !== idx
+                                    (_, index) => index !== idx,
                                   );
                                   return { ...prev, colors: updated };
                                 });
@@ -2309,7 +2296,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
 
                 // Filter available sizes: exclude already selected ones
                 const availableSizes = sizesList.filter(
-                  (s) => !selectedSizeIds.includes(s.size_id)
+                  (s) => !selectedSizeIds.includes(s.size_id),
                 );
                 return (
                   <div key={i} className="flex gap-4 mb-3 items-center">
@@ -2408,7 +2395,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                             .map((color) => {
                               const colorName =
                                 colorsList.find(
-                                  (c) => c.color_id == color.color_id
+                                  (c) => c.color_id == color.color_id,
                                 )?.color_name || "Color";
                               const key = `${color.color_id}-${size.size_id}`;
                               const currentStock = originalStock[key] || 0;
@@ -2440,7 +2427,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                                         handleAddChange(
                                           color.color_id,
                                           size.size_id,
-                                          e.target.value
+                                          e.target.value,
                                         )
                                       }
                                     />
@@ -2457,7 +2444,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                                         handleRemoveChange(
                                           color.color_id,
                                           size.size_id,
-                                          e.target.value
+                                          e.target.value,
                                         )
                                       }
                                     />
@@ -2523,7 +2510,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                                 onChange={(e) =>
                                   handleColorAddChange(
                                     color.color_id,
-                                    e.target.value
+                                    e.target.value,
                                   )
                                 }
                               />
@@ -2539,7 +2526,7 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
                                 onChange={(e) =>
                                   handleColorRemoveChange(
                                     color.color_id,
-                                    e.target.value
+                                    e.target.value,
                                   )
                                 }
                               />
@@ -2577,8 +2564,8 @@ const ProductModal = ({ isOpen, onClose, product, refreshProducts }) => {
               {isSubmitting
                 ? "Saving..."
                 : product
-                ? "Update Product + Stock"
-                : "Create Product + Stock"}
+                  ? "Update Product + Stock"
+                  : "Create Product + Stock"}
             </button>
           </div>
         </form>

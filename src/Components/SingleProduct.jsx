@@ -97,7 +97,7 @@ function SingleProduct() {
           `${ApiURL}/getreviewsformultiple`,
           {
             p_ids: [product.p_id],
-          }
+          },
         );
 
         if (res.data.status === 1 && res.data.data[product.p_id]) {
@@ -132,7 +132,7 @@ function SingleProduct() {
     const fetchProduct = async () => {
       try {
         const res = await axiosInstance.post(
-          `${ApiURL}/getproductbyname/${slug}`
+          `${ApiURL}/getproductbyname/${slug}`,
         );
         if (res.data.status === 1) {
           const data = res.data.data;
@@ -167,7 +167,7 @@ function SingleProduct() {
               has_stock: sizes.some((s) => s.in_stock),
               total_available: sizes.reduce(
                 (sum, s) => sum + s.remaining_qty,
-                0
+                0,
               ),
             };
           });
@@ -197,6 +197,19 @@ function SingleProduct() {
     };
     fetchProduct();
   }, [slug]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "view_content",
+      content_name: product.name,
+      content_ids: [product.p_id],
+      value: product.price,
+      currency: "INR",
+    });
+  }, [product]);
 
   //Update stock when color/size changes
   useEffect(() => {
@@ -241,6 +254,13 @@ function SingleProduct() {
   };
 
   const handleAddToCart = async () => {
+    window.dataLayer.push({
+      event: "add_to_cart",
+      content_name: product.name,
+      content_ids: [product.p_id],
+      value: product.price,
+      currency: "INR",
+    });
     if (!selectedColor) {
       toast.error("Please select a color");
       return;
@@ -380,14 +400,14 @@ function SingleProduct() {
     selectedColorImages.length > 0
       ? selectedColorImages
       : product.productcolors?.flatMap((c) =>
-          c.productimages.map((img) => img.image_url)
+          c.productimages.map((img) => img.image_url),
         ) || [];
 
   const imageFiles = allMedia.filter(
-    (file) => !/\.(mp4|mov|avi|mkv|webm)$/i.test(file)
+    (file) => !/\.(mp4|mov|avi|mkv|webm)$/i.test(file),
   );
   const videoFilesFromAll = allMedia.filter((file) =>
-    /\.(mp4|mov|avi|mkv|webm)$/i.test(file)
+    /\.(mp4|mov|avi|mkv|webm)$/i.test(file),
   );
   const finalVideoFiles =
     videoFiles.length > 0 ? videoFiles : videoFilesFromAll;
@@ -408,8 +428,8 @@ function SingleProduct() {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": "${product.name}${
-          selectedSize ? " - " + selectedSize.size.size_name : ""
-        }${selectedColor ? " in " + selectedColor.color.color_name : ""}",
+        selectedSize ? " - " + selectedSize.size.size_name : ""
+      }${selectedColor ? " in " + selectedColor.color.color_name : ""}",
       "image": [
         "${ApiURL}/assets/Products/${imageFiles[0] || ""}",
         ${imageFiles
@@ -481,7 +501,7 @@ function SingleProduct() {
                     onTouchStart={(e) => {
                       // record start x for swipe detection
                       e.currentTarget.dataset.startx = String(
-                        e.touches[0].clientX
+                        e.touches[0].clientX,
                       );
                     }}
                     onTouchEnd={(e) => {
@@ -592,17 +612,17 @@ function SingleProduct() {
                     onTouchStart={(e) => {
                       if (e.touches.length === 1) {
                         e.currentTarget.dataset.startx = String(
-                          e.touches[0].clientX
+                          e.touches[0].clientX,
                         );
                         e.currentTarget.dataset.starty = String(
-                          e.touches[0].clientY
+                          e.touches[0].clientY,
                         );
                       } else if (e.touches.length === 2) {
                         const dx = e.touches[0].clientX - e.touches[1].clientX;
                         const dy = e.touches[0].clientY - e.touches[1].clientY;
                         e.currentTarget.dataset.startDist = Math.hypot(
                           dx,
-                          dy
+                          dy,
                         ).toString();
                         e.currentTarget.dataset.startScale =
                           e.currentTarget.dataset.scale || "1";
@@ -627,10 +647,10 @@ function SingleProduct() {
                         const dy = e.touches[0].clientY - e.touches[1].clientY;
                         const dist = Math.hypot(dx, dy);
                         const startDist = parseFloat(
-                          img.dataset.startDist || "1"
+                          img.dataset.startDist || "1",
                         );
                         const startScale = parseFloat(
-                          img.dataset.startScale || "1"
+                          img.dataset.startScale || "1",
                         );
                         let newScale = (dist / startDist) * startScale;
                         newScale = Math.min(Math.max(newScale, 1), 4); // limit zoom between 1x–4x
@@ -781,8 +801,8 @@ function SingleProduct() {
                         selectedColor?.pcolor_id === color.pcolor_id
                           ? "border-gray-900 ring-2 ring-offset-2 ring-gray-900"
                           : color.has_stock
-                          ? "border-gray-300"
-                          : "border-gray-200 opacity-50"
+                            ? "border-gray-300"
+                            : "border-gray-200 opacity-50"
                       }`}
                       disabled={!color.has_stock}
                     />
@@ -817,8 +837,8 @@ function SingleProduct() {
                           selectedSize?.psize_id === size.psize_id
                             ? "bg-[#02382A] text-white shadow-sm"
                             : size.in_stock
-                            ? "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                            : "bg-gray-50 text-gray-400 line-through opacity-60"
+                              ? "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                              : "bg-gray-50 text-gray-400 line-through opacity-60"
                         }`}
                       >
                         {size.size.size_name}

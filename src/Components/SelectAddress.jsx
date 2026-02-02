@@ -554,12 +554,11 @@ const SelectAddress = () => {
     if (cartItems.length > 0) {
       const total = cartItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
-        0
+        0,
       );
       setSubtotal(total);
     }
   }, [cartItems]);
-  
 
   // Pincode auto-fill
   const fetchCityState = async (pincode) => {
@@ -567,7 +566,7 @@ const SelectAddress = () => {
     setPincodeLoading(true);
     try {
       const response = await axios.get(
-        `https://api.postalpincode.in/pincode/${pincode}`
+        `https://api.postalpincode.in/pincode/${pincode}`,
       );
       const data = response.data[0];
       if (data.Status === "Success" && data.PostOffice?.length > 0) {
@@ -600,7 +599,7 @@ const SelectAddress = () => {
     }
   };
 
-useEffect(() => {
+  useEffect(() => {
     if (paymentMethod === "online") {
       const discount = Math.floor(subtotal * 0.1);
       setOnlineDiscount(discount);
@@ -655,12 +654,12 @@ useEffect(() => {
 
       const addressRes = await axiosInstance.post(
         `${ApiURL}/addaddress`,
-        addressPayload
+        addressPayload,
       );
 
       if (addressRes.data.status !== 1) {
         throw new Error(
-          addressRes.data.description || "Failed to save address"
+          addressRes.data.description || "Failed to save address",
         );
       }
 
@@ -686,7 +685,7 @@ useEffect(() => {
 
       const orderRes = await axiosInstance.post(
         `${ApiURL}/createorder`,
-        orderData
+        orderData,
       );
 
       if (orderRes.data.status !== 1) {
@@ -713,7 +712,7 @@ useEffect(() => {
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_signature: response.razorpay_signature,
                   order_id,
-                }
+                },
               );
 
               if (verifyRes.data.status === 1) {
@@ -805,7 +804,7 @@ useEffect(() => {
     if (!couponCode.trim()) return toast.error("Enter coupon code");
 
     const coupon = coupons.find(
-      (c) => c.code === couponCode.toUpperCase() && c.is_active
+      (c) => c.code === couponCode.toUpperCase() && c.is_active,
     );
 
     if (!coupon) return toast.error("Invalid or expired coupon");
@@ -829,6 +828,13 @@ useEffect(() => {
     setAppliedCoupon(null);
   };
 
+  useEffect(() => {
+    window.dataLayer.push({
+      event: "initiate_checkout",
+      value: grandTotal,
+      currency: "INR",
+    });
+  }, []);
 
   return (
     <div className="bg-[#f3f0ed] min-h-screen px-4 md:px-10 py-10">
@@ -920,7 +926,6 @@ useEffect(() => {
                   className="w-1/2 px-4 py-3 border bg-gray-50 cursor-not-allowed rounded-lg"
                 />
                 <input
-                
                   name="city"
                   value={formData.city}
                   readOnly
