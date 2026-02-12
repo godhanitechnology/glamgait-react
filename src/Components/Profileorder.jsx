@@ -270,8 +270,8 @@ const Profileorder = () => {
         toast.success("Order cancelled successfully!");
         setOrders((prev) =>
           prev.map((o) =>
-            o.orderId === selectedOrderId ? { ...o, status: 6 } : o
-          )
+            o.orderId === selectedOrderId ? { ...o, status: 6 } : o,
+          ),
         );
       } else {
         toast.error(res.data.message || "Failed to cancel");
@@ -385,9 +385,9 @@ const Profileorder = () => {
                         <p className="text-sm text-gray-600">
                           Subcategory: {item.subCategoryName}
                         </p>
-                        {item.size && (
+                        {item.size_name && (
                           <p className="text-sm text-gray-600">
-                            Size: {item.size}
+                            Size: {item.size_name}
                           </p>
                         )}
                         <p className="text-sm text-gray-600">

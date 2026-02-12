@@ -27,7 +27,6 @@ const ProductCard = ({
   const wishlistId =
     wishlistKey && wishlistMap ? wishlistMap[wishlistKey]?.w_id || null : null;
 
-
   const handleCardClick = useCallback(() => {
     const name = product?.name || "product";
 
@@ -81,7 +80,7 @@ const ProductCard = ({
 
         const res = await axiosInstance.post(
           `${ApiURL}/addtowishlist`,
-          payload
+          payload,
         );
 
         if (res.data.status === 1) {
@@ -166,7 +165,7 @@ const ProductCard = ({
             <img
               src={mediaUrl}
               alt={product?.name}
-              className="w-full h-[300px] md:h-[350px] object-cover"
+              className="w-full h-[300px] md:h-[350px] xl:h-[400px] object-cover"
               onError={(e) => {
                 e.target.src =
                   "https://via.placeholder.com/300x350?text=No+Image";

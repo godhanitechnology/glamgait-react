@@ -682,7 +682,7 @@ const AdminOrders = () => {
     try {
       setLoadingLogistics(true);
       const res = await axiosInstance.post(
-        `${ApiURL}/get-logistics/${expressflyOrderId}`
+        `${ApiURL}/get-logistics/${expressflyOrderId}`,
       );
       if (res.data.status === 1) {
         setLogistics(Object.values(res.data.data));
@@ -739,7 +739,7 @@ const AdminOrders = () => {
   const cancelOrder = async (orderId) => {
     if (!window.confirm("Cancel this order?")) return;
     try {
-      const res = await axiosInstance.post(`${ApiURL}/cancelorder`, {
+      const res = await axiosInstance.put(`${ApiURL}/cancelorder`, {
         order_id: orderId,
       });
       if (res.data.status === 1) {
@@ -881,7 +881,9 @@ const AdminOrders = () => {
                               {order.address.first_name}{" "}
                               {order.address.last_name}
                             </p>
-                            <p>{order.address.address}</p>
+                            <p>{order.address?.address}</p>
+                            <p>{order.address?.apartment}</p>
+
                             <p>
                               {order.address.city}, {order.address.state} -{" "}
                               {order.address.zip_code}
@@ -951,9 +953,19 @@ const AdminOrders = () => {
                                 <h4 className="font-medium">
                                   {item.productName}
                                 </h4>
+                                {item.sku && (
+                                  <p className="text-sm text-gray-600">
+                                    SKU: {item.sku}
+                                  </p>
+                                )}
                                 {item.color && (
                                   <p className="text-sm text-gray-600">
                                     Color: {item.color.color_name}
+                                  </p>
+                                )}
+                                {item.size && (
+                                  <p className="text-sm text-gray-600">
+                                    Size: {item.size}
                                   </p>
                                 )}
                                 <p className="text-sm text-gray-600">
@@ -983,8 +995,8 @@ const AdminOrders = () => {
                                 setSelectedLogistic(
                                   logistics.find(
                                     (l) =>
-                                      String(l.logistic_id) === e.target.value
-                                  )
+                                      String(l.logistic_id) === e.target.value,
+                                  ),
                                 )
                               }
                             >
