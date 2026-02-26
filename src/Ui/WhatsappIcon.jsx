@@ -1,9 +1,8 @@
-import React from "react";
-import whatsapp from "../assets/whatsapp.png"; // Adjust path as needed
+import whatsapp from "../assets/whatsapp.png";
 
 const WhatsAppIcon = () => {
-  const phoneNumber = "1234567890"; // Replace with your number
-  const message = "Hello! I would like to chat with you."; // Optional
+  const phoneNumber = "+918401970022";
+  const message = "Hello! I would like to chat with you.";
   const encodedMessage = encodeURIComponent(message);
 
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;

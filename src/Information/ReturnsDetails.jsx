@@ -17,22 +17,14 @@ const ReturnsDetails = ({ onClose }) => {
         {/* 🧾 Icons Section */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
           <div className="flex flex-col items-center">
-            <img
-              src={img1}
-              alt="Return"
-              className="w-12 h-12"
-            />
+            <img src={img1} alt="Return" className="w-12 h-12" />
             <p className="text-center text-sm font-medium mt-2">
               Return within 7 days
             </p>
           </div>
           <div className="flex flex-col items-center">
-            <img
-              src={img2}
-              alt="Exchange"
-              className="w-12 h-12 grayscale"
-            />
-            <p className="text-center text-sm font-medium mt-2 text-gray-500 line-through">
+            <img src={img2} alt="Exchange" className="w-12 h-12" />
+            <p className="text-center text-sm font-medium mt-2">
               Exchange within 7 days
             </p>
           </div>
@@ -45,14 +37,8 @@ const ReturnsDetails = ({ onClose }) => {
           </h2>
           <ul className="space-y-2 text-sm text-gray-800">
             <li className="flex items-center">
-              <span className="text-green-600 mr-2">✔️</span> Wrong/Damaged Items
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-600 mr-2">✔️</span> Quality Issue
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-600 mr-2">✔️</span> Did not like the
-              product
+              <span className="text-green-600 mr-2">✔️</span> Wrong/Damaged
+              Items
             </li>
           </ul>
         </div>
@@ -89,7 +75,7 @@ const ReturnsDetails = ({ onClose }) => {
               <p className="font-medium">Return</p>
               <p className="text-gray-600">
                 Refund will be initiated after the product is received and
-                verified by us
+                verified by us. This usually takes 7-10 days after the return.
               </p>
             </li>
           </ol>

@@ -83,8 +83,13 @@ const VideoCard = ({ product }) => {
     product?.productcolors?.flatMap((c) => c.productimages) || [];
 
   // Pick first mp4 if exists, otherwise first image
-  const videoFile = allMedia.find((img) => img.image_url.endsWith(".mp4"));
-  const imageFile = allMedia.find((img) => !img.image_url.endsWith(".mp4"));
+
+  const videoFile = allMedia.find((img) =>
+    img.image_url.toLowerCase().endsWith(".mp4"),
+  );
+  const imageFile = allMedia.find(
+    (img) => !img.image_url.toLowerCase().endsWith(".mp4"),
+  );
 
   const mediaSrc = videoFile?.image_url || imageFile?.image_url || "";
 
@@ -126,6 +131,7 @@ const VideoCard = ({ product }) => {
           loop
           muted
           playsInline
+          preload="auto"
           onClick={handlePlayPause}
         />
       ) : (
@@ -146,7 +152,7 @@ const VideoCard = ({ product }) => {
                 </h3>
               </div>
               <span className="text-[14px] font-bold text-gray-900">
-                Rs.{product?.price}
+                ₹{product?.price}
               </span>
               <p className="text-xs text-gray-600 leading-relaxed line-clamp-1">
                 {product?.reviews}

@@ -428,9 +428,9 @@ const Allproducts = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCategoryReviews();
-  }, [cate_name]);
+  // useEffect(() => {
+  //   fetchCategoryReviews();
+  // }, [cate_name]);
 
   useEffect(() => {
     let title = "";
@@ -876,14 +876,14 @@ const Allproducts = () => {
           )}
           {/* AUTO-SCROLLING REVIEW SLIDER */}
         </div>
-        {categoryReviews.length > 0 && (
+        {/* {categoryReviews.length > 0 && (
           <CategoryReviewSlider
             reviews={categoryReviews}
             direction="left"
             speed="slow"
             cate_name={cate_name}
           />
-        )}
+        )} */}
         <HomePageBanner
           title="Discover Timeless Comfort"
           bgImage={singlebanner}

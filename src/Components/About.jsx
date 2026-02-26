@@ -1,6 +1,6 @@
-import React from "react";
+import world from "../assets/world.png";
 import leftlight from "../assets/leftlight.png";
-import rightlight from "../assets/rightlight.png";
+import mailfooter from "../assets/mailfooter.svg";
 
 const About = () => {
   return (
@@ -34,54 +34,141 @@ const About = () => {
         </h1>
 
         <p className="text-gray-700 leading-relaxed text-sm md:text-base text-justify">
-          <strong className="text-[#00382e] text-lg">About Glamgait</strong>
+          <strong className="text-[#00382e] text-lg">
+            About Us – Glamgait.com
+          </strong>
           <br />
-          Glamgait develops newborn and baby photography props based on the
-          specific needs of today’s photo professionals. We take pride in
-          offering friendly and prompt customer service, and we value feedback
-          from our clients. Our brand stands apart through its unique mission
-          and exceptional products designed exclusively for newborn and
-          maternity photographers.
+          Welcome to Glamgait.com, your trusted destination for trendy,
+          affordable, and high-quality fashion for women and kids across India.
           <br />
-          <br />
-          <strong className="text-[#00382e] text-lg">Our Company</strong>
-          <br />
-          Glamgait is a pioneering force in producing premium baby photography
-          props and creative accessories that are rarely found elsewhere.
-          Established in January 2020 with a small offline store in Surat,
-          India, we have now expanded into a strong online presence, reaching
-          photographers across the globe — one artist at a time.
+          At Glamgait, we believe that fashion is not just about clothing — it’s
+          about confidence, comfort, and self-expression. Our mission is to
+          bring stylish, premium-quality products at prices that make fashion
+          accessible to everyone.
           <br />
           <br />
-          Run by passionate and creative individuals, Glamgait is committed to
-          delivering unique props that help photographers bring their artistic
-          vision to life. Our in-house designers work continuously to create
-          trending, innovative concepts that allow photographers to capture
-          magical and unforgettable memories. This makes our brand both
-          exclusive and distinct in the industry.
+          <strong className="text-[#00382e] text-lg">Who We Are</strong>
+          <br />
+          Glamgait.com is an India-based eCommerce fashion brand dedicated to
+          offering carefully curated collections including:
+          <br />
+          • Women’s ethnic wear
+          <br />
+          • Sarees & dress materials
+          <br />
+          • Co-ord sets
+          <br />
+          • Kids fashion seasonal collections
+          <br />
+          • Trend-driven wear
+          <br />
+          We focus on quality fabrics, comfortable fits, and designs inspired by
+          modern trends and traditional elegance.
           <br />
           <br />
           <strong className="text-[#00382e] text-lg">Our Mission</strong>
           <br />
-          Our mission is to develop and manufacture high-quality, cruelty-free
-          baby photography props that cannot be found anywhere else — while
-          providing exceptional, personalized service to our customers.
+          Our goal is simple:
+          <br />
+          <strong>
+            To deliver fashionable, affordable, and reliable shopping
+            experiences to every household in India.
+          </strong>
+          <br />
+          We continuously work with trusted manufacturers and suppliers to
+          ensure:
+          <br />
+          • Quality-checked products
+          <br />
+          • Fair pricing
+          <br />
+          • Secure transactions
+          <br />
+          • Reliable delivery partners
           <br />
           <br />
-          To fulfill this mission, we focus on delivering the following:
+          <strong className="text-[#00382e] text-lg">
+            Why Choose Glamgait?
+          </strong>
           <br />
-          • Competitively priced and superior-quality products
+          • Affordable Pricing
           <br />
-          • First-class customer service with fast shipping
+          • Quality Assurance Checks
           <br />
-          • Use of the highest-quality, animal-friendly raw materials
+          • Secure Online Payments
           <br />
-          • Durable, long-lasting products designed for years of professional
-          use
+          • Cash on Delivery (COD) Available
+          <br />
+          • Customer Support Assistance
+          <br />
+          • Easy Order Tracking
+          <br />
+          We aim to build long-term relationships with our customers by
+          maintaining transparency and reliability in every order.
           <br />
           <br />
-          At Glamgait, we don’t just sell props — we help photographers create
-          memories that last forever.
+          <strong className="text-[#00382e] text-lg">
+            Product Quality & Responsibility
+          </strong>
+          <br />
+          Every product listed on Glamgait.com goes through a verification
+          process before being published. Product descriptions, images, and
+          specifications are reviewed to ensure they accurately represent the
+          item.
+          <br />
+          We are committed to:
+          <br />
+          • Providing clear product details
+          <br />
+          • Displaying real pricing information
+          <br />
+          • Transparent pricing
+          <br />
+          • Ethical sourcing practices
+          <br />
+          <br />
+          <strong className="text-[#00382e] text-lg">
+            Customer Trust & Transparency
+          </strong>
+          <br />
+          Your trust matters to us. That’s why we maintain:
+          <br />
+          • Clear Return & Refund Policies
+          <br />
+          • Transparent Shipping Information
+          <br />
+          • Secure Checkout Process (SSL Protected)
+          <br />
+          • Dedicated Customer Support
+          <br />
+          If you ever have questions or concerns, our support team is always
+          ready to assist you.
+          <br />
+          <br />
+          <strong className="text-[#00382e] text-lg">Our Vision</strong>
+          <br />
+          We aspire to become one of India’s most trusted and loved online
+          fashion brands by delivering consistent value, quality, and customer
+          satisfaction.
+          <br />
+          <br />
+          <strong className="text-[#00382e] text-lg">
+            Contact Information
+          </strong>
+          <br />
+          For inquiries, partnerships, or support, please contact us at:
+          <br />
+          <div className="flex gap-2 items-center pt-5">
+            <img src={mailfooter} alt="" />
+            Email: support@glamgait.com
+          </div>
+          <br />
+          <div className="flex gap-2 items-center">
+            <img src={world} alt="" className="h-5 w-5" />
+            Website: www.glamgait.com
+          </div>
+          <br />
+          Business Hours: Monday – Saturday, 10:00 AM – 6:00 PM (IST)
         </p>
       </div>
     </div>

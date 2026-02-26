@@ -140,7 +140,7 @@ const ReletedProduct = ({ cate_name, currentProductId, cate_id }) => {
           {/* Product Grid */}
           <div className="max-w-7xl mx-auto">
             <div className="flex space-x-4 overflow-x-auto lg:grid lg:grid-cols-4 md:gap-6 scrollbar-hide pb-12">
-              {relatedProducts?.map((product) => (
+              {relatedProducts?.slice(0, 4)?.map((product) => (
                 <div
                   key={product.p_id}
                   className="flex-shrink-0 w-[250px] sm:w-[240px] md:w-[250px] lg:w-[230px] xl:w-[300px]"

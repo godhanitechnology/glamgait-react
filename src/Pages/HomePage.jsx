@@ -136,7 +136,7 @@ const HomePage = () => {
         {/* Rest of the Page */}
         <Services />
       </div>
-      <CustomersSay />
+      {/* <CustomersSay /> */}
       <WatchAndBuy />
       <StayInLoop />
     </div>

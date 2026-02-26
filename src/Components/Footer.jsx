@@ -139,17 +139,17 @@ const Footer = () => {
             </li>
             <li>
               <Link to="/shipping" className="hover:underline">
-                Shipping & Returns
+                Shipping Policy
               </Link>
             </li>
             <li>
-              <Link to="/refund" className="hover:underline">
-                Refund Policy
+              <Link to="/return-refund" className="hover:underline">
+                Return & Refund Policy
               </Link>
             </li>
             <li>
-              <Link to="/paymentoptions" className="hover:underline">
-                Payment Options{" "}
+              <Link to="/payment" className="hover:underline">
+                Payment Policy{" "}
               </Link>
             </li>
             <li>
@@ -178,7 +178,7 @@ const Footer = () => {
               <div className="h-5 w-5">
                 <img src={callf} alt="" />
               </div>
-              <a href="tel:+1234567890" className="hover:underline">
+              <a href="tel:+918401970022" className="hover:underline">
                 +91 84019 70022
               </a>
             </li>

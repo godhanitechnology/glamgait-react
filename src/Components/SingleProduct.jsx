@@ -998,7 +998,7 @@ function SingleProduct() {
           />
         )}
         {showPopup && <ReturnsDetails onClose={() => setShowPopup(false)} />}
-        {showSizePopup && (
+        {showSizePopup && product?.category?.cate_chart && (
           <ImagePop
             onClose={() => setShowSizePopup(false)}
             image={product?.category?.cate_chart}

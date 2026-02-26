@@ -41,13 +41,13 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import ShippingPolicy from "./Pages/ShippingPolicy ";
 import RefundPolicy from "./Pages/RefundPolicy";
 import TermsofService from "./Pages/TermsofService";
-import PaymentOptions from "./Pages/PaymentOptions";
 import CancellationPolicy from "./Pages/CancellationPolicy";
 import OrderConfirmation from "./Components/OrderConfirmation";
 import Announcement from "./Admin/pages/Announcements";
 import SmartScrollManager from "./Components/SmartScrollManager";
 import SearchResults from "./Components/SearchResults";
 import PromotionsManagement from "./Admin/pages/PromotionsManagement";
+import PaymentPolicy from "./Pages/PaymentPolicy";
 
 function App() {
   return (
@@ -123,9 +123,9 @@ function App() {
             <Route path="/selectaddress" element={<SelectAddress />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/shipping" element={<ShippingPolicy />} />
-            <Route path="/refund" element={<RefundPolicy />} />
+            <Route path="/return-refund" element={<RefundPolicy />} />
             <Route path="/terms" element={<TermsofService />} />
-            <Route path="/paymentoptions" element={<PaymentOptions />} />
+            <Route path="/payment" element={<PaymentPolicy />} />
             <Route path="/search" element={<SearchResults />} />
             <Route
               path="/cancellationpolicy"

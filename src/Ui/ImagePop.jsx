@@ -4,7 +4,7 @@ import { ApiURL } from "../Variable";
 const ImagePop = ({ onClose ,image}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative w-[400px] max-w-[90%] rounded-xl overflow-hidden shadow-2xl">
+      <div className="relative w-[550px] max-w-[90%] rounded-xl overflow-hidden shadow-2xl">
         {/* ❌ Close Button */}
         <button
           onClick={onClose}
