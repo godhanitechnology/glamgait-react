@@ -110,7 +110,6 @@ function SingleProduct() {
         if (res.data.status === 1 && res.data.data[product.p_id]) {
           setReviewsSummary(res.data.data[product.p_id]);
         }
-        console.log(res.data.data[product.p_id], "summary");
       } catch (err) {
         console.error("Failed to load reviews summary", err);
       }
@@ -242,7 +241,6 @@ function SingleProduct() {
     const images = color.productimages?.map((img) => img.image_url) || [];
     const imageFiles = images.filter((f) => !/\.(mp4|mov|webm)$/i.test(f));
     const videos = images.filter((f) => /\.(mp4|mov|webm)$/i.test(f));
-    console.log(videos, "videos");
 
     setSelectedColorImages(imageFiles);
     setVideoFiles(videos);
@@ -326,8 +324,6 @@ function SingleProduct() {
       psize_id: product.has_sizes ? selectedSize.psize_id : null, // ← Size na ho to null
       quantity,
     };
-
-    console.log("Buy Now Payload:", payload); // ← Check karne ke liye
 
     try {
       const res = await axiosInstance.post(`${ApiURL}/createcart`, payload);

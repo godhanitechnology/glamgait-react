@@ -108,6 +108,8 @@ const ProductCard = ({
       {/* Wishlist Heart */}
       <button
         onClick={toggleWishlist}
+        aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
+        aria-pressed={isWished}
         className="absolute top-2 right-2 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:scale-110 transition z-20"
       >
         <Heart
@@ -165,7 +167,11 @@ const ProductCard = ({
             <img
               src={mediaUrl}
               alt={product?.name}
-              className="w-full h-[300px] md:h-[350px] xl:h-[400px] object-cover"
+              className="w-full h-[300px] md:h-[350px] xl:h-[400px] object-cover bg-gray-100"
+              width="300"
+              height="350"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 e.target.src =
                   "https://via.placeholder.com/300x350?text=No+Image";

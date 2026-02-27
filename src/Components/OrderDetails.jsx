@@ -11,7 +11,6 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [tracking, setTracking] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(orderId, "id");
 
   useEffect(() => {
     const fetchData = async () => {

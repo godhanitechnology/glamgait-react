@@ -226,7 +226,7 @@ const PaymentPolicy = () => {
             Glamgait
             <br />
             <div className="flex gap-2 items-center pt-5">
-              <img src={mailfooter} alt="" />
+              <img src={mailfooter} alt="mail" />
               Email:{" "}
               <a
                 href="mailto:support@glamgait.com"
@@ -237,12 +237,12 @@ const PaymentPolicy = () => {
             </div>
             <br />
             <div className="flex gap-2 items-center">
-              <img src={callf} alt="" />
+              <img src={callf} alt="call" />
               Phone: +91 84019 70022
             </div>
             <br />
             <div className="flex gap-2 items-center">
-              <img src={world} alt="" className="h-5 w-5" />
+              <img src={world} alt="world" className="h-5 w-5" />
               Website:{" "}
               <a
                 href="https://www.glamgait.com"

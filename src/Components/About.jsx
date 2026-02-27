@@ -158,12 +158,12 @@ const About = () => {
           For inquiries, partnerships, or support, please contact us at:
           <br />
           <div className="flex gap-2 items-center pt-5">
-            <img src={mailfooter} alt="" />
+            <img src={mailfooter} alt="mail" />
             Email: support@glamgait.com
           </div>
           <br />
           <div className="flex gap-2 items-center">
-            <img src={world} alt="" className="h-5 w-5" />
+            <img src={world} alt="world" className="h-5 w-5" />
             Website: www.glamgait.com
           </div>
           <br />

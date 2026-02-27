@@ -266,7 +266,7 @@ const Review = ({ p_id }) => {
               htmlFor="image-upload"
               className="cursor-pointer bg-white p-2 rounded flex items-center justify-center gap-2 w-full"
             >
-              <img src={imgicon} alt="" /> Upload Images
+              <img src={imgicon} alt="image icon" /> Upload Images
             </label>
             <div className="grid grid-cols-4 gap-2 mt-2">
               {uploadedImages?.map((file, index) => (

@@ -684,7 +684,7 @@ const Categories = () => {
                     {mediaType === "video" ? (
                       <video src={mediaPreview} className="h-20 w-20" controls />
                     ) : (
-                      <img src={mediaPreview} className="h-20 w-20 rounded" />
+                      <img src={mediaPreview} className="h-20 w-20 rounded" alt="Category" />
                     )}
                   </div>
                 )}

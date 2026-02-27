@@ -178,7 +178,7 @@ const PrivacyPolicy = () => {
           <p className="mt-2">To exercise these rights, contact us at:</p>
           <p>
             <div className="flex gap-2 items-center pt-5">
-              <img src={mailfooter} alt="" />
+              <img src={mailfooter} alt="mail" />
               Email:{" "}
               <a
                 href="mailto:support@glamgait.com"
@@ -189,7 +189,7 @@ const PrivacyPolicy = () => {
             </div>
             <br />
             <div className="flex gap-2 items-center">
-              <img src={world} alt="" className="h-5 w-5" />
+              <img src={world} alt="world" className="h-5 w-5" />
               Phone: +91 84019 70022
             </div>
           </p>

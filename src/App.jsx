@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Outlet,  } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Outlet } from "react-router-dom";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 // Always-needed layout components (small, load eagerly)
@@ -97,7 +97,9 @@ function App() {
               element={
                 <>
                   <Navbar />
-                  <Outlet />
+                  <main id="main-content">
+                    <Outlet />
+                  </main>
                   <Footer />
                   <WhatsAppIcon />
                   <BackToTop />

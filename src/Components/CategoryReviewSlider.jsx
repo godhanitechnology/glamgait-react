@@ -7,14 +7,11 @@ const CategoryReviewSlider = ({
   reviews = [],
   direction = "left",
   speed = "normal",
-  cate_name
+  cate_name,
 }) => {
   const containerRef = useRef(null);
   const scrollerRef = useRef(null);
   const [start, setStart] = useState(false);
-
-  console.log(reviews,'reviews');
-  
 
   useEffect(() => {
     if (reviews.length === 0) return;
@@ -40,13 +37,13 @@ const CategoryReviewSlider = ({
 
     container.style.setProperty(
       "--animation-direction",
-      direction === "left" ? "forwards" : "reverse"
+      direction === "left" ? "forwards" : "reverse",
     );
 
     const durations = { fast: "20s", normal: "40s", slow: "80s" };
     container.style.setProperty(
       "--animation-duration",
-      durations[speed] || "40s"
+      durations[speed] || "40s",
     );
   };
 

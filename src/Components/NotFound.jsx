@@ -7,7 +7,7 @@ const NotFound = () => {
     <div className="bg-[#F3F0ED] h-screen flex items-center justify-center p-4">
       <div className="justify-items-center">
         <div className="w-50 h-30 md:w-[300px] md:h-[200px]">
-          <img src={notfound} alt="" />
+          <img src={notfound} alt="notfound" />
         </div>
         <div className="justify-items-center">
           <h1 className="xl:text-[34px] text-[24px] text-black font-bold mt-5">

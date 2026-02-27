@@ -124,7 +124,7 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   useEffect(() => {
     const updateBounds = () => {
       const nav = navRef.current;
@@ -139,7 +139,7 @@ const Navbar = () => {
       const endOffset = navRect.right - contactRect.right;
       document.documentElement.style.setProperty(
         "--nav-start",
-        `${startOffset}px`
+        `${startOffset}px`,
       );
       document.documentElement.style.setProperty("--nav-end", `${endOffset}px`);
     };
@@ -207,8 +207,8 @@ const Navbar = () => {
       )}
       <nav ref={navRef} className="sticky bg-[#f3f0ed] shadow-md top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <Link to="/">
-            <img src={logo} alt="Logo" className="h-9 md:h-10 w-auto" />
+          <Link to="/" aria-label="Glamgait – Go to homepage">
+            <img src={logo} alt="Glamgait" className="h-9 md:h-10 w-auto" />
           </Link>
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8 mr-6">
@@ -238,8 +238,8 @@ const Navbar = () => {
                         ? "text-black font-bold"
                         : "text-[#767676] hover:text-black"
                       : location.pathname === item.to
-                      ? "text-black font-bold"
-                      : "text-[#767676] hover:text-black"
+                        ? "text-black font-bold"
+                        : "text-[#767676] hover:text-black"
                   }`}
                 >
                   {item.label}
@@ -249,18 +249,25 @@ const Navbar = () => {
           </div>
           {/* Icons */}
           <div className="flex items-center space-x-3 md:space-x-4">
-            <Search
-              className="cursor-pointer hover:text-black"
+            <button
+              aria-label="Open search"
+              aria-expanded={isMobileSearchOpen}
+              className="cursor-pointer hover:text-black p-1 bg-transparent border-0"
               onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-            />
-            <Link to="/wishlist">
+            >
+              <Search size={22} />
+            </button>
+            <Link to="/wishlist" aria-label="Go to wishlist">
               <Heart className="hover:text-black" />
             </Link>
-            <Link to="/cart">
+            <Link to="/cart" aria-label="Go to cart">
               <ShoppingCart className="hover:text-black" />
             </Link>
-            <CircleUser
-              className="cursor-pointer hover:text-black"
+            <button
+              aria-label={
+                u_id && token ? "Go to my orders" : "Sign in or register"
+              }
+              className="cursor-pointer hover:text-black p-1 bg-transparent border-0"
               onClick={() => {
                 if (u_id && token) {
                   navigate("/myorders");
@@ -268,7 +275,9 @@ const Navbar = () => {
                   setShowAuthChoice(true);
                 }
               }}
-            />
+            >
+              <CircleUser size={22} />
+            </button>
 
             {showAuthChoice && (
               <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -303,7 +312,12 @@ const Navbar = () => {
                 </div>
               </div>
             )}
-            <button className="lg:hidden" onClick={toggleMenu}>
+            <button
+              className="lg:hidden p-1"
+              onClick={toggleMenu}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+            >
               {isOpen ? <X size={24} /> : <TextAlignEnd size={24} />}
             </button>
           </div>
@@ -393,6 +407,7 @@ const Navbar = () => {
             <button
               className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
               onClick={() => setIsOpen(false)}
+              aria-label="Close navigation menu"
             >
               <X size={24} />
             </button>

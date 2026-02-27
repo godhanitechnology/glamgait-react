@@ -70,6 +70,7 @@ const Footer = () => {
               href="https://www.facebook.com/Glamgait.Fashion"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Glamgait on Facebook"
             >
               <img src={fb} alt="Facebook" className="h-7.5 w-7.5" />
             </a>
@@ -77,6 +78,7 @@ const Footer = () => {
               href="https://www.instagram.com/glamgait/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Glamgait on Instagram"
             >
               <img src={ig} alt="Instagram" className="h-7.5 w-7.5" />
             </a>
@@ -84,6 +86,7 @@ const Footer = () => {
               href="https://www.youtube.com/@Glamgait-store"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Glamgait on YouTube"
             >
               <img src={yt} alt="YouTube" className="h-7 w-7" />
             </a>
@@ -176,7 +179,7 @@ const Footer = () => {
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
             <li className="flex gap-2 ">
               <div className="h-5 w-5">
-                <img src={locationf} alt="" />
+                <img src={locationf} alt="location" />
               </div>
               312, Capital Plaza,
               <br /> Near D-Mart, Yogi Chowk,
@@ -185,7 +188,7 @@ const Footer = () => {
             </li>
             <li className="flex gap-2 items-center">
               <div className="h-5 w-5">
-                <img src={callf} alt="" />
+                <img src={callf} alt="call" />
               </div>
               <a href="tel:+918401970022" className="hover:underline">
                 +91 84019 70022
@@ -193,7 +196,7 @@ const Footer = () => {
             </li>
             <li className="flex gap-2 items-center">
               <div className="h-5 w-5">
-                <img src={mailfooter} alt="" />
+                <img src={mailfooter} alt="mail" />
               </div>
               <a href="mailto:support@glamgait.com" className="hover:underline">
                 support@glamgait.com
