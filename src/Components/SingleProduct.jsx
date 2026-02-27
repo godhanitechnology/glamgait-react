@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   Star,
   Truck,
@@ -13,7 +13,6 @@ import VideoPopUp from "../Ui/VideoPopUp";
 import ImagePop from "../Ui/ImagePop";
 import ReturnsDetails from "../Information/ReturnsDetails";
 import { ApiURL, userInfo } from "../Variable";
-
 import axiosInstance from "../Axios/axios";
 import ReletedProduct from "../Components/ReletedProduct";
 import { getGuestId } from "../utils/guest";
@@ -22,6 +21,14 @@ import Review from "./Review";
 import OfferList from "./OfferList";
 import CouponList from "./CouponList";
 import { Helmet } from "@dr.pogodin/react-helmet";
+import trustSealImg from "../assets/trust_seal.avif";
+import visaImg from "../assets/payment/visa.svg";
+import mastercardImg from "../assets/payment/mastercard.svg";
+import rupayImg from "../assets/payment/rupay.svg";
+import upiImg from "../assets/payment/upi.svg";
+import gpayImg from "../assets/payment/gpay.svg";
+import aeImg from "../assets/payment/ae.svg";
+import maestroImg from "../assets/payment/maestro.svg";
 
 function SingleProduct() {
   const { slug } = useParams();
@@ -911,11 +918,50 @@ function SingleProduct() {
                 </button>
               </div>
 
+              {/* ── Payment Icons ── */}
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2 pt-1">
+                {[
+                  { src: visaImg, alt: "Visa" },
+                  {
+                    src: mastercardImg,
+                    alt: "Mastercard",
+                  },
+                  {
+                    src: aeImg,
+                    alt: "American Express",
+                  },
+                  { src: maestroImg, alt: "Maestro" },
+                  { src: gpayImg, alt: "Google Pay" },
+                  { src: upiImg, alt: "UPI" },
+                  { src: rupayImg, alt: "RuPay" },
+                ].map((pm) => (
+                  <div
+                    key={pm.alt}
+                    className="w-12 h-9 flex items-center justify-center bg-white border border-gray-200 rounded-md shadow-sm"
+                  >
+                    <img
+                      src={pm.src}
+                      alt={pm.alt}
+                      title={pm.alt}
+                      className="h-7 w-auto max-w-[48px] object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+
               <div className="text-center text-sm text-gray-600">
                 {purchase.name} <span className="text-red-600">Purchased</span>{" "}
                 this item <span className="font-semibold">{purchase.time}</span>{" "}
                 ago from <span className="font-semibold">{purchase.city}</span>
               </div>
+
+              {/* ── Trust Seals ── */}
+              <img
+                src={trustSealImg}
+                draggable={false}
+                alt="Secure Payments · Fast & Free Shipping · Premium Quality · 24/7 Support"
+                className="w-full max-w-xs sm:max-w-sm object-contain mix-blend-multiply"
+              />
 
               <div className="border-t border-b border-gray-200 py-4 space-y-3">
                 <div className="flex items-center space-x-2 text-sm">

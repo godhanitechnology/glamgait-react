@@ -10,22 +10,36 @@ const NewArrivels = () => {
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
   const [wishlistMap, setWishlistMap] = useState({});
-  const [reviewsSummary, setReviewsSummary] = useState({}); // ← Add this state
+  const [reviewsSummary, setReviewsSummary] = useState({});
+
+  const fetchNewArrivals = async () => {
+    try {
+      const response = await axiosInstance.post(`${ApiURL}/getproducts`, {
+        limit: 8,
+      });
+
+      setNewArrivals(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const fetchBestSeller = async () => {
+    try {
+      const response = await axiosInstance.post(`${ApiURL}/getproducts`, {
+        limit: 8,
+        is_expert_choice: 1,
+      });
+
+      setBestSeller(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const [newArrivalsRes, bestSellerRes] = await Promise.all([
-          axiosInstance.post(`${ApiURL}/getproducts`, { limit: 8 }),
-          axiosInstance.post(`${ApiURL}/getproducts`, { limit: 8 }),
-        ]);
-        setNewArrivals(newArrivalsRes.data.data || []);
-        setBestSeller(bestSellerRes.data.data || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
+    fetchNewArrivals();
+    fetchBestSeller();
   }, []);
 
   const currentProducts =
@@ -93,38 +107,38 @@ const NewArrivels = () => {
     }
   };
 
- const fetchAllReviewsSummary = async () => {
-  if (currentProducts.length === 0) return;
+  const fetchAllReviewsSummary = async () => {
+    if (currentProducts.length === 0) return;
 
-  const productIds = currentProducts.map(p => p.p_id);
+    const productIds = currentProducts.map((p) => p.p_id);
 
-  try {
-    const res = await axiosInstance.post("/getreviewsformultiple", {
-      p_ids: productIds
-    });
-
-    if (res.data.status === 1) {
-      const data = res.data.data || {};
-      const summary = {};
-
-      Object.keys(data).forEach(p_id => {
-        const item = data[p_id];
-        summary[p_id] = {
-          rating: item.average_rating,
-          count: item.total_reviews
-        };
+    try {
+      const res = await axiosInstance.post("/getreviewsformultiple", {
+        p_ids: productIds,
       });
 
-      setReviewsSummary(summary);
-    }
-  } catch (err) {
-    console.error("Reviews fetch failed", err);
-  }
-};
+      if (res.data.status === 1) {
+        const data = res.data.data || {};
+        const summary = {};
 
-useEffect(() => {
-  fetchAllReviewsSummary();
-}, [currentProducts]);
+        Object.keys(data).forEach((p_id) => {
+          const item = data[p_id];
+          summary[p_id] = {
+            rating: item.average_rating,
+            count: item.total_reviews,
+          };
+        });
+
+        setReviewsSummary(summary);
+      }
+    } catch (err) {
+      console.error("Reviews fetch failed", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllReviewsSummary();
+  }, [currentProducts]);
 
   return (
     <section className="relative sm:pt-0 md:pt-16 md:px-4 bg-[#F3F0ED] overflow-hidden">

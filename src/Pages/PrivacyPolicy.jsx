@@ -234,8 +234,10 @@ const PrivacyPolicy = () => {
             <br />
             Phone: +91 84019 70022
             <br />
-            Address: 312, Capital Plaza, Near D-Mart, Yogi Chowk, Surat-395010
-            (GJ)
+            Address: 312, Capital Plaza,
+            <br /> Near D-Mart, Yogi Chowk,
+            <br /> Surat Gujarat 395010
+            <br /> India (GJ)
           </p>
         </section>
       </div>

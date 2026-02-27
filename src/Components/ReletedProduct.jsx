@@ -15,12 +15,12 @@ const ReletedProduct = ({ cate_name, currentProductId, cate_id }) => {
     try {
       const response = await axiosInstance.post(
         `/productbycategory/${cate_name}`,
-        { limit: 5, cate_id }
+        { limit: 5, cate_id },
       );
 
       const filteredProducts =
         response?.data?.data?.products?.filter(
-          (item) => item.p_id !== currentProductId
+          (item) => item.p_id !== currentProductId,
         ) || [];
 
       setRelatedProducts(filteredProducts);
@@ -58,7 +58,7 @@ const ReletedProduct = ({ cate_name, currentProductId, cate_id }) => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    if (cate_name) fetchProducts();
   }, [cate_name]);
 
   useEffect(() => {

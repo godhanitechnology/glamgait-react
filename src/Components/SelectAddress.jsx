@@ -512,6 +512,13 @@ import { ApiURL, razorpayKEY, userInfo } from "../Variable";
 import axiosInstance from "../Axios/axios";
 import axios from "axios";
 import { getGuestId } from "../utils/guest";
+import visaImg from "../assets/payment/visa.svg";
+import mastercardImg from "../assets/payment/mastercard.svg";
+import rupayImg from "../assets/payment/rupay.svg";
+import upiImg from "../assets/payment/upi.svg";
+import gpayImg from "../assets/payment/gpay.svg";
+import aeImg from "../assets/payment/ae.svg";
+import maestroImg from "../assets/payment/maestro.svg";
 
 const SelectAddress = () => {
   const navigate = useNavigate();
@@ -1142,6 +1149,36 @@ const SelectAddress = () => {
                 Choose Online Payment and get <strong>10% OFF</strong>{" "}
                 instantly!
               </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 pt-3">
+              {[
+                { src: visaImg, alt: "Visa" },
+                {
+                  src: mastercardImg,
+                  alt: "Mastercard",
+                },
+                {
+                  src: aeImg,
+                  alt: "American Express",
+                },
+                { src: maestroImg, alt: "Maestro" },
+                { src: gpayImg, alt: "Google Pay" },
+                { src: upiImg, alt: "UPI" },
+                { src: rupayImg, alt: "RuPay" },
+              ].map((pm) => (
+                <div
+                  key={pm.alt}
+                  className="w-10 h-8 flex items-center justify-center bg-white border border-gray-200 rounded-md shadow-sm"
+                >
+                  <img
+                    src={pm.src}
+                    alt={pm.alt}
+                    title={pm.alt}
+                    className="h-7 w-auto max-w-[48px] object-contain"
+                  />
+                </div>
+              ))}
             </div>
 
             <button

@@ -1,12 +1,11 @@
 import world from "../assets/world.png";
-import leftlight from "../assets/leftlight.png";
 import mailfooter from "../assets/mailfooter.svg";
 
 const About = () => {
   return (
     <div className="relative bg-[#f3f0ed] min-h-screen flex justify-center sm:py-16 py-4 px-6 md:px-12 lg:px-24 overflow-hidden">
       {/* Decorative Images */}
-      <img
+      {/* <img
         src={leftlight}
         alt="decorator"
         className="hidden sm:block absolute top-0 right-24 w-16 md:w-20 opacity-100 pointer-events-none"
@@ -25,7 +24,7 @@ const About = () => {
         src={leftlight}
         alt="decorator"
         className="hidden sm:block absolute top-0 left-48 w-16 md:w-16 opacity-100 pointer-events-none"
-      />
+      /> */}
 
       {/* Main Content */}
       <div className="relative z-10 max-w-4xl w-full">

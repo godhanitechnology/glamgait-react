@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -10,9 +10,6 @@ import { ApiURL } from "../Variable";
 
 const Hero = () => {
   const [sliders, setSliders] = useState([]);
-  const [swiperInstance, setSwiperInstance] = useState(null);
-  const textScrollRef = useRef(null);
-  const animationRef = useRef(null);
 
   const getSlider = async () => {
     try {
@@ -32,7 +29,6 @@ const Hero = () => {
   }, []);
 
   return (
-    // <div className="relative overflow-hidden bg-[#f6f3f0] z-0">
     <div className="relative w-full overflow-hidden bg-[#f6f3f0]">
       {/* Main hero content */}
       <div className="relative">
@@ -50,17 +46,22 @@ const Hero = () => {
             speed={1000}
             navigation={false}
             pagination={{ clickable: false }}
-            onSwiper={setSwiperInstance}
+            onSwiper={undefined}
             className="w-full"
           >
-            {sliders?.map((img) => (
+            {sliders?.map((img, index) => (
               <SwiperSlide key={img.image_id}>
-                <div className="w-full h-full flex items-center justify-center ">
-                  {/* Main img image */}
+                {/* aspect-ratio wrapper prevents CLS (layout shift) while image loads */}
+                <div className="w-full" style={{ aspectRatio: "16/7" }}>
                   <img
                     src={`${ApiURL}/assets/Sliders/${img?.image}`}
                     alt="Glamgait imgs"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
+                    width="1440"
+                    height="630"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "low"}
+                    decoding={index === 0 ? "sync" : "async"}
                   />
                 </div>
               </SwiperSlide>

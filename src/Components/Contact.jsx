@@ -34,7 +34,11 @@ const Contact = () => {
 
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/addcontact", { name, email, message });
+      const response = await axiosInstance.post("/addcontact", {
+        name,
+        email,
+        message,
+      });
 
       if (response.data?.status === 1) {
         toast.success("Message sent successfully!");
@@ -75,15 +79,14 @@ const Contact = () => {
             Get in Touch
           </h2>
           <p className="text-gray-600 text-sm sm:text-base lg:text-lg mt-2">
-            If you have any query or suggestion, you can contact us here. We would love to hear from you!
+            If you have any query or suggestion, you can contact us here. We
+            would love to hear from you!
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left - Form */}
           <div className="flex items-center justify-center">
-
-            
             <div className="bg-white w-full">
               <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
                 Leave us a message
@@ -127,47 +130,70 @@ const Contact = () => {
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="h-5 w-5"><img src={location} alt="Location" /></div>
+                <div className="h-5 w-5">
+                  <img src={location} alt="Location" />
+                </div>
                 <p className="text-gray-700">
-                  address-312,capital plaza,
-                  <br /> near d mart,yogi chowk,surat-395010
+                  Address : 312, Capital Plaza,
+                  <br /> Near D-Mart, Yogi Chowk,
+                  <br /> Surat Gujarat 395010
+                  <br /> India
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="h-5 w-5"><img src={phone} alt="Phone" /></div>
-                <a href="tel:+23408112364568" className="text-gray-700">+91 84019 70022</a>
+                <div className="h-5 w-5">
+                  <img src={phone} alt="Phone" />
+                </div>
+                <a href="tel:+23408112364568" className="text-gray-700">
+                  +91 84019 70022
+                </a>
               </div>
               <div className="flex items-center gap-3">
-                <div className="h-5 w-5"><img src={mail} alt="Email" /></div>
-                <a href="mailto:support@glamgait.com" className="text-gray-700">support@glamgait.com</a>
+                <div className="h-5 w-5">
+                  <img src={mail} alt="Email" />
+                </div>
+                <a href="mailto:support@glamgait.com" className="text-gray-700">
+                  support@glamgait.com
+                </a>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex space-x-3">
-                  <a href="https://www.instagram.com/glamgait_india/" target="_blank" rel="noopener noreferrer">
-                    <img src={ig} alt="Instagram" className="h-8 w-8"/>
+                  <a
+                    href="https://www.instagram.com/glamgait_india/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={ig} alt="Instagram" className="h-8 w-8" />
                   </a>
-                  <a href="https://www.facebook.com/glamgait.in/" target="_blank" rel="noopener noreferrer">
-                    <img src={fb} alt="Facebook" className="h-8 w-8"/>
+                  <a
+                    href="https://www.facebook.com/glamgait.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={fb} alt="Facebook" className="h-8 w-8" />
                   </a>
-                  <a href="https://www.youtube.com/@GlamgaitIndia" target="_blank" rel="noopener noreferrer">
-                    <img src={yt} alt="Youtube" className="h-7.5 w-7.5"/>
+                  <a
+                    href="https://www.youtube.com/@GlamgaitIndia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={yt} alt="Youtube" className="h-7.5 w-7.5" />
                   </a>
                 </div>
               </div>
             </div>
             <div className="w-full h-50">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d8846.404820175454!2d72.8843111781607!3d21.213796584853206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDEyJzMzLjciTiA3MsKwNTMnMTIuNyJF!5e0!3m2!1sen!2sin!4v1763113460967!5m2!1sen!2sin"
-    width="100%"
-    height="100%"
-    style={{ border: 0 }}
-    allowFullScreen=""
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-    className="rounded-lg"
-  ></iframe>
-</div>
-
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d8846.404820175454!2d72.8843111781607!3d21.213796584853206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDEyJzMzLjciTiA3MsKwNTMnMTIuNyJF!5e0!3m2!1sen!2sin!4v1763113460967!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="rounded-lg"
+              ></iframe>
+            </div>
           </div>
         </div>
       </div>

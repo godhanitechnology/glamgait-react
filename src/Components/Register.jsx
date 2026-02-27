@@ -1,11 +1,5 @@
-// src/pages/Register.jsx
-import React, { useState } from "react";
-import loginmain from "../assets/loginmain.jpg"; // adjust if path differs
-import fb1 from "../assets/fb1.svg";
-import apple from "../assets/apple.svg";
-import google from "../assets/google.svg";
-import rightlight from "../assets/rightlight.png";
-import leftlight from "../assets/leftlight.png";
+import { useState } from "react";
+import loginmain from "../assets/loginmain.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../Axios/axios";
 import toast from "react-hot-toast";
@@ -53,17 +47,17 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center overflow-hidden bg-white">
-      <img
+      {/* <img
         src={rightlight}
         alt="Decorative Lamp"
         className="
     absolute hidden md:block top-0 md:left-15 lg:left-120 xl:left-190 2xl:left-260 w-40 lg:w-38 2xl:w-50"
-      />
-      <img
+      /> */}
+      {/* <img
         src={leftlight}
         alt="Top Right Decoration"
         className="absolute hidden md:block top-18 right-0 lg:w-20 xl:w-25 z-30 "
-      />
+      /> */}
 
       {/* Left - Image */}
       <div className="hidden lg:flex w-1/2">

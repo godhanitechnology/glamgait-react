@@ -9,12 +9,20 @@ import yt from "../assets/yt.svg";
 import mailfooter from "../assets/mailfooter.svg";
 import callf from "../assets/callf.svg";
 import locationf from "../assets/locationf.svg";
+// Payment icons
+import gpayImg from "../assets/payment/gpay.svg";
+import phonepeImg from "../assets/payment/phonepe.svg";
+import upiImg from "../assets/payment/upi.svg";
+import visaImg from "../assets/payment/visa.svg";
+import mastercardImg from "../assets/payment/mastercard.svg";
+import rupayImg from "../assets/payment/rupay.svg";
+import netbankingImg from "../assets/payment/netbanking.svg";
 
 const Footer = () => {
   return (
-    <footer className="relative w-full font-inter text-[#1c1c1c] lg:min-h-[900px] overflow-hidden">
+    <footer className="relative w-full font-inter text-[#1c1c1c] lg:min-h-[400px] overflow-hidden bg-[#f2e7d5] p-4">
       {/* Decorative Lamps */}
-      <img
+      {/* <img
         src={leftlonglight}
         alt="Decor"
         className="absolute -right-1 lg:-left-10 lg:top-10 lg:w-20 xl:-left-10 xl:top-0 xl:w-25 2xl:left-0 z-11 pointer-events-none"
@@ -33,7 +41,7 @@ const Footer = () => {
         src={leftlonglight}
         alt="Decor"
         className="hidden lg:block absolute lg:-right-5 lg:w-18 xl:right-5 xl:w-20 2xl:right-0 z-10 pointer-events-none"
-      />
+      /> */}
 
       {/* Footer Content */}
       <div className="relative py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 z-10">
@@ -59,21 +67,21 @@ const Footer = () => {
           </div>
           <div className="flex space-x-2">
             <a
-              href="https://www.facebook.com/glamgait.in/"
+              href="https://www.facebook.com/Glamgait.Fashion"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src={fb} alt="Facebook" className="h-7.5 w-7.5" />
             </a>
             <a
-              href="https://www.instagram.com/glamgait_india/"
+              href="https://www.instagram.com/glamgait/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src={ig} alt="Instagram" className="h-7.5 w-7.5" />
             </a>
             <a
-              href="https://www.youtube.com/@GlamgaitIndia"
+              href="https://www.youtube.com/@Glamgait-store"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -170,9 +178,10 @@ const Footer = () => {
               <div className="h-5 w-5">
                 <img src={locationf} alt="" />
               </div>
-              312, Capital Plaza, Near
-              <br />
-              D-mart, Yogi Chowk, Surat-395010
+              312, Capital Plaza,
+              <br /> Near D-Mart, Yogi Chowk,
+              <br /> Surat Gujarat 395010
+              <br /> India
             </li>
             <li className="flex gap-2 items-center">
               <div className="h-5 w-5">
@@ -194,21 +203,74 @@ const Footer = () => {
         </div>
       </div>
 
+      {/* Secure Payment Trust Seal */}
+      <div className="relative z-20 py-5 px-4 bg-[#F1E8D7] lg:bg-transparent">
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
+          {/* Label */}
+          <div className="flex items-center gap-2">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2L3 6V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V6L12 2Z"
+                fill="#7a5c3b"
+              />
+              <path
+                d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                fill="white"
+              />
+            </svg>
+            <span className="text-[10px] sm:text-xs font-bold text-[#7a5c3b] tracking-[0.15em] uppercase">
+              100% Secure Payments
+            </span>
+          </div>
+
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+            {[
+              { src: gpayImg, alt: "Google Pay" },
+              { src: phonepeImg, alt: "PhonePe" },
+              { src: upiImg, alt: "UPI" },
+              { src: visaImg, alt: "Visa" },
+              { src: mastercardImg, alt: "Mastercard" },
+              { src: rupayImg, alt: "RuPay" },
+              { src: netbankingImg, alt: "Net Banking" },
+            ].map((pm) => (
+              <div
+                key={pm.alt}
+                className="w-16 h-10 flex items-center justify-center bg-white border border-[#e0d0bc] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
+                <img
+                  src={pm.src}
+                  alt={pm.alt}
+                  title={pm.alt}
+                  className="max-h-5 sm:max-h-6 max-w-[52px] w-auto object-contain"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Footer Bottom */}
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        © 2024 TRISHULOM CLOTHS ONLINE. All rights reserved.
+        © 2024 Glamgait is a brand owned and operated by Trishulom Cloths
+        Online, Surat, India.
       </div>
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
         Design by Godhani Technology.
       </div>
 
-      <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">
+      {/* <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">
         <img
           src={footerbg}
           alt="Footer Background"
           className="w-full h-full lg:object-cover object-contain"
         />
-      </div>
+      </div> */}
     </footer>
   );
 };
