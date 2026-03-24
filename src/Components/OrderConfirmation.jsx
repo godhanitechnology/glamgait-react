@@ -54,7 +54,7 @@ const OrderConfirmation = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f0ed] px-4">
       <div className="w-full max-w-md text-center">
-        <img src={img} alt="order confirmation" />
+        <img loading="lazy" src={img} alt="order confirmation" />
         <h1 className="text-4xl font-semibold my-5">Thank You!</h1>
         <p className="text-gray-600 mb-6">
           Your order {orderId ? `#${orderId}` : ""} is Confirmed !

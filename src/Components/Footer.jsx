@@ -21,36 +21,14 @@ import netbankingImg from "../assets/payment/netbanking.svg";
 const Footer = () => {
   return (
     <footer className="relative w-full font-inter text-[#1c1c1c] lg:min-h-[400px] overflow-hidden bg-[#f2e7d5] p-4">
-      {/* Decorative Lamps */}
-      {/* <img
-        src={leftlonglight}
-        alt="Decor"
-        className="absolute -right-1 lg:-left-10 lg:top-10 lg:w-20 xl:-left-10 xl:top-0 xl:w-25 2xl:left-0 z-11 pointer-events-none"
-      />
-      <img
-        src={leftlonglight}
-        alt="Decor"
-        className="hidden lg:block absolute lg:left-105 lg:w-10 xl:left-120 xl:w-9 2xl:left-150 2k:left-210 4k:left-270 z-10 pointer-events-none"
-      />
-      <img
-        src={leftlonglight}
-        alt="Decor"
-        className="hidden lg:block absolute lg:left-115 lg:w-8 xl:left-130 xl:w-7 2xl:left-160 2k:left-220 4k:left-280 z-10 pointer-events-none"
-      />
-      <img
-        src={leftlonglight}
-        alt="Decor"
-        className="hidden lg:block absolute lg:-right-5 lg:w-18 xl:right-5 xl:w-20 2xl:right-0 z-10 pointer-events-none"
-      /> */}
-
       {/* Footer Content */}
-      <div className="relative py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 z-10">
+      <div className="relative z-10 grid grid-cols-1 gap-6 px-4 py-6 mx-auto sm:py-8 lg:py-10 sm:px-6 lg:px-8 max-w-7xl sm:grid-cols-2 lg:grid-cols-4 sm:gap-8 lg:gap-10">
         {/* Background Behind Content */}
         <div className="absolute inset-0 -z-10 lg:hidden">
           <img
             src={footer1}
             alt="Footer Background"
-            className="w-full h-full object-cover"
+            className="object-cover w-full h-full"
           />
         </div>
 
@@ -95,7 +73,7 @@ const Footer = () => {
 
         {/* Home Section */}
         <div>
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+          <h3 className="mb-4 text-lg font-semibold sm:text-xl lg:text-2xl">
             Quick Links
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
@@ -119,35 +97,26 @@ const Footer = () => {
                 Contact
               </Link>
             </li>
-            {/* <li>
-              <Link to="/privacy" className="hover:underline">
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link to="/shipping" className="hover:underline">
-                Shipping & Returns
-              </Link>
-            </li> */}
           </ul>
         </div>
 
         {/* Categories Section */}
         <div>
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+          <h3 className="mb-4 text-lg font-semibold sm:text-xl lg:text-2xl">
             Our Policy
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
-            <li>
-              <Link to="/terms" className="hover:underline">
-                Terms & Conditions
-              </Link>
-            </li>
             <li>
               <Link to="/privacy" className="hover:underline">
                 Privacy Policy
               </Link>
             </li>
+            <li>
+              <Link to="/terms" className="hover:underline">
+                Terms & Conditions
+              </Link>
+            </li>
+
             <li>
               <Link to="/shipping" className="hover:underline">
                 Shipping Policy
@@ -158,14 +127,16 @@ const Footer = () => {
                 Return & Refund Policy
               </Link>
             </li>
-            <li>
-              <Link to="/payment" className="hover:underline">
-                Payment Policy{" "}
-              </Link>
-            </li>
+
             <li>
               <Link to="/cancellationpolicy" className="hover:underline">
                 Cancellation Policy
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/payment" className="hover:underline">
+                Payment Policy{" "}
               </Link>
             </li>
           </ul>
@@ -173,12 +144,12 @@ const Footer = () => {
 
         {/* Contact Section */}
         <div>
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+          <h3 className="mb-4 text-lg font-semibold sm:text-xl lg:text-2xl">
             Contact Us
           </h3>
           <ul className="space-y-2 text-xs sm:text-sm lg:text-base">
             <li className="flex gap-2 ">
-              <div className="h-5 w-5">
+              <div className="w-5 h-5">
                 <img src={locationf} alt="location" />
               </div>
               312, Capital Plaza,
@@ -186,16 +157,16 @@ const Footer = () => {
               <br /> Surat Gujarat 395010
               <br /> India
             </li>
-            <li className="flex gap-2 items-center">
-              <div className="h-5 w-5">
+            <li className="flex items-center gap-2">
+              <div className="w-5 h-5">
                 <img src={callf} alt="call" />
               </div>
               <a href="tel:+918401970022" className="hover:underline">
                 +91 84019 70022
               </a>
             </li>
-            <li className="flex gap-2 items-center">
-              <div className="h-5 w-5">
+            <li className="flex items-center gap-2">
+              <div className="w-5 h-5">
                 <img src={mailfooter} alt="mail" />
               </div>
               <a href="mailto:support@glamgait.com" className="hover:underline">
@@ -207,32 +178,37 @@ const Footer = () => {
       </div>
 
       {/* Secure Payment Trust Seal */}
-      <div className="relative z-20 py-5 px-4 bg-[#F1E8D7] lg:bg-transparent">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-3">
-          {/* Label */}
-          <div className="flex items-center gap-2">
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 2L3 6V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V6L12 2Z"
-                fill="#7a5c3b"
-              />
-              <path
-                d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
-                fill="white"
-              />
-            </svg>
-            <span className="text-[10px] sm:text-xs font-bold text-[#7a5c3b] tracking-[0.15em] uppercase">
-              100% Secure Payments
-            </span>
+      <div className="relative z-20 py-6 px-4 bg-[#F1E8D7] lg:bg-transparent">
+        <div className="flex flex-col items-center gap-4 mx-auto max-w-7xl">
+          {/* Trust Label */}
+          <div className="flex flex-col items-center gap-2 text-center">
+            <div className="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2L3 6V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V6L12 2Z"
+                  fill="#7a5c3b"
+                />
+                <path
+                  d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"
+                  fill="white"
+                />
+              </svg>
+
+              <span className="text-xs font-bold text-[#7a5c3b] tracking-wider uppercase">
+                Secure Payments
+              </span>
+            </div>
+
+            {/* NEW TRUST TEXT */}
+            <p className="text-[11px] text-gray-600 max-w-md">
+              All transactions are protected with SSL encryption. We support
+              secure payment methods including UPI, Cards, Net Banking, and Cash
+              on Delivery (COD).
+            </p>
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+          {/* Payment Icons */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {[
               { src: gpayImg, alt: "Google Pay" },
               { src: phonepeImg, alt: "PhonePe" },
@@ -244,36 +220,32 @@ const Footer = () => {
             ].map((pm) => (
               <div
                 key={pm.alt}
-                className="w-16 h-10 flex items-center justify-center bg-white border border-[#e0d0bc] rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="w-16 h-10 flex items-center justify-center bg-white border border-[#e0d0bc] rounded-lg shadow-sm hover:shadow-md transition duration-200"
               >
                 <img
                   src={pm.src}
                   alt={pm.alt}
                   title={pm.alt}
-                  className="max-h-5 sm:max-h-6 max-w-[52px] w-auto object-contain"
+                  className="max-h-6 max-w-[52px] object-contain"
                 />
               </div>
             ))}
+          </div>
+
+          {/* EXTRA TRUST BADGES */}
+          <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-gray-600 mt-2">
+            <span>✔ 100% Secure Checkout</span>
+            <span>✔ Trusted Payments</span>
+            <span>✔ Safe & Reliable</span>
           </div>
         </div>
       </div>
 
       {/* Footer Bottom */}
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        © 2024 Glamgait is a brand owned and operated by Trishulom Cloths
+        © 2026 Glamgait is a brand owned and operated by Trishulom Cloths
         Online, Surat, India.
       </div>
-      <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        Designed by Godhani Technology.
-      </div>
-
-      {/* <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">
-        <img
-          src={footerbg}
-          alt="Footer Background"
-          className="w-full h-full lg:object-cover object-contain"
-        />
-      </div> */}
     </footer>
   );
 };

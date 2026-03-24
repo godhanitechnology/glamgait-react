@@ -4,10 +4,10 @@ import mailfooter from "../assets/mailfooter.svg";
 
 const PaymentPolicy = () => {
   return (
-    <div className="container mx-auto p-6 max-w-4xl text-justify">
-      <div className="text-center mb-8 space-y-2">
+    <div className="container max-w-4xl p-6 mx-auto text-justify">
+      <div className="mb-8 space-y-2 text-center">
         <h1 className="text-4xl font-bold text-black">Payment Policy</h1>
-        <p className="text-sm text-gray-600 mt-2">
+        <p className="mt-2 text-sm text-gray-600">
           Effective Date: 25 February 2026
         </p>
         <p className="text-sm text-gray-600">
@@ -27,10 +27,10 @@ const PaymentPolicy = () => {
             and other methods for secure checkout on glamgait.com.
           </p>
 
-          <h2 className="text-3xl font-semibold text-black">
+          <h2 className="text-2xl font-semibold text-black">
             Accepted Payment Methods
           </h2>
-          <ul className="list-disc list-inside space-y-1">
+          <ul className="space-y-1 list-disc list-inside">
             <li>American Express</li>
             <li>VISA</li>
             <li>Mastercard</li>
@@ -46,15 +46,52 @@ const PaymentPolicy = () => {
           </p>
         </section>
 
+        {/* Add This Section  */}
         <section className="space-y-3">
-          <h2 className="text-3xl font-semibold text-black">Contact Info</h2>
+          <div>
+            <h3 className="text-2xl font-semibold text-black">
+              Secure Payments
+            </h3>
+            <p className="mt-2">
+              All payments made on our website are processed through secure and
+              encrypted payment gateways. We use SSL (Secure Socket Layer)
+              technology to ensure that your personal and payment information is
+              protected at all times.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-semibold text-black">
+              Pricing & Charges
+            </h3>
+            <p className="mt-2">
+              All prices displayed on the website are in INR (₹). Any applicable
+              taxes, shipping charges, or additional fees will be clearly shown
+              at checkout before payment is completed.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-semibold text-black">
+              Payment Confirmation
+            </h3>
+            <p className="mt-2">
+              Once your payment is successfully processed, you will receive an
+              order confirmation via email.
+            </p>
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-2xl font-semibold text-black">Contact Info</h2>
           <p>For any payment-related queries, please reach out to us:</p>
-          <p>
-            Glamgait
-            <br />
-            <div className="flex gap-2 items-center pt-5">
+
+          {/* Change This  */}
+          <div className="space-y-3">
+            <p>Glamgait</p>
+
+            <div className="flex items-center gap-2">
               <img src={mailfooter} alt="mail" />
-              Email:{" "}
               <a
                 href="mailto:support@glamgait.com"
                 className="text-blue-600 underline"
@@ -62,15 +99,14 @@ const PaymentPolicy = () => {
                 support@glamgait.com
               </a>
             </div>
-            <br />
-            <div className="flex gap-2 items-center">
+
+            <div className="flex items-center gap-2">
               <img src={callf} alt="call" />
-              Phone: +91 84019 70022
+              <span>+91 84019 70022</span>
             </div>
-            <br />
-            <div className="flex gap-2 items-center">
-              <img src={world} alt="world" className="h-5 w-5" />
-              Website:{" "}
+
+            <div className="flex items-center gap-2">
+              <img src={world} alt="world" className="w-5 h-5" />
               <a
                 href="https://www.glamgait.com"
                 className="text-blue-600 underline"
@@ -78,10 +114,12 @@ const PaymentPolicy = () => {
                 www.glamgait.com
               </a>
             </div>
-            <br />
-            Address: 312, Capital Plaza, Near D-Mart, Yogi Chowk, Surat, Gujarat
-            395010, India
-          </p>
+
+            <p>
+              Address: 312, Capital Plaza, Near D-Mart, Yogi Chowk, Surat,
+              Gujarat 395010, India
+            </p>
+          </div>
         </section>
       </div>
     </div>

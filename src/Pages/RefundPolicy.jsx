@@ -1,9 +1,9 @@
 const RefundPolicy = () => {
   return (
-    <div className="bg-white min-h-screen text-justify">
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="text-center mb-8">
-          <h2 className="text-5xl font-semibold text-black mt-2">
+    <div className="min-h-screen text-justify bg-white">
+      <div className="container max-w-4xl p-6 mx-auto">
+        <div className="mb-8 text-center">
+          <h2 className="mt-2 text-5xl font-semibold text-black">
             RETURN AND REFUND POLICY
           </h2>
         </div>
@@ -17,20 +17,19 @@ const RefundPolicy = () => {
               policies are applicable to orders in India.
             </p>
 
-            <h2 className="text-3xl font-semibold text-black mt-6 mb-3">
+            <h2 className="mt-6 mb-3 text-3xl font-semibold text-black">
               A. 7 DAY RETURN POLICY
             </h2>
+
             <p className="mb-3">
-              We have a 7-day return policy, which means you have 7 days after
-              receiving your order to request a return. To be eligible for a
-              return, your item must be in the same condition that you received
-              it — unworn, unused, with tags attached, and in its original
-              packaging. You will also need the receipt or proof of purchase.
+              You have 7 days from the date of delivery to request a return. To
+              be eligible, the product must be unused, unworn, with tags, and in
+              original packaging with proof of purchase.
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-semibold text-black mt-8 mb-3">
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
               B. RETURN PROCESS
             </h2>
             <p className="mb-3">
@@ -52,28 +51,24 @@ const RefundPolicy = () => {
           </section>
 
           <section>
-            <h2 className="text-3xl font-semibold text-black mt-8 mb-3">
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
               C. DAMAGED AND WRONG PRODUCTS OR ISSUES
             </h2>
             <p className="mb-3">
-              Please inspect your order upon receipt and contact us immediately
-              if the item is defective, damaged, or if you received the wrong
-              item. So that we can evaluate the issue and make it right.
-            </p>
-            <p className="mb-3">
-              Depending on where you live, the time it may take for your
-              exchanged product to reach you may vary.
+              Please inspect your order upon delivery. If you receive a damaged,
+              defective, or incorrect item, contact us within 48 hours with
+              images for verification.{" "}
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-semibold text-black mt-8 mb-3">
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
               D. EXCHANGES
             </h2>
             <p className="mb-3">
-              We only exchange products that are damaged, wrong product, wrong
-              size, or defective. If you need to exchange a product, please
-              contact us at{" "}
+              We allow exchanges for defective, damaged, incorrect, or
+              size-related issues (subject to availability). If you need to
+              exchange a product, please contact us at{" "}
               <a
                 href="mailto:support@glamgait.com"
                 className="text-blue-600 underline"
@@ -85,7 +80,7 @@ const RefundPolicy = () => {
           </section>
 
           <section>
-            <h2 className="text-3xl font-semibold text-black mt-8 mb-3">
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
               E. RESTOCKING FEE
             </h2>
             <p className="mb-3">
@@ -93,22 +88,43 @@ const RefundPolicy = () => {
             </p>
           </section>
 
+          {/* Refund Section Change  */}
+
           <section>
-            <h2 className="text-3xl font-semibold text-black mt-8 mb-3">
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
               F. REFUNDS
             </h2>
             <p className="mb-3">
-              We will notify you once we’ve received and inspected your return,
-              and let you know if the refund was approved or not. If approved,
-              you’ll be automatically refunded on your original payment method.
-              Please remember it can take some time for your bank or credit card
-              company to process and post the refund too.
+              Once we receive and inspect your returned item, we will notify you
+              regarding the approval or rejection of your refund. <br />
+              If approved, the refund will be processed to your original payment
+              method within 5–10 business days. <br />
+              Please note that it may take additional time for your bank or
+              payment provider to reflect the refund in your account.
+            </p>
+          </section>
+          <section>
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
+              G. RETURN SHIPPING
+            </h2>
+            <p className="mb-3">
+              Return shipping costs are borne by the customer unless the product
+              is defective or incorrect.
+            </p>
+          </section>
+          <section>
+            <h2 className="mt-8 mb-3 text-3xl font-semibold text-black">
+              H. RETURN METHOD
+            </h2>
+            <p className="mb-3">
+              All returns must be sent via courier to the provided return
+              address after approval.{" "}
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-bold text-black mt-10 mb-4 uppercase">
-              Need Assistance?
+            <h2 className="mt-10 mb-4 text-3xl font-bold text-black uppercase">
+              I. Need Assistance?
             </h2>
             <p className="mb-4">
               If you have any questions about our return or refund policies,
@@ -118,6 +134,30 @@ const RefundPolicy = () => {
               </p>
               .
             </p>
+          </section>
+
+          <section>
+            <h2 className="mt-10 mb-4 text-3xl font-bold text-black uppercase">
+              Need Assistance?
+            </h2>
+
+            <p className="mb-4">
+              If you have any questions about our return or refund policies,
+              feel free to contact us:
+            </p>
+
+            <div className="space-y-2">
+              <p>
+                <strong>Email:</strong> support@glamgait.com
+              </p>
+              <p>
+                <strong>Phone:</strong> +91 84019 70022
+              </p>
+              <p>
+                <strong>Address:</strong> 312, Capital Plaza, Near D-Mart, Yogi
+                Chowk, Surat, Gujarat 395010, India
+              </p>
+            </div>
           </section>
         </div>
       </div>

@@ -145,30 +145,6 @@ const Login = () => {
               Register
             </button>
           </div>
-
-          {/* OR Divider */}
-          {/* <div className="flex items-center justify-center mt-3">
-            <span className="text-gray-400 text-sm">Or</span>
-          </div> */}
-
-          {/* Social Login */}
-          {/* <div className="flex justify-center gap-6 mt-2">
-            <img
-              src={apple}
-              alt="Apple"
-              className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-            />
-            <img
-              src={google}
-              alt="Google"
-              className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-            />
-            <img
-              src={fb1}
-              alt="Facebook"
-              className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-            />
-          </div> */}
         </form>
       </div>
     </div>
