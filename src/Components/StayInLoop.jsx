@@ -11,30 +11,6 @@ const StayInLoop = () => {
   return (
     <section className="relative bg-white py-6 overflow-hidden">
       {/* Left Pattern */}
-      {/* <div className="">
-        <img
-          src={pattern}
-          alt="Pattern"
-          className="hidden md:block absolute left-0 top-0 h-60 w-70 2xl:h-[400px] 2xl:w-[400px] z-0"
-        />
-      </div> */}
-      {/* Right Pattern */}
-      {/* <div>
-        <img
-          src={pattern}
-          alt="Pattern"
-          className="hidden md:block absolute -right-5 top-0 h-60 w-70 -scale-x-90 2xl:h-[400px] 2xl:w-[400px] z-0"
-        />
-      </div> */}
-
-      {/* Left Lantern Image */}
-      {/* <div className="absolute left-5 top-20 lg:top-1/2 transform -translate-y-1/2">
-        <img
-          src={leftlight}
-          alt="Decorative"
-          className="hidden md:block h-35 lg:h-50 object-contain"
-        />
-      </div> */}
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">

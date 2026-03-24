@@ -2,11 +2,11 @@ import React from "react";
 
 const TermsofService = () => {
   return (
-    <div className="bg-white min-h-screen">
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-white">
+      <div className="container max-w-4xl p-6 mx-auto">
+        <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-black">Terms & Conditions</h1>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="mt-2 text-sm text-gray-600">
             Effective Date: 25 February 2026
           </p>
           <p className="text-sm text-gray-600">
@@ -24,10 +24,9 @@ const TermsofService = () => {
         <div className="space-y-10 text-sm text-gray-700">
           <section>
             <p className="mb-4">
-              Welcome to Glamgait.com. These Terms & Conditions govern your use
-              of our website and services. By accessing or purchasing from
-              Glamgait, you agree to comply with and be bound by the following
-              terms.
+              Welcome to Glamgait.com. By accessing or purchasing from our
+              website, you agree to comply with and be bound by the following
+              Terms & Conditions.
             </p>
           </section>
 
@@ -35,11 +34,10 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               1. General Conditions
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>
                 By using this website, you confirm that you are at least 18
-                years old or accessing under the supervision of a
-                parent/guardian.
+                years old or using it under parental supervision.
               </li>
               <li>
                 We reserve the right to refuse service to anyone for any reason
@@ -56,18 +54,15 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               2. Products & Services
             </h2>
-            <ul className="list-disc list-inside space-y-1">
-              <li>
-                Glamgait sells fashion apparel, accessories, and related
-                products.
-              </li>
+            <ul className="space-y-1 list-disc list-inside">
+              <li>Glamgait offers fashion apparel and related products.</li>
               <li>
                 All product descriptions, images, and prices are subject to
                 change without notice.
               </li>
               <li>
-                We strive to display product colors accurately; however, actual
-                colors may vary due to screen settings.
+                We strive for accuracy, but actual product colors may vary due
+                to screen differences.
               </li>
               <li>Product availability is subject to stock.</li>
             </ul>
@@ -77,40 +72,56 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               3. Pricing & Payments
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>
-                All prices are listed in INR (₹) and inclusive/exclusive of GST
-                (as mentioned).
+                All prices are listed in INR (₹) and applicable taxes will be
+                clearly mentioned at checkout.
               </li>
               <li>
-                We accept payments via UPI, Debit/Credit Cards, Net Banking,
-                Wallets, and Cash on Delivery (if applicable).
+                We accept UPI, Credit/Debit Cards, Net Banking, Wallets, and
+                Cash on Delivery (if available).
               </li>
               <li>
-                Glamgait reserves the right to cancel any order due to pricing
-                errors or suspected fraudulent activity.
+                We reserve the right to cancel orders in case of pricing errors
+                or suspected fraudulent activity.
               </li>
             </ul>
           </section>
 
-          <section className="space-y-3">
+          <section className="space-y-4">
             <h2 className="text-3xl font-semibold text-black">
               4. Order Acceptance & Cancellation
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+
+            <ul className="space-y-2 list-disc list-inside">
               <li>
-                Orders are confirmed only after successful payment or COD
-                confirmation.
+                Orders are confirmed only after successful payment or Cash on
+                Delivery (COD) confirmation.
               </li>
+
               <li>
-                We reserve the right to cancel orders due to:
-                <ul className="list-circle list-inside ml-6 mt-1 space-y-1">
-                  <li>Incorrect pricing</li>
-                  <li>Stock unavailability</li>
-                  <li>Suspicious transactions</li>
+                We reserve the right to cancel or refuse any order under the
+                following circumstances:
+                <ul className="mt-2 ml-6 space-y-1 list-disc list-inside">
+                  <li>Incorrect pricing or product information</li>
+                  <li>Product out of stock or unavailable</li>
+                  <li>Suspected fraudulent or unauthorized transactions</li>
                 </ul>
               </li>
-              <li>Customers may cancel orders before dispatch.</li>
+
+              <li>
+                Customers may request order cancellation{" "}
+                <strong>before the order is dispatched</strong>.
+              </li>
+
+              <li>
+                Once the order has been shipped, cancellation is not possible.
+                In such cases, customers may refer to our{" "}
+                <a href="/return-refund" className="text-blue-600 underline">
+                  Return & Refund Policy
+                </a>
+                .
+              </li>
             </ul>
           </section>
 
@@ -118,17 +129,17 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               5. Shipping & Delivery
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>
-                Delivery timelines are estimates and may vary due to location or
-                courier delays.
+                Delivery timelines are estimates and may vary due to external
+                factors.
               </li>
               <li>
                 We are not responsible for delays caused by courier partners or
-                natural disruptions.
+                unforeseen circumstances.
               </li>
               <li>
-                Shipping charges (if any) will be clearly mentioned at checkout.
+                Shipping charges (if applicable) will be shown at checkout.
               </li>
             </ul>
           </section>
@@ -137,9 +148,10 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               6. Returns, Refunds & Exchanges
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>
-                Customers may request return/exchange within 7 days of delivery.
+                Returns and exchanges are governed by our Return & Refund
+                Policy.
               </li>
               <li>
                 Products must be unused, unwashed, and in original packaging.
@@ -148,10 +160,7 @@ const TermsofService = () => {
                 Refunds will be processed within 10 business days after product
                 inspection.
               </li>
-              <li>
-                Certain items (innerwear, customized products, sale items) may
-                not be eligible for return.
-              </li>
+              <li>Certain items may not be eligible for return.</li>
             </ul>
           </section>
 
@@ -159,12 +168,12 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               7. Intellectual Property
             </h2>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>
-                All content on Glamgait.com (logos, images, text, graphics) is
-                the property of Glamgait and protected by copyright laws.
+                All content on this website (logos, images, text, graphics) is
+                owned by Glamgait and protected by copyright laws.
               </li>
-              <li>Unauthorized reproduction or use is strictly prohibited.</li>
+              <li>Unauthorized use is strictly prohibited.</li>
             </ul>
           </section>
 
@@ -173,7 +182,7 @@ const TermsofService = () => {
               8. User Conduct
             </h2>
             <p>You agree not to:</p>
-            <ul className="list-disc list-inside space-y-1">
+            <ul className="space-y-1 list-disc list-inside">
               <li>Upload harmful or illegal content.</li>
               <li>Attempt unauthorized access to the website.</li>
               <li>Use the website for fraudulent purposes.</li>
@@ -184,12 +193,10 @@ const TermsofService = () => {
             <h2 className="text-3xl font-semibold text-black">
               9. Limitation of Liability
             </h2>
-            <p>Glamgait shall not be liable for:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Indirect or incidental damages.</li>
-              <li>Losses arising from misuse of products.</li>
-              <li>Technical errors or temporary website downtime.</li>
-            </ul>
+            <p>
+              Glamgait shall not be liable for indirect damages, losses due to
+              misuse of products, or technical issues.
+            </p>
           </section>
 
           <section className="space-y-3">
@@ -211,9 +218,8 @@ const TermsofService = () => {
               11. Governing Law
             </h2>
             <p>
-              These Terms shall be governed by and interpreted in accordance
-              with the laws of India. Any disputes shall be subject to the
-              exclusive jurisdiction of courts in Surat, Gujarat.
+              These Terms are governed by the laws of India. All disputes shall
+              be subject to jurisdiction of courts in Surat, Gujarat.
             </p>
           </section>
 
