@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   Plus,
   Edit,
-  Trash2,
   RefreshCw,
   ToggleRight,
   ToggleLeft,
@@ -41,7 +40,7 @@ const Product = () => {
         const totalStock =
           p.productvariants?.reduce(
             (sum, v) => sum + (v.remaining_qty || 0),
-            0
+            0,
           ) || 0;
         const hasStock = totalStock > 0;
         const lowStock = hasStock && totalStock <= 5;

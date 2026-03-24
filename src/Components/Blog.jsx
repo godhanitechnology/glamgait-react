@@ -1,5 +1,5 @@
-import React from 'react';
-import { BlogCard, blogsData } from './BlogCard';
+import { BlogCard } from "./BlogCard";
+import { blogsData } from "../Variable";
 
 const Blog = () => {
   return (
@@ -11,7 +11,7 @@ const Blog = () => {
             Insights, tutorials, and updates from our team
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogsData.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />

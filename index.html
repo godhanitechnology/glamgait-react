@@ -16,6 +16,9 @@
       content="sarees, kurtis, salwar kameez, kids wear, lehenga, ethnic wear, women's clothing, indian wear, designer sarees, party wear suits, bridal lehenga, glamgait"
     />
     <link href="/src/index.css" rel="stylesheet" />
+    <!-- Preconnect to API server so LCP image TCP is warm before JS runs -->
+    <link rel="preconnect" href="https://api.glamgait.com" />
+    <link rel="dns-prefetch" href="https://api.glamgait.com" />
     <!-- Single preconnect pair — no duplicates -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

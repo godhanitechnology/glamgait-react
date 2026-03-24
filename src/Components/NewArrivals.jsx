@@ -1,11 +1,11 @@
-// NewArrivels.jsx
-import React, { useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import axiosInstance from "../Axios/axios";
-import { ApiURL, userInfo } from "../Variable";
 import { getGuestId } from "../utils/guest";
+import { ApiURL, userInfo } from "../Variable";
 
-const NewArrivels = () => {
+const NewArrivals = () => {
   const [activeTab, setActiveTab] = useState("newArrivals");
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSeller, setBestSeller] = useState([]);
@@ -137,7 +137,7 @@ const NewArrivels = () => {
   };
 
   useEffect(() => {
-    fetchAllReviewsSummary();
+    if (currentProducts.length > 0) fetchAllReviewsSummary();
   }, [currentProducts]);
 
   return (
@@ -198,4 +198,4 @@ const NewArrivels = () => {
   );
 };
 
-export default NewArrivels;
+export default NewArrivals;

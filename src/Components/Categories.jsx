@@ -5,9 +5,9 @@ import axiosInstance from "../Axios/axios";
 import { ApiURL } from "../Variable";
 
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
-
   const scrollRef = useRef(null);
+
+  const [categories, setCategories] = useState([]);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -22,11 +22,8 @@ const Categories = () => {
   const getCategories = async () => {
     try {
       const response = await axiosInstance.get("/getcategory");
-      if (response?.data?.status === 1) {
-        setCategories(response.data.data);
-      } else {
-        setCategories([]);
-      }
+      if (response?.data?.status) setCategories(response.data.data);
+      else setCategories([]);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }

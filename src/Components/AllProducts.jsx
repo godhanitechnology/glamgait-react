@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { SlidersHorizontal } from "lucide-react";
 import ProductCard from "./ProductCard";
-import HomePageBanner from "../Components/HomePageBanner";
-import singlebanner from "../assets/singlebanner.jpg";
-import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../Axios/axios";
-import CategoryReviewSlider from "./CategoryReviewSlider";
 import ScrollToTop from "./ScrollToTop";
-import { userInfo } from "../Variable";
+import axiosInstance from "../Axios/axios";
 import { getGuestId } from "../utils/guest";
+import { SlidersHorizontal } from "lucide-react";
 import { Helmet } from "@dr.pogodin/react-helmet";
+import { createSlug, userInfo } from "../Variable";
+import singlebanner from "../assets/singlebanner.jpg";
+import HomePageBanner from "../Components/HomePageBanner";
+import { useNavigate, useParams } from "react-router-dom";
+import CategoryReviewSlider from "./CategoryReviewSlider";
+
 const Allproducts = () => {
   ScrollToTop();
   const [filters, setFilters] = useState({
@@ -20,29 +21,29 @@ const Allproducts = () => {
     styles: [],
     sizes: [],
   });
-  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
-  const [selectedFabrics, setSelectedFabrics] = useState([]);
-  const [selectedWorks, setSelectedWorks] = useState([]);
-  const [selectedOccasions, setSelectedOccasions] = useState([]);
-  const [selectedStyles, setSelectedStyles] = useState([]);
-  const [allColors, setAllColors] = useState([]); // ← global colors
-  const [selectedColors, setSelectedColors] = useState([]);
-  const { cate_name, filterValue } = useParams();
-  const [wishlistMap, setWishlistMap] = useState({});
-  const [reviewsSummary, setReviewsSummary] = useState({});
-  const [products, setProducts] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 100000]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [sortBy, setSortBy] = useState("a-z");
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [categoryReviews, setCategoryReviews] = useState([]);
-  const [cateId, setCateId] = useState(null);
-  const [categoryDisplayName, setCategoryDisplayName] = useState("");
-  const [activeFilterName, setActiveFilterName] = useState("");
   const [limit] = useState(18);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
+  const [cateId, setCateId] = useState(null);
+  const [sortBy, setSortBy] = useState("a-z");
+  const [products, setProducts] = useState([]);
+  const { cate_name, filterValue } = useParams();
+  const [allColors, setAllColors] = useState([]); 
   const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [wishlistMap, setWishlistMap] = useState({});
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [selectedWorks, setSelectedWorks] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedStyles, setSelectedStyles] = useState([]);
+  const [reviewsSummary, setReviewsSummary] = useState({});
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [selectedFabrics, setSelectedFabrics] = useState([]);
+  const [categoryReviews, setCategoryReviews] = useState([]);
+  const [activeFilterName, setActiveFilterName] = useState("");
+  const [selectedOccasions, setSelectedOccasions] = useState([]);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [categoryDisplayName, setCategoryDisplayName] = useState("");
+  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [seo, setSeo] = useState({
     title: "",
     description: "",
@@ -51,16 +52,7 @@ const Allproducts = () => {
   const navigate = useNavigate();
   const prevProductsRef = useRef([]);
 
-  const createSlug = (name) =>
-    name
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
   // Set selected filters from URL filterValue (infer type by matching in filters)
-
   useEffect(() => {
     if (!filterValue || Object.keys(filters).length === 0) {
       setSelectedSubcategories([]);
@@ -75,7 +67,7 @@ const Allproducts = () => {
     let type = null;
     // Check each filter list for matching slug
     matched = filters.subcategories.find(
-      (item) => createSlug(item.name) === filterValue
+      (item) => createSlug(item.name) === filterValue,
     );
     if (matched) {
       type = "collection";
@@ -83,7 +75,7 @@ const Allproducts = () => {
       setActiveFilterName(matched.name);
     } else {
       matched = filters.fabrics.find(
-        (item) => createSlug(item.name) === filterValue
+        (item) => createSlug(item.name) === filterValue,
       );
       if (matched) {
         type = "fabric";
@@ -91,7 +83,7 @@ const Allproducts = () => {
         setActiveFilterName(matched.name);
       } else {
         matched = filters.works.find(
-          (item) => createSlug(item.name) === filterValue
+          (item) => createSlug(item.name) === filterValue,
         );
         if (matched) {
           type = "work";
@@ -99,7 +91,7 @@ const Allproducts = () => {
           setActiveFilterName(matched.name);
         } else {
           matched = filters.occasions.find(
-            (item) => createSlug(item.name) === filterValue
+            (item) => createSlug(item.name) === filterValue,
           );
           if (matched) {
             type = "occasion";
@@ -107,7 +99,7 @@ const Allproducts = () => {
             setActiveFilterName(matched.name);
           } else {
             matched = filters.styles.find(
-              (item) => createSlug(item.name) === filterValue
+              (item) => createSlug(item.name) === filterValue,
             );
             if (matched) {
               type = "style";
@@ -213,16 +205,16 @@ const Allproducts = () => {
           sortBy === "a-z"
             ? "name_asc"
             : sortBy === "z-a"
-            ? "name_desc"
-            : sortBy === "low-high"
-            ? "price_asc"
-            : "price_desc",
+              ? "name_desc"
+              : sortBy === "low-high"
+                ? "price_asc"
+                : "price_desc",
         page: currentPage,
         limit: limit,
       };
       const response = await axiosInstance.post(
         `/productbycategory/${cate_name}`,
-        payload
+        payload,
       );
       if (response.data.status === 1) {
         const { products, pagination } = response.data.data;
@@ -261,32 +253,32 @@ const Allproducts = () => {
 
   const toggleSubcategory = (val) => {
     setSelectedSubcategories((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
   const toggleFabric = (val) => {
     setSelectedFabrics((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
   const toggleWork = (val) => {
     setSelectedWorks((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
   const toggleOccasion = (val) => {
     setSelectedOccasions((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
   const toggleStyle = (val) => {
     setSelectedStyles((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
   const toggleSizeNew = (val) => {
     setSelectedSizes((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
+      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
     );
   };
 
@@ -295,7 +287,7 @@ const Allproducts = () => {
       (prev) =>
         prev.includes(colorId)
           ? prev.filter((id) => id !== colorId) // remove if already selected
-          : [...prev, colorId] // add if not selected
+          : [...prev, colorId], // add if not selected
     );
   };
   const clearAllFilters = () => {
@@ -439,7 +431,7 @@ const Allproducts = () => {
     // ✅ Subcategory SEO (highest priority)
     if (activeFilterName && filters.subcategories.length > 0) {
       const sub = filters.subcategories.find(
-        (s) => s.name === activeFilterName
+        (s) => s.name === activeFilterName,
       );
 
       if (sub) {
@@ -518,7 +510,7 @@ const Allproducts = () => {
                             <input
                               type="checkbox"
                               checked={selectedSubcategories.includes(
-                                val.sc_id
+                                val.sc_id,
                               )}
                               onChange={() => toggleSubcategory(val.sc_id)}
                               className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
@@ -594,7 +586,7 @@ const Allproducts = () => {
                             <input
                               type="checkbox"
                               checked={selectedOccasions.includes(
-                                val.occasion_id
+                                val.occasion_id,
                               )}
                               onChange={() => toggleOccasion(val.occasion_id)}
                               className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
@@ -835,7 +827,7 @@ const Allproducts = () => {
                   let startPage = Math.max(1, currentPage - 2);
                   let endPage = Math.min(
                     totalPages,
-                    startPage + maxVisible - 1
+                    startPage + maxVisible - 1,
                   );
                   if (endPage - startPage < maxVisible - 1) {
                     startPage = Math.max(1, endPage - maxVisible + 1);
@@ -852,7 +844,7 @@ const Allproducts = () => {
                         }`}
                       >
                         {i}
-                      </button>
+                      </button>,
                     );
                   }
                   return pages;

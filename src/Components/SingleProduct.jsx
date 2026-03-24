@@ -945,11 +945,11 @@ function SingleProduct() {
                 ))}
               </div>
 
-              <div className="text-center text-sm text-gray-600">
+              {/* <div className="text-center text-sm text-gray-600">
                 {purchase.name} <span className="text-red-600">Purchased</span>{" "}
                 this item <span className="font-semibold">{purchase.time}</span>{" "}
                 ago from <span className="font-semibold">{purchase.city}</span>
-              </div>
+              </div> */}
 
               {/* ── Trust Seals ── */}
               <img
@@ -982,7 +982,7 @@ function SingleProduct() {
                       Free Shipping
                     </h4>
                     <p className="text-sm text-gray-600">
-                      On all Over India orders over ₹1500
+                      On all over India orders over ₹1500
                     </p>
                   </div>
                 </div>
@@ -1023,7 +1023,7 @@ function SingleProduct() {
                 <h3 className="text-lg font-bold text-gray-900 mb-3">
                   Product Description
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
                   {product?.description}
                 </p>
               </div>

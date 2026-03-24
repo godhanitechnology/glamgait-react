@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import img from "../assets/Order-Confirm.png";
-import axiosInstance from "../Axios/axios";
+import { useEffect, useState } from "react";
 import { ApiURL } from "../Variable";
+import axiosInstance from "../Axios/axios";
+import img from "../assets/Order-Confirm.png";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const OrderConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const orderId = location.state?.orderId;
   const [order, setOrder] = useState(null);
 
@@ -18,9 +19,7 @@ const OrderConfirmation = () => {
       try {
         const res = await axiosInstance.get(`${ApiURL}/getorder/${orderId}`);
 
-        if (res.data.status === 1) {
-          setOrder(res.data.data);
-        }
+        if (res.data.status) setOrder(res.data.data);
       } catch (err) {
         console.error("Error fetching order:", err);
       }
@@ -49,8 +48,6 @@ const OrderConfirmation = () => {
         price: item.price,
       })),
     });
-
-    console.log("Purchase event fired:", order);
   }, [order]);
 
   // UI

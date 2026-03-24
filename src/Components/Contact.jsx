@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import leftlonglight from "../assets/leftlonglight.png";
-import location from "../assets/location.svg";
-import phone from "../assets/phone.svg";
-import mail from "../assets/mail.svg";
-import pattern from "../assets/pattern.png";
+import { useState } from "react";
 import ig from "../assets/ig.svg";
 import fb from "../assets/fb.svg";
 import yt from "../assets/yt.svg";
-import axiosInstance from "../Axios/axios"; // Make sure this is your configured Axios instance
 import toast from "react-hot-toast";
+import mail from "../assets/mail.svg";
+import phone from "../assets/phone.svg";
+import axiosInstance from "../Axios/axios";
+import pattern from "../assets/pattern.png";
+import location from "../assets/location.svg";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +27,7 @@ const Contact = () => {
     const { name, email, message } = formData;
 
     if (!name || !email || !message) {
-      console.log("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -40,11 +39,9 @@ const Contact = () => {
         message,
       });
 
-      if (response.data?.status === 1) {
+      if (response.data?.status) {
         toast.success("Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
-      } else {
-        console.log(response.data?.message || "Failed to send message");
       }
     } catch (error) {
       console.error(error);
@@ -55,13 +52,13 @@ const Contact = () => {
 
   return (
     <section className="relative bg-[#F3F0ED] py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="absolute -right-5 top-15 md:-right-5 md:top-25 2xl:right-10 2xl:top-30 transform -translate-y-1/2 z-15">
+      {/* <div className="absolute -right-5 top-15 md:-right-5 md:top-25 2xl:right-10 2xl:top-30 transform -translate-y-1/2 z-15">
         <img
           src={leftlonglight}
           alt="Lantern"
           className="w-10 h-30 md:w-28 md:h-85 md:-right-10"
         />
-      </div>
+      </div> */}
 
       <div className="max-w-7xl mx-auto relative z-10 bg-white md:p-10 p-4 rounded-lg shadow-2xl">
         <img

@@ -1,51 +1,45 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import {
-  Search,
-  Heart,
-  ShoppingCart,
-  Menu,
   X,
-  CircleUser,
   Plus,
   Minus,
+  Heart,
+  Search,
+  CircleUser,
+  ShoppingCart,
   TextAlignEnd,
 } from "lucide-react";
 import logo from "../assets/logo.svg";
 import axiosInstance from "../Axios/axios";
-import { userInfo } from "../Variable";
-import { getGuestId } from "../utils/guest";
+import { createSlug, labelMap, userInfo } from "../Variable";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 const Navbar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const user = userInfo();
   const u_id = user?.u_id;
-  const guestId = getGuestId();
   const token = user?.auth_token;
+
+  const navRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const desktopSearchRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
-  const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const [megaMenuData, setMegaMenuData] = useState({});
-  const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [megaMenuCache, setMegaMenuCache] = useState({});
+  const [announcements, setAnnouncements] = useState([]);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState({});
-  const [megaMenuCache, setMegaMenuCache] = useState({});
   const [showAuthChoice, setShowAuthChoice] = useState(false);
-  const desktopSearchRef = useRef(null);
-  const navRef = useRef(null);
-  // Slug helper function
-  const createSlug = (name) =>
-    name
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
+  const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   // Close search on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -59,22 +53,25 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   const getAnnouncements = async () => {
     try {
       const res = await axiosInstance.get("/getannouncements");
-      if (res?.data?.status === 1) setAnnouncements(res.data.data);
+      if (res?.data?.status) setAnnouncements(res.data.data);
     } catch (err) {
       console.error(err);
     }
   };
+
   const getCategories = async () => {
     try {
       const res = await axiosInstance.get("/getcategory");
-      if (res?.data?.status === 1) setCategories(res.data.data);
+      if (res?.data?.status) setCategories(res.data.data);
     } catch (err) {
       console.error(err);
     }
   };
+
   const fetchCategoryFilters = async (cate_id) => {
     if (!cate_id) return;
     if (megaMenuCache[cate_id]) {
@@ -102,6 +99,7 @@ const Navbar = () => {
       console.error("Error fetching filters:", error);
     }
   };
+
   useEffect(() => {
     getCategories();
     getAnnouncements();
@@ -114,6 +112,7 @@ const Navbar = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [announcements]);
+
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -147,7 +146,7 @@ const Navbar = () => {
     window.addEventListener("resize", updateBounds);
     return () => window.removeEventListener("resize", updateBounds);
   }, [categories]);
-  const toggleMenu = () => setIsOpen(!isOpen);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -156,12 +155,14 @@ const Navbar = () => {
       setIsMobileSearchOpen(false);
     }
   };
+
   const toggleMobileSection = (cate_id, section) => {
     setMobileExpanded((prev) => ({
       ...prev,
       [cate_id]: prev[cate_id] === section ? null : section,
     }));
   };
+
   // Menu items with cate_slug
   const menuItems = [
     { to: "/", label: "Home" },
@@ -176,22 +177,6 @@ const Navbar = () => {
     }),
     { to: "/contact", label: "Contact Us" },
   ];
-  // Label mapping for display
-  const labelMap = {
-    Collection: "Collections",
-    Fabric: "Fabric",
-    Work: "Work",
-    Occasion: "Occasion",
-    Style: "Styles",
-  };
-  // Filter type for URL segment
-  const typeMap = {
-    Collection: "collection",
-    Fabric: "fabric",
-    Work: "work",
-    Occasion: "occasion",
-    Style: "style",
-  };
 
   return (
     <>
@@ -269,11 +254,8 @@ const Navbar = () => {
               }
               className="cursor-pointer hover:text-black p-1 bg-transparent border-0"
               onClick={() => {
-                if (u_id && token) {
-                  navigate("/myorders");
-                } else {
-                  setShowAuthChoice(true);
-                }
+                if (u_id && token) navigate("/myorders");
+                else setShowAuthChoice(true);
               }}
             >
               <CircleUser size={22} />

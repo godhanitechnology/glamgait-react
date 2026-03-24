@@ -264,7 +264,7 @@ const Footer = () => {
         Online, Surat, India.
       </div>
       <div className="relative z-20 text-center text-xs sm:text-sm lg:text-base text-black font-medium bg-[#F1E8D7] lg:bg-transparent">
-        Design by Godhani Technology.
+        Designed by Godhani Technology.
       </div>
 
       {/* <div className="lg:absolute inset-x-0 bottom-0 z-0 h-full">
